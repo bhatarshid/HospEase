@@ -10,6 +10,9 @@ const lexend = Lexend({
 export const metadata: Metadata = {
   title: "HospEase",
   description: "A health care managemet system",
+  icons: {
+    icon: '/favicon.ico'
+  }
 };
 
 export default function RootLayout({
