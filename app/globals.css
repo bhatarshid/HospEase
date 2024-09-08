@@ -6,4 +6,7 @@
   .container {
     @apply relative flex-1 overflow-y-auto px-[5%];
   }
+  .shad-primary-btn {
+    @apply bg-primary rounded-lg text-white !important;
+  }
 }
