@@ -24,9 +24,12 @@ const Signin = () => {
 
         <SigninForm />
 
-        <div className="flex flex-row justify-between">
-          <p className="copyright py-12 font-thin text-sm">© 2024 CarePluse</p>
-          <p className="copyright py-12 font-thin text-sm">Don&apos;t have an account? <Link href="/auth/signup" className="text-blue-700">Signup</Link></p>
+        <div className="flex flex-col text-[#8f8e8e] font-thin text-sm">
+          <div className="flex flex-row justify-between">
+            <p className="copyright py-12"><Link href="/auth/forgot-password" className="text-blue-700">Forgot Password</Link></p>
+            <p className="copyright py-12">Don&apos;t have an account? <Link href="/auth/signup" className="text-blue-700">Signup</Link></p>
+          </div>
+          <p className="copyright py-12">© 2024 CarePluse</p>
         </div>
       </section>
       <Image 

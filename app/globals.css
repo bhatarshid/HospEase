@@ -9,4 +9,13 @@
   .shad-primary-btn {
     @apply bg-primary rounded-lg text-white !important;
   }
+  .shad-alert-dialog {
+    @apply bg-white space-y-5 outline-none !important;
+  }
+  .shad-otp {
+    @apply w-full flex justify-between !important;
+  }
+  .shad-otp-slot {
+    @apply text-3xl font-bold justify-center flex border border-neutral-800 rounded-2xl size-16 gap-4 !important;
+  }
 }
