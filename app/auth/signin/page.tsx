@@ -12,7 +12,7 @@ const Signin = () => {
             height={1000}
             width={1000}
             alt="logo"
-            className="mb-12 h-10 w-fit bg-primary mt-5"
+            className="mb-12 h-10 w-fit bg-primary mt-5 rounded-xl px-2 py-1"
           />
         </div>
         
@@ -29,7 +29,7 @@ const Signin = () => {
             <p className="copyright py-12"><Link href="/auth/forgot-password" className="text-blue-700">Forgot Password</Link></p>
             <p className="copyright py-12">Don&apos;t have an account? <Link href="/auth/signup" className="text-blue-700">Signup</Link></p>
           </div>
-          <p className="copyright py-12">© 2024 CarePluse</p>
+          <p className="font-thin text-sm">© 2024 CarePluse</p>
         </div>
       </section>
       <Image 
