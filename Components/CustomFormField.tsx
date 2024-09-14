@@ -44,7 +44,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
   switch(props.fieldType){
     case FormFieldType.INPUT:
       return (
-        <div className="flex border rounded-[8px] border-gray-300">
+        <div className="flex rounded-[5px] border border-gray-300">
           {props.iconSrc && (
             <Image
               src={props.iconSrc}
@@ -65,7 +65,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       );
     case FormFieldType.PHONE_INPUT:
       return(
-        <div className="flex border rounded-[8px] border-gray-300 px-5 py-2">
+        <div className="">
           <FormControl>
             <PhoneInput
               defaultCountry="IN"

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import SubmitButton from "../SubmitButton"
 import Image from "next/image";
+import Link from "next/link";
 
 const Navbar = () => {
   const [singinIsLoading, setSigninIsLoading] = useState(false);
@@ -19,18 +20,18 @@ const Navbar = () => {
       />
       </div>
       <section className="bg-white w-[65%] flex items-center justify-between px-10 py-1 rounded-2xl mr-6">
-        <div>About us</div>
-        <div>Services</div>
-        <div>Department</div>
-        <div>Contact Us</div>
+        <Link href='/about'>About</Link>
+        <Link href='/services'>Services</Link>
+        <Link href='/departments'>Departments</Link>
+        <Link href='/contact'>Contact Us</Link>
       </section>
       <section className="w-[15%] flex justify-between px-3 py-1 space-x-2">
-        <SubmitButton isLoading={singinIsLoading} className="bg-primary h-7 rounded-xl text-white">
+        <Link href='/auth/signin' className="bg-primary px-5 py-1 rounded-xl text-white">
           Login
-        </SubmitButton>
-        <SubmitButton isLoading={signupIsLoading} className="bg-white h-7 border border-primary rounded-xl">
+        </Link>
+        <Link href='/auth/signup' className="bg-white px-5 py-1 border border-primary rounded-xl">
           Signup
-        </SubmitButton> 
+        </Link> 
       </section>
     </div>
   )
