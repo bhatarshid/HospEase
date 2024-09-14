@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Navbar from './Navbar'
+import BottomBar from './BottomBar'
 
 const MainPage = () => {
   return (
@@ -120,6 +121,9 @@ const MainPage = () => {
             </div>
           </div>
         </section>
+      </div>
+      <div>
+        <BottomBar />
       </div>
     </div>
   )
