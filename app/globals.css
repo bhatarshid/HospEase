@@ -2,9 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  /* Remove scrollbar */
+  .remove-scrollbar::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    border-radius: 0px;
+  }
+
+  .remove-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .remove-scrollbar::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 0px;
+  }
+
+  .remove-scrollbar::-webkit-scrollbar-thumb:hover {
+    /* background: #1e2238; */
+    background: transparent;
+  }
+}
+
 @layer utilities {
   .container {
     @apply relative flex-1 overflow-y-auto px-[5%];
+  }
+  .sub-container {
+    @apply mx-auto flex size-full flex-col py-10;
+  }
+  .sub-header {
+    @apply text-[18px] md:text-[24px];
   }
   .shad-primary-btn {
     @apply bg-primary rounded-lg text-white !important;
@@ -20,6 +49,30 @@
   }
   .input-phone {
     @apply mt-2 h-11 rounded-[5px] px-3 text-sm border !important;
+  }
+  .shad-textArea {
+    @apply placeholder:text-dark-600 border-dark-500 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
+  }
+  .radio-group {
+    @apply flex h-full flex-1 items-center gap-2 rounded-[6px] border border-gray-300 p-3;
+  }
+  .date-picker {
+    @apply overflow-hidden border-transparent w-full text-[14px] h-11 px-3 py-3 outline-none !important;
+  }
+  .checkbox-label {
+    @apply cursor-pointer text-sm font-medium text-dark2 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 md:leading-none;
+  }
+  .file-upload {
+    @apply text-[12px] flex cursor-pointer  flex-col items-center justify-center gap-3 rounded-[8px] border border-dashed border-gray-500 bg-gray-200 p-5;
+  }
+  .file-upload_label {
+    @apply flex flex-col justify-center gap-2 text-center text-gray-600;
+  }
+  .shad-select-trigger {
+    @apply bg-white border-gray-500 placeholder:text-dark3 rounded-[6px] h-11 focus:ring-0 focus:ring-offset-0 !important;
+  }
+  .shad-select-content {
+    @apply bg-gray-200 border-dark1 !important;
   }
 
 }
