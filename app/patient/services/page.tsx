@@ -5,7 +5,7 @@ const Services = () => {
   return (
     <section className="mt-5 px-10">
       <h1 className="font-semibold text-dark1 text-[20px]">Services</h1>
-      <div className="flex flex-row py-1 gap-6 overflow-visible">
+      <div className="flex flex-row py-1 gap-6 flex-wrap overflow-visible">
         <Link href="#">
           <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
             <Image 
