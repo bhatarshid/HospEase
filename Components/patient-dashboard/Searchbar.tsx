@@ -2,7 +2,6 @@
 
 import { Form, FormControl, FormField, FormItem } from "@/Components/ui/form";
 import { useForm } from "react-hook-form";
-import SubmitButton from "../SubmitButton";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -11,7 +10,7 @@ import { Button } from "../ui/button";
 const Searchbar = () => {
   const form = useForm({
     defaultValues: {
-      
+      searchInput: ''
     },
   });
 
@@ -21,24 +20,13 @@ const Searchbar = () => {
   }
   return (      
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-row items-center px-5 space-y-5 bg-white w-full rounded-2xl">
-        <div className="flex items-center justify-between h-8 w-full ">
-          {/* <FormField
-            control={form.control}
-            name="searchInput"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder="shadcn" {...field} className="h-full w-[100%] px-2 focus:outline-none border-0" />
-                </FormControl>
-              </FormItem>
-            )}
-          /> */}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-row items-center px-3 space-y-5 bg-white rounded-2xl">
+        <div className="flex items-center justify-between h-8">
           <FormField
             control={form.control}
             name="searchInput"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="">
                 <FormControl>
                   <Input
                     placeholder="Search..."
