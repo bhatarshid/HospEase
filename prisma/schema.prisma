@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(uuid())
+  firstName      String
+  lastName       String
+  phoneNumber    String
+  password       String
+  profilePicture String?
+  refreshToken   String?
+  createdAt      DateTime
+  updatedAt      DateTime @updatedAt
+  patient        Patient?
+}
+
+model Patient {
+  id                     String          @id @default(uuid())
+  emailId                String
+  dateOfBirth            DateTime
+  address                String
+  occupation             String
+  gender                 String
+  emergencyContactName   String
+  emergencyContactNumber String
+  allergies              String
+  currentMedications     String?
+  familyMedicalHistory   String?
+  pastMedicalHistory     String?
+  idDocType              String
+  idNumber               String
+  idDoc                  Bytes
+  treatmentConsent       Boolean
+  disclosureConsent      Boolean
+  privacyPolicy          Boolean
+  createdAt              DateTime
+  updatedAt              DateTime        @updatedAt
+  user                   User            @relation(fields: [userId], references: [id])
+  userId                 String          @unique
+  appointments           Appointment[]
+  feedbacks              Feedback[]
+  medicalHistory         MedicalHistory?
+}
+
+model Doctor {
+  id             String          @id @default(uuid())
+  firstName      String
+  lastName       String
+  phoneNumber    String
+  emailId        String?
+  picture        Bytes?
+  specialization String
+  department     String // make enum for this
+  createdAt      DateTime
+  updatedAt      DateTime        @updatedAt
+  appointments   Appointment[]
+  serviceDoctors ServiceDoctor[]
+}
+
+model Appointment {
+  id              String   @id @default(uuid())
+  appointmentDate DateTime
+  reason          String
+  status          Boolean  @default(false)
+  createdAt       DateTime
+  updatedAt       DateTime @updatedAt
+  patient         Patient  @relation(fields: [patientId], references: [id])
+  patientId       String
+  doctor          Doctor   @relation(fields: [doctorId], references: [id])
+  doctorId        String
+}
+
+model Service {
+  id               String           @id @default(uuid())
+  serviceName      String
+  description      String
+  createdAt        DateTime
+  updatedAt        DateTime         @updatedAt
+  feedback         Feedback[]
+  serviceDoctors   ServiceDoctor[]
+  medicalHistories MedicalHistory[]
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String
+  createdAt DateTime
+  updatedAt DateTime @updatedAt
+  patient   Patient  @relation(fields: [patientId], references: [id])
+  patientId String
+  service   Service  @relation(fields: [serviceId], references: [id])
+  serviceId String
+}
+
+model ServiceDoctor {
+  id        String   @id @default(uuid())
+  cost      Int
+  createdAt DateTime
+  updatedAt DateTime @updatedAt
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  doctorId  String
+  service   Service  @relation(fields: [serviceId], references: [id])
+  serviceId String
+
+  @@unique([doctorId, serviceId])
+  @@index([doctorId, serviceId])
+}
+
+model MedicalHistory {
+  id         String   @id @default(uuid())
+  visitDate  DateTime
+  diagonosis String
+  treatment  String
+  notes      String
+  createdAt  DateTime
+  updatedAt  DateTime @updatedAt
+  patient    Patient  @relation(fields: [patientId], references: [id])
+  patientId  String   @unique
+  service    Service  @relation(fields: [serviceId], references: [id])
+  serviceId  String
+}
