@@ -1,15 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from 'zod'
 import { SignupResponse, UserDataType } from "@/types/entities";
 import { createUser, fetchAllUsers } from "@/services/user-service";
-import AppError from "@/lib/App-Error";
-
-const signupRequest = z.object({
-  phone_no: z.string().min(10, "Phone number should be at least 10 characters"),
-  password: z.string().min(8, "Password is required"),
-  first_name: z.string().min(3, "First name is required"),
-  last_name: z.string().min(3, "Last name is required"),
-});
+import { handleErrorNextResponse } from "@/lib/App-Error";
+import { signupRequest } from "@/lib/validations/user.schema";
 
 // get all users
 export async function GET() {
@@ -19,13 +12,7 @@ export async function GET() {
     return NextResponse.json({ users }, { status: 200 });
   }
   catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors }, { status: 400 });
-    }
-    if (error instanceof AppError) {
-      return NextResponse.json({ error: error.message }, { status: error.statusCode });
-    }
-    return NextResponse.json({ error: error }, { status: 500 });
+    return handleErrorNextResponse(error);
   }
 }
 
@@ -48,12 +35,6 @@ export async function POST(request: NextRequest) {
     }, { status: 201 });
   }
   catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors }, { status: 400 });
-    }
-    if (error instanceof AppError) {
-      return NextResponse.json({ error: error.message }, { status: error.statusCode });
-    }
-    return NextResponse.json({ error: error }, { status: 500 });
+    return handleErrorNextResponse(error);
   }
 }
