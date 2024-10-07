@@ -23,9 +23,9 @@ export async function POST(request: NextRequest) {
     signupRequest.parse(body);
 
     const user: SignupResponse = await createUser({
-      firstName: body.first_name,
-      lastName: body.last_name,
-      phoneNumber: body.phone_no,
+      firstName: body.firstName,
+      lastName: body.lastName,
+      phoneNumber: body.phoneNumber,
       password: body.password,
     });
 

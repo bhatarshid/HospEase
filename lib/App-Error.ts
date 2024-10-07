@@ -14,7 +14,7 @@ class AppError extends Error {
 
 export function handleErrorNextResponse(error: unknown) {
   if (error instanceof ZodError) {
-    return NextResponse.json({ error: error.errors }, { status: 400 });
+    return NextResponse.json({ error: error.errors[0].message }, { status: 400 });
   }
 
   if (error instanceof AppError) {

@@ -64,6 +64,16 @@ export async function createUser(data: CreateUserInput): Promise<SignupResponse>
   }
 }
 
+export async function loginUser(phoneNo: string, password: string) {
+  try {
+    console.log(phoneNo, password);
+  }
+  catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 export async function getUserById(id: string): Promise<UserDataType> {
   try {
     const user = await prisma.user.findUnique({

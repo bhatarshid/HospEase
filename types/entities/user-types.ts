@@ -13,3 +13,4 @@ export type UserData = {
 export type CreateUserInput = Omit<UserData, 'id' | 'createdAt' | 'updatedAt' | 'profilePicture' | 'refreshToken'>;
 export type UserDataType = Omit<UserData, 'password'>;
 export type SignupResponse = Omit<UserDataType, 'refreshToken' | 'profilePicture'>;
+export type LoginResponse = Omit<UserData, 'password'> & { accessToken: string; };

@@ -4,8 +4,8 @@ import { passwordRegex } from "../utils";
 export const phoneSchema = z
   .string()
   .trim()
-  .refine((val) => val.length === 10, {
-    message: 'Phone number must be exactly 10 digits'
+  .refine((val) => val.length === 13, {
+    message: 'Phone number must be exactly 13 digits'
   });
 
 // Type for the validated phone number

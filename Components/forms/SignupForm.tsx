@@ -6,21 +6,54 @@ import CustomFormField, { FormFieldType } from "../CustomFormField";
 import "react-phone-number-input/style.css";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
+import { CreateUserInput, SignupResponse } from "@/types/entities";
+import { signupAPI } from "@/lib/actions/user.actions";
+import { useRouter } from "next/navigation";
+import { ApiErrorType } from "@/types/entities/common-types";
 
 
 const SignupForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const form = useForm({
     defaultValues: {
-      
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      password: "",
     },
   });
 
-  const onSubmit = () => {
+  const onSubmit = async (data: CreateUserInput) => {
     // handle form submission
-    console.log("onSubmit")
-    setIsLoading(true)
+    setIsLoading(true);
+    setError(null);
+    const { firstName, lastName, phoneNumber, password} = data;
+    console.log(data)
+    try {
+      const response: SignupResponse | ApiErrorType = await signupAPI({
+        firstName,
+        password,
+        lastName,
+        phoneNumber
+      });
+      
+      if ((response as ApiErrorType).error || (response as ApiErrorType).status !== 201) {
+        console.log(response.error)
+        throw new Error(response.error)
+      }
+
+      router.push('/auth/signin');
+    }
+    catch (error) {
+      console.log(error);
+      setError("Failed to signup, please try again later");
+    }
+    finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -29,7 +62,7 @@ const SignupForm = () => {
         <CustomFormField
           fieldType={FormFieldType.INPUT}
           control={form.control}
-          name="firstNmae"
+          name="firstName"
           label="Please enter your first name"
           placeholder="John"
         />
