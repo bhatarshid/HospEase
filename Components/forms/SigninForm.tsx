@@ -8,6 +8,7 @@ import SubmitButton from "../SubmitButton";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from 'next/navigation';
+import { toast } from "react-toastify";
 
 
 const SigninForm = () => {
@@ -31,17 +32,17 @@ const SigninForm = () => {
       });
       console.log({result})
       if (result?.error) {
-        console.log(result.error)
+        toast.error(result.error)
         return;
       }
 
       if (result?.ok) {
-        console.log(result)
+        toast.success("Login successful")
         router.push("/patient/dashboard");
         router.refresh();
       }
     } catch (error) {
-      console.error("Sign in error:", error);
+      toast.error('Uh oh! Something went wrong')
     } finally {
       setIsLoading(false);
     }

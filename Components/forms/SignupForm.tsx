@@ -10,7 +10,7 @@ import { CreateUserInput, SignupResponse } from "@/types/entities";
 import { signupAPI } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
 import { ApiErrorType } from "@/types/entities/common-types";
-
+import { toast } from "react-toastify";
 
 const SignupForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +29,6 @@ const SignupForm = () => {
     // handle form submission
     setIsLoading(true);
     const { firstName, lastName, phoneNumber, password} = data;
-    console.log(data)
     try {
       const response: SignupResponse | ApiErrorType = await signupAPI({
         firstName,
@@ -37,18 +36,17 @@ const SignupForm = () => {
         lastName,
         phoneNumber
       });
-      
+      console.log(response)
       if ((response as ApiErrorType).error || (response as ApiErrorType).status !== 201) {
-        console.log((response as ApiErrorType).error)
-        throw new Error((response as ApiErrorType).error)
+        toast.error(response.error.error)
+        return
       }
 
-
+      toast.success('Signup successful! You can now log in')
       router.push('/auth/signin');
     }
     catch (error) {
-      console.log(error);
-      console.log("Failed to signup, please try again later");
+      toast.error('Uh oh! Something went wrong')
     }
     finally {
       setIsLoading(false);

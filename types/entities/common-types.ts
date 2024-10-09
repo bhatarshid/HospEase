@@ -1,4 +1,6 @@
 export type ApiErrorType = {
-  error: string, 
-  status: number
+  error: {
+    error: string;
+  }
+  status: number;
 }

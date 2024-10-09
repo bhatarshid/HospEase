@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Lexend } from "@next/font/google";
 import "./globals.css";
 import AuthProvider from "@/context/AuthProvider";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const lexend = Lexend({
   subsets: ["latin"],
@@ -28,6 +30,7 @@ export default function RootLayout({
           >
           <AuthProvider>
             {children}
+            <ToastContainer />
           </AuthProvider>
         </body>
     </html>
