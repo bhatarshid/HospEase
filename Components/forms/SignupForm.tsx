@@ -14,7 +14,6 @@ import { ApiErrorType } from "@/types/entities/common-types";
 
 const SignupForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const form = useForm({
@@ -29,7 +28,6 @@ const SignupForm = () => {
   const onSubmit = async (data: CreateUserInput) => {
     // handle form submission
     setIsLoading(true);
-    setError(null);
     const { firstName, lastName, phoneNumber, password} = data;
     console.log(data)
     try {
@@ -41,15 +39,16 @@ const SignupForm = () => {
       });
       
       if ((response as ApiErrorType).error || (response as ApiErrorType).status !== 201) {
-        console.log(response.error)
-        throw new Error(response.error)
+        console.log((response as ApiErrorType).error)
+        throw new Error((response as ApiErrorType).error)
       }
+
 
       router.push('/auth/signin');
     }
     catch (error) {
       console.log(error);
-      setError("Failed to signup, please try again later");
+      console.log("Failed to signup, please try again later");
     }
     finally {
       setIsLoading(false);

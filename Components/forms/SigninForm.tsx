@@ -6,21 +6,45 @@ import CustomFormField, { FormFieldType } from "../CustomFormField";
 import "react-phone-number-input/style.css";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from 'next/navigation';
 
 
 const SigninForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const form = useForm({
+  const form = useForm<{ phoneNumber: string; password: string; }>({
     defaultValues: {
       
     },
   });
 
-  const onSubmit = () => {
+  const onSubmit = async (data: { phoneNumber: string; password: string; }) => {
     // handle form submission
-    console.log("onSubmit")
-    setIsLoading(true)
+    try {
+      setIsLoading(true);
+      const result = await signIn("credentials", {
+        phoneNumber: data.phoneNumber,
+        password: data.password,
+        redirect: false,
+      });
+      console.log({result})
+      if (result?.error) {
+        console.log(result.error)
+        return;
+      }
+
+      if (result?.ok) {
+        console.log(result)
+        router.push("/patient/dashboard");
+        router.refresh();
+      }
+    } catch (error) {
+      console.error("Sign in error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
