@@ -20,26 +20,26 @@ const Searchbar = () => {
   }
   return (      
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-row items-center px-3 space-y-5 bg-white rounded-2xl">
-        <div className="flex items-center justify-between h-8">
-          <FormField
-            control={form.control}
-            name="searchInput"
-            render={({ field }) => (
-              <FormItem className="">
-                <FormControl>
-                  <Input
-                    placeholder="Search..."
-                    {...field}
-                    className="h-full px-2 py-1 focus:outline-none border-0"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          >
-          </FormField>
-          <Button type="submit" className="relative h-full px-1 ml-1 bg-white"><Search size={20} /></Button>
-        </div>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center w-[60%]">
+        <FormField
+          control={form.control}
+          name="searchInput"
+          render={({ field }) => (
+            <FormItem className="flex-grow">
+              <FormControl>
+                <Input
+                  placeholder="Search..."
+                  {...field}
+                  className="h-8 rounded-l-full focus-visible:ring-0 focus-visible:ring-offset-0 border-r-0"
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <Button type="submit" className="h-8 rounded-r-full bg-dark3">
+          <Search className="h-4 w-4" />
+          <span className="sr-only">Search</span>
+        </Button>
       </form>
     </Form>
   )

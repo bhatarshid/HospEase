@@ -3,7 +3,7 @@ import Link from "next/link"
 
 const RightsideBar = () => {
   return (
-    <div className="w-[20%] h-full flex-col justify-center items-center bg-backgroundColor fixed top-[58px] right-0 z-50  border-l-[1px] border-dark3">
+    <div className="w-[20%] h-full flex-col justify-center items-center bg-backgroundColor fixed top-[58px] right-0 z-0  border-l-[1px] border-dark3">
       <div className="px-3 py-2 flex flex-col">
         <h1 className="font-semibold text-dark1">Upcoming Schedule</h1>
         <section className="py-1 bg-white mt-2 rounded-xl shadow-md">
