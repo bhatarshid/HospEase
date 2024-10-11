@@ -4,6 +4,7 @@ import "./globals.css";
 import AuthProvider from "@/context/AuthProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ReduxProvider } from "@/redux/provider";
 
 const lexend = Lexend({
   subsets: ["latin"],
@@ -28,10 +29,12 @@ export default function RootLayout({
         <body
           className={`${lexend.className} antialiased`}
           >
-          <AuthProvider>
-            {children}
-            <ToastContainer />
-          </AuthProvider>
+          <ReduxProvider>
+            <AuthProvider>
+              {children}
+              <ToastContainer />
+            </AuthProvider>
+          </ReduxProvider>
         </body>
     </html>
   );

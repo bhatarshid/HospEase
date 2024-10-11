@@ -42,8 +42,8 @@ const DashboardNavbar = () => {
               <Contact size={24} />
             </Button>
             {isOpen && (
-              <div className="absolute top-full right-0 w-32 bg-backgroundColor text-dark1 p-3 mr-2 flex flex-col items-start space-y-4 z-0 mt-0 rounded-md shadow-lg border-2 border-dark3">
-                <Link href="#">Profile</Link>
+              <div className="absolute top-full right-0 w-32 bg-backgroundColor text-dark1 flex flex-col items-start space-y-4 z-0 p-3 mr-2 rounded-xl shadow-lg border-2 border-dark3">
+                <Link href="/patient/register">Profile</Link>
                 <LogoutButton />  
               </div>
             )}
@@ -56,7 +56,7 @@ const DashboardNavbar = () => {
         </div>
       </section>
       {isMenuOpen && (
-        <div className="absolute top-full right-0 w-48 bg-backgroundColor text-dark1 p-4 flex flex-col items-start space-y-4 z-0 mt-0 rounded-md shadow-lg">
+        <div className="absolute top-full right-0 w-64 bg-backgroundColor text-dark1 flex flex-col items-start space-y-4 z-0 p-3 mr-2 rounded-xl shadow-lg border-2 border-dark3">
           <Link className="border-b-2 w-[80%] border-dark2" href="#" onClick={() => setIsMenuOpen(false)}>Profile</Link>
           <Link className="border-b-2 w-[80%] border-dark2" href="#" onClick={() => setIsMenuOpen(false)}>Message</Link>
           <Link className="border-b-2 w-[80%] border-dark2" href="#" onClick={() => setIsMenuOpen(false)}>Appointments</Link>
