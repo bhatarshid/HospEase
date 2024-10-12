@@ -5,47 +5,43 @@ import { useForm } from "react-hook-form";
 import CustomFormField, { FormFieldType } from "../CustomFormField";
 import "react-phone-number-input/style.css";
 import SubmitButton from "../SubmitButton";
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { toast } from "react-toastify";
+import { LoginInput } from "@/types/entities";
+import { useSelector, useDispatch } from 'react-redux'
+import { signin, reset } from "@/redux/features/auth-slice";
+import { AppDispatch, RootState } from "@/redux/store";
 
 
 const SigninForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { user, isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth);
 
-  const form = useForm<{ phoneNumber: string; password: string; }>({
+  const form = useForm<LoginInput>({
     defaultValues: {
-      
+      phoneNumber: '',
+      password: ''
     },
   });
 
-  const onSubmit = async (data: { phoneNumber: string; password: string; }) => {
-    // handle form submission
-    try {
-      setIsLoading(true);
-      const result = await signIn("credentials", {
-        phoneNumber: data.phoneNumber,
-        password: data.password,
-        redirect: false,
-      });
-      console.log({result})
-      if (result?.error) {
-        toast.error(result.error)
-        return;
-      }
-
-      if (result?.ok) {
-        toast.success("Login successful")
-        router.push("/patient/dashboard");
-        router.refresh();
-      }
-    } catch (error) {
-      toast.error('Uh oh! Something went wrong')
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    if (isError) {
+      toast.error(message)
     }
+
+    if (isSuccess) {
+      toast.success(message)
+      router.push('/patient/dashboard')
+    }
+
+    dispatch(reset());
+  }, [ isError, isSuccess, message, router, dispatch]);
+
+  const onSubmit = async (data: LoginInput) => {
+    // handle form submission
+    dispatch(signin(data));
   }
 
   return (

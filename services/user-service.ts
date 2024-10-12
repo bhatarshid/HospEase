@@ -74,10 +74,15 @@ export async function loginUser(phoneNo: string, password: string) {
   }
 }
 
-export async function getUserById(id: string): Promise<UserDataType> {
+export async function getUser(id: string): Promise<UserDataType> {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id },
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { id: id },
+          { phoneNumber: id }
+        ]
+      },
       select: {
         id: true,
         phoneNumber: true,
