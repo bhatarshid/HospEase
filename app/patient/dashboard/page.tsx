@@ -5,10 +5,10 @@ import Services from "../services/page"
 
 const Dashboard = () => {
   return (
-    <>
+    <div className="bg-backgroundColor">
       <DashboardNavbar />
       <main className="flex h-screen max-h-screen mt-16">
-        <div className="remove-scrollbar max-h-full w-[80%] bg-backgroundColor"> 
+        <div className="remove-scrollbar max-h-full w-[80%]"> 
           <section className=" mt-5 flex flex-col sm:flex-row-reverse justify-between px-10">
             <div className="flex flex-row items-center justify-center bg-white w-46 h-1/2 px-2 py-1 rounded-[8px] space-x-2 my-auto ml-4 mb-5 md:mb-0">
               <CalendarDays color="blue" size={24} className="" />
@@ -23,7 +23,7 @@ const Dashboard = () => {
         </div>
         <RightsideBar />
       </main>
-    </>
+    </div>
   )
 }
 

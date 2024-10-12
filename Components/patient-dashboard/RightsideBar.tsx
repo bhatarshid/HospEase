@@ -1,67 +1,63 @@
-import { CalendarDays, ChevronsDown, Clock, LucideMessageCirclePlus, User } from "lucide-react"
-import Link from "next/link"
+'use client'
+
+import { CalendarIcon } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
+import { Card, CardContent } from "@/Components/ui/card";
+import { ScrollArea } from "@/Components/ui/scroll-area";
+import { useState } from "react";
+import Calendar from 'react-calendar'
+import 'react-calendar/dist/Calendar.css';
 
 const RightsideBar = () => {
+  const [date, setDate] = useState<Date | undefined>(new Date())
+  // dummy data
+  const appointments = [
+    { id: 1, doctor: "Dr. Alexander Boje", specialty: "Orthopedic", date: "June 12, 2025", time: "09:00 - 10:00" },
+    { id: 2, doctor: "Dr. Sarah Lee", specialty: "Cardiologist", date: "June 13, 2025", time: "11:00 - 12:00" },
+    { id: 3, doctor: "Dr. Michael Chen", specialty: "Dermatologist", date: "June 14, 2025", time: "14:00 - 15:00" },
+    { id: 4, doctor: "Dr. Emily Brown", specialty: "Neurologist", date: "June 15, 2025", time: "10:00 - 11:00" },
+    { id: 5, doctor: "Dr. David Kim", specialty: "Pediatrician", date: "June 16, 2025", time: "13:00 - 14:00" },
+  ]
+
   return (
-    <div className="w-[20%] h-full flex-col justify-center items-center bg-backgroundColor fixed top-[58px] right-0 z-0  border-l-[1px] border-dark3">
-      <div className="px-3 py-2 flex flex-col">
-        <h1 className="font-semibold text-dark1">Upcoming Schedule</h1>
-        <section className="py-1 bg-white mt-2 rounded-xl shadow-md">
-          <div className="flex flex-col lg:flex-row px-2 py-2">
-            <User  size={44} />
-            <div className="flex-col">  
-              <h1 className="">Dr. Alexander Boje</h1>
-              <h2 className="text-xs text-dark3">Orthopedic</h2>
-            </div>
-          </div>
-          <div className="flex flex-col lg:flex-row mx-2 rounded-[6px] bg-[#eaf1fe] justify-between py-2 px-1">
-            <div className="flex py-2 lg:py-0">
-              <CalendarDays className="my-auto" color="blue" size={20} />
-              <h1 className="text-[12px] my-auto px-2">June 12, 2025</h1>
-            </div>
-            <div className="flex">
-              <Clock className="my-auto" color="blue" size={20} />
-              <h1 className="text-[12px] my-auto px-2">09:00 - 10:00</h1>
-            </div>
-          </div>
-        </section>
-        <section className="py-1 bg-white mt-2 rounded-xl shadow-md">
-          <div className="flex flex-col lg:flex-row px-2 py-2">
-            <User  size={44} />
-            <div className="flex-col">  
-              <h1 className="">Dr. Alexander Boje</h1>
-              <h2 className="text-xs text-dark3">Orthopedic</h2>
-            </div>
-          </div>
-          <div className="flex flex-col lg:flex-row mx-2 rounded-[6px] bg-[#eaf1fe] justify-between py-2 px-1">
-            <div className="flex py-2 lg:py-0">
-              <CalendarDays className="my-auto" color="blue" size={20} />
-              <h1 className="text-[12px] my-auto px-2">June 12, 2025</h1>
-            </div>
-            <div className="flex">
-              <Clock className="my-auto" color="blue" size={20} />
-              <h1 className="text-[12px] my-auto px-2">09:00 - 10:00</h1>
-            </div>
-          </div>
-        </section>
-        <div className="flex my-auto justify-center h-8 mt-2">
-          <Link href='#'><ChevronsDown size={24} className="text-primary"/></Link>
-        </div>
-        <hr className="border-t-2 border-dark3 rounded-full w-[70%] mx-auto mt-2"/>
-      </div>
-      <div className="px-3 py-2 flex flex-col">
-        <h1 className="font-semibold text-dark1">Calendar</h1>
-        <section className="mt-2">
-          <CalendarDays className="h-[50%] w-[70%]" />
-        </section>
-        <hr className="border-t-2 border-dark3 rounded-full w-[70%] mx-auto mt-2"/> 
-      </div>
-      <Link href="#">
-        <div className="mx-auto px-3 py-2 flex flex-row text-primary">
-            <LucideMessageCirclePlus className="mx-2" size={24} />
-            <h1 className="font-semibold">Chat with us</h1>
-        </div >
-      </Link>
+    <div className="fixed inset-y-0 right-0 w-full md:w-[20%] flex-col h-screen pt-[58px] bg-background hidden lg:flex">
+      <Card className="flex-grow overflow-hidden">
+        <CardContent className="flex flex-col h-full p-2">
+          <h2 className="text-xl font-medium mb-4">Upcoming Schedule</h2>
+          <ScrollArea className="flex-grow h-[60%]">
+            {appointments.map(appointment => (
+              <div key={appointment.id} className="mb-4 p-4 bg-white rounded-xl">
+                <div className="flex items-center space-x-4">
+                  <Avatar>
+                    <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${appointment.doctor}`} />
+                    <AvatarFallback>{appointment.doctor.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h3 className="font-normal">{appointment.doctor}</h3>
+                    <p className="text-sm text-gray-500">{appointment.specialty}</p>
+                  </div>
+                </div>
+                <div className="mt-2 flex justify-between items-center text-[11px] font-base space-x-2">
+                  <div className="flex items-center space-x-2">
+                    <CalendarIcon className="w-4 h-4 text-blue-500" />
+                    <span>{appointment.date}</span>
+                  </div>
+                  <div>{appointment.time}</div>
+                </div>
+              </div>
+            ))}
+          </ScrollArea>
+        </CardContent>
+      </Card>
+      <Card className="mt-4 h-[40%]">
+        <h2 className="text-xl font-medium mb-3 xl:mb-4 px-2">Calendar</h2>
+        <CardContent className="h-full px-2 overflow-y-scroll remove-scrollbar">
+          <Calendar 
+            value={new Date()}
+            className="text-[10px] xl:text-[15px] rounded-xl"
+          />
+        </CardContent>
+      </Card>
     </div>
   )
 }
