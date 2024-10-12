@@ -5,16 +5,18 @@ import { useForm } from "react-hook-form";
 import CustomFormField, { FormFieldType } from "../CustomFormField";
 import "react-phone-number-input/style.css";
 import SubmitButton from "../SubmitButton";
-import { useState } from "react";
-import { CreateUserInput, SignupResponse } from "@/types/entities";
-import { signupAPI } from "@/lib/actions/user.actions";
+import { useEffect } from "react";
+import { CreateUserInput } from "@/types/entities";
 import { useRouter } from "next/navigation";
-import { ApiErrorType } from "@/types/entities/common-types";
 import { toast } from "react-toastify";
+import { useSelector, useDispatch } from 'react-redux'
+import { signup, reset } from "@/redux/features/auth-slice";
+import { AppDispatch, RootState } from "@/redux/store";
 
 const SignupForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth);
 
   const form = useForm({
     defaultValues: {
@@ -25,32 +27,22 @@ const SignupForm = () => {
     },
   });
 
+  useEffect(() => {
+    if (isError) {
+      toast.error(message)
+    }
+
+    if (isSuccess) {
+      toast.success(message)
+      router.push('/auth/signin')
+    }
+
+    dispatch(reset());
+  }, [ isError, isSuccess, message, router, dispatch])
+
   const onSubmit = async (data: CreateUserInput) => {
     // handle form submission
-    setIsLoading(true);
-    const { firstName, lastName, phoneNumber, password} = data;
-    try {
-      const response: SignupResponse | ApiErrorType = await signupAPI({
-        firstName,
-        password,
-        lastName,
-        phoneNumber
-      });
-      console.log(response)
-      if ((response as ApiErrorType).error || (response as ApiErrorType).status !== 201) {
-        toast.error(response.error.error)
-        return
-      }
-
-      toast.success('Signup successful! You can now log in')
-      router.push('/auth/signin');
-    }
-    catch (error) {
-      toast.error('Uh oh! Something went wrong')
-    }
-    finally {
-      setIsLoading(false);
-    }
+    dispatch(signup(data))
   }
 
   return (

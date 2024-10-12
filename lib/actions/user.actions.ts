@@ -5,12 +5,12 @@ import axios from 'axios';
 
 const USER_API = '/api/user';
 
-export const signupAPI = async (user: CreateUserInput): Promise<SignupResponse | ApiErrorType> => {
+export const signupAPI = async (user: CreateUserInput): Promise<SignupResponse> => {
   try {
     const response: SignupResponse = await axios.post(USER_API, user);
     return response;
   }
   catch (error: any) {
-    return { error: error.response?.data, status: error.response?.status };
+    throw error;
   }
 }
