@@ -1,6 +1,7 @@
-import { signupAPI } from '@/lib/actions/user.actions';
-import { CreateUserInput, SignupResponse } from '@/types/entities';
+import { signInApi, signupAPI } from '@/lib/actions/user.actions';
+import { CreateUserInput, LoginInput, LoginResponse, SignupResponse } from '@/types/entities';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { signIn } from 'next-auth/react';
 
 interface AuthState {
   user: SignupResponse | null;
@@ -24,7 +25,19 @@ export const signup = createAsyncThunk('auth/signup',
       return await signupAPI(user);
     }
     catch (error: any) {
-      const message = error.response.data.error
+      const message = error.response.data.error || 'Internal server error';
+      return thunkApi.rejectWithValue(message);
+    }
+  }
+)
+
+export const signin = createAsyncThunk('auth/signin', 
+  async (credentials: LoginInput, thunkApi) => {
+    try {
+      return await signInApi(credentials);
+    }
+    catch (error: any) {
+      const message = error.response.data.error || 'Internal server error';
       return thunkApi.rejectWithValue(message);
     }
   }
@@ -34,8 +47,11 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    reset: () => {
-      return initialState;
+    reset: (state) => {
+      state.isLoading = false
+      state.isSuccess = false
+      state.isError = false
+      state.message = ''
     }
   },
   extraReducers: (builder) => {
@@ -46,11 +62,29 @@ export const authSlice = createSlice({
     .addCase(signup.fulfilled, (state, action: PayloadAction<SignupResponse>) => {
       state.isLoading = false;
       state.isSuccess = true;
+      state.isError = false;
       state.message = "Welcome! Your account is ready."
     })
     .addCase(signup.rejected, (state, action: PayloadAction<any>) => {
       state.isLoading = false;
       state.isError = true;
+      state.message = action.payload as string;
+      state.user = null;
+    })
+    .addCase(signin.pending, (state) => {
+      state.isLoading = true;
+    })
+    .addCase(signin.fulfilled, (state, action: PayloadAction<any>) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccess = true;
+      state.message = "Sign in successful."
+      state.user = action.payload;
+    })
+    .addCase(signin.rejected, (state, action: PayloadAction<any>) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
       state.message = action.payload as string;
       state.user = null;
     })
