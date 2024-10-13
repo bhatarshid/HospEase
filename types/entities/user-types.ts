@@ -1,3 +1,5 @@
+import { Patient } from "@prisma/client"
+
 export type UserData = {
   id: string
   firstName: string
@@ -16,18 +18,21 @@ export type SignupResponse = Omit<UserDataType, 'refreshToken' | 'profilePicture
 export type LoginResponse = Omit<UserData, 'password' | 'createdAt'| 'updatedAt'>;
 export type LoginInput = { phoneNumber: string; password: string };
 
-export type RegistrationData = {
-  email: string;
-  birthDate: string;
+// export type PatientType = Omit<Patient, 'user' | 'appointments' | 'feedback' | 'medicalHistory' | 'doctor'>
+
+export type PatientRequestType = {
+  emailId: string;
+  dateOfBirth: string;
   gender: string;
   address: string;
   occupation: string;
   emergencyContactName: string;
   emergencyContactNumber: string;
-  primaryPhysician: string;
-  insuranceProvider: string;
-  insurancePolicyNumber: string;
-  currentMedication: string;
+  primaryPhysician?: string | null;
+  insuranceProvider?: string | null;
+  insurancePolicyNumber?: string | null;
+  currentMedications: string;
+  pastMedicalHistory: string;
   allergies: string;
   familyMedicalHistory: string;
   identificationNumber: string;
@@ -35,5 +40,8 @@ export type RegistrationData = {
   identificationDocument: string;
   treatmentConsent: boolean;
   disclosureConsent: boolean;
-  privacyConsent: boolean;
+  privacyPolicy: boolean;
+  idDocType: string;
+  idNumber: string;
+  idDoc?: Buffer;
 }

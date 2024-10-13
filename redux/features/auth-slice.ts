@@ -1,7 +1,6 @@
-import { signinApi, signupAPI } from '@/lib/actions/user.actions';
-import { CreateUserInput, LoginInput, LoginResponse, SignupResponse } from '@/types/entities';
+import { registerPatientApi, signinApi, signupAPI } from '@/lib/actions/user.actions';
+import { CreateUserInput, LoginInput, PatientRequestType, SignupResponse } from '@/types/entities';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { signIn } from 'next-auth/react';
 
 interface AuthState {
   user: SignupResponse | null;
@@ -38,8 +37,21 @@ export const signin = createAsyncThunk('auth/signin',
       return response;
     }
     catch (error: any) {
-      console.log(error)
-      const message = error || 'Internal server error';
+      const message = error.message || 'Internal Server Error';
+      return thunkApi.rejectWithValue(message);
+    }
+  }
+)
+
+export const registerPatient = createAsyncThunk('auth/register',
+  async (patientData: PatientRequestType, thunkApi) => {
+    try {
+      const response: any = await registerPatientApi(patientData);
+      return response.data.message;
+    }
+    catch (error: any) {
+      console.log(error.response.data.error)
+      const message = error.response.data.error || 'Internal Server Error';
       return thunkApi.rejectWithValue(message);
     }
   }
@@ -89,6 +101,21 @@ export const authSlice = createSlice({
       state.isSuccess = false;
       state.message = action.payload as string;
       state.user = null;
+    })
+    .addCase(registerPatient.pending, (state) => {
+      state.isLoading = true;
+    })
+    .addCase(registerPatient.fulfilled, (state, action: PayloadAction<any>) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccess = true;
+      state.message = action.payload as string;
+    })
+    .addCase(registerPatient.rejected, (state, action: PayloadAction<any>) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.payload as string;
     })
   }
 })

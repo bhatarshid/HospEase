@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { signup } from "./post";
+import { registerPatient, signup } from "./post";
 import { getAllUsers, getUserFromPhoneNumberOrID } from "./get";
 
 export async function POST (request: NextRequest) {
@@ -9,6 +9,8 @@ export async function POST (request: NextRequest) {
   switch (action) {
     case 'signup':
       return signup(request);
+    case 'register':
+      return registerPatient(request);
     default:
       return NextResponse.json({ message: 'Route not found' }, { status: 404 });
   }

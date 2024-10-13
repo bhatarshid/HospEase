@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SignupResponse, UserDataType } from "@/types/entities";
-import { createUser, getUser } from "@/services/user-service";
+import { createUser, registerPatientService } from "@/services/user-service";
 import AppError, { handleErrorNextResponse } from "@/lib/App-Error";
-import { signupRequest } from "@/lib/validations/user.schema";
-import { signIn } from "next-auth/react";
+import { registerPatientRequest, signupRequest } from "@/lib/validations/user.schema";
+import { SignupResponse } from "@/types/entities";
 
 // signup user
 export async function signup(request: NextRequest) {
@@ -24,6 +23,28 @@ export async function signup(request: NextRequest) {
     }, { status: 201 });
   }
   catch (error) {
+    return handleErrorNextResponse(error);
+  }
+}
+
+export async function registerPatient (request: NextRequest) {
+  try {
+    const body = await request.json();
+    registerPatientRequest.parse(body);
+
+    const userId: string | null = JSON.parse(request.headers.get('user_id')!);
+    console.log({userId})
+    if(userId === null) {
+      throw new AppError("You are not authenticated", 403);
+    }
+    const response: string = await registerPatientService(userId, body);
+
+    return NextResponse.json({
+      message: response
+    }, { status: 201 });
+  }
+  catch (error) {
+    console.log(error)
     return handleErrorNextResponse(error);
   }
 }

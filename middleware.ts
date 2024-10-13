@@ -5,7 +5,7 @@ import { AuthToken } from './app/api/auth/[...nextauth]/route';
 
 const PUBLIC_PATHS = ['/auth', '/about', '/contact', '/departments', '/services'];
 const PROTECTED_API_ROUTES = [
-  { path: '/api/user', action: ['']}
+  { path: '/api/user', action: ['register']}
 ];
 
 export async function middleware(request: NextRequest) {
@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
     if(isApiRoute) {
       // Add user id to the request headers
       const requestHeaders = new Headers(request.headers);
-      requestHeaders.set('x-user-id', JSON.stringify(token.id));
+      requestHeaders.set('user_id', JSON.stringify(token.id));
 
       // Allow the request to proceed with the added user id
       return NextResponse.next({

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserDataType } from "@/types/entities";
+import { UserDataType } from "@/redux/entities";
 import { fetchAllUsers, getUser } from "@/services/user-service";
 import { handleErrorNextResponse } from "@/lib/App-Error";
 

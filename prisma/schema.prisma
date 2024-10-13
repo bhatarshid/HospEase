@@ -33,9 +33,11 @@ model Patient {
   currentMedications     String?
   familyMedicalHistory   String?
   pastMedicalHistory     String?
+  insuranceProvider      String?
+  insurancePolicyNumber  String?
   idDocType              String
   idNumber               String
-  idDoc                  Bytes
+  idDoc                  Bytes?
   treatmentConsent       Boolean
   disclosureConsent      Boolean
   privacyPolicy          Boolean
@@ -46,6 +48,8 @@ model Patient {
   appointments           Appointment[]
   feedbacks              Feedback[]
   medicalHistory         MedicalHistory?
+  doctor                 Doctor?          @relation(fields: [primaryPhysician], references: [id])
+  primaryPhysician       String?
 }
 
 model Doctor {
@@ -61,6 +65,7 @@ model Doctor {
   updatedAt      DateTime        @updatedAt
   appointments   Appointment[]
   serviceDoctors ServiceDoctor[]
+  Patient        Patient[]
 }
 
 model Appointment {

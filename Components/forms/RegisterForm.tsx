@@ -5,30 +5,39 @@ import { useForm } from "react-hook-form";
 import CustomFormField, { FormFieldType } from "../CustomFormField";
 import "react-phone-number-input/style.css";
 import SubmitButton from "../SubmitButton";
-import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { FileUploader } from "../FileUploader";
 import { SelectItem } from "../ui/select";
 import { Label } from "@/components/ui/label";
-import { RegistrationData } from "@/types/entities";
+import { useEffect } from "react";
+import { useRouter } from 'next/navigation';
+import { useSelector, useDispatch } from 'react-redux'
+import { toast } from "react-toastify";
+import { registerPatient, reset } from "@/redux/features/auth-slice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { PatientRequestType } from "@/types/entities";
 
 const SignupForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth)
+
   const IdentificationTypes = ["Aadhar", "Election Id", "Licence"]
   const Doctors = ["Peter", "John", "Rashid"]
   const form = useForm({
     defaultValues: {
-      email: '',
-      birthDate: '',
+      emailId: '',
+      dateOfBirth: '',
       gender: '',
       address: '',
       occupation: '',
       emergencyContactName: '',
       emergencyContactNumber: '',
-      primaryPhysician: '',
+      primaryPhysician: null,
       insuranceProvider: '',
       insurancePolicyNumber: '',
-      currentMedication: '',
+      currentMedications: '',
+      pastMedicalHistory: '',
       allergies: '',
       familyMedicalHistory: '',
       identificationNumber: '',
@@ -36,15 +45,27 @@ const SignupForm = () => {
       identificationDocument: '',
       treatmentConsent: false,
       disclosureConsent: false,
-      privacyConsent: false
+      privacyPolicy: false,
+      idDocType: '',
+      idNumber: '',
+      idDoc: undefined
     },
   });
 
-  const onSubmit = (data: RegistrationData) => {
-    // handle form submission
-    console.log("onSubmit")
-    setIsLoading(true)
-    setIsLoading(false)
+  useEffect(() => {
+    if (isError) {
+      toast.error(message)
+    }
+
+    if (isSuccess) {
+      toast.success(message)
+    }
+
+    dispatch(reset());
+  }, [isError, isSuccess, message, router, dispatch])
+
+  const onSubmit = (data: PatientRequestType) => {
+    dispatch(registerPatient(data));
   }
 
   return (
@@ -68,7 +89,7 @@ const SignupForm = () => {
           <CustomFormField
             fieldType={FormFieldType.INPUT}
             control={form.control}
-            name="email"
+            name="emailId"
             label="Email"
             placeholder="johndoe@gmail.com"
             iconSrc="/assets/icons/email.svg"
@@ -88,7 +109,7 @@ const SignupForm = () => {
           <CustomFormField 
             fieldType={FormFieldType.DATE_PICKER}
             control={form.control}
-            name="birthDate"
+            name="dateOfBirth"
             label="Date of Birth"
             placeholder="Select a date"
           />
@@ -101,7 +122,7 @@ const SignupForm = () => {
             renderSkeleton={(field) => (
               <FormControl>
                 <RadioGroup className="flex h-11 gap-6  xl:justify-between" onValueChange={field.onChange} defaultChecked={field.value}>
-                  {["Male", "Female"].map((option) => (
+                  {["male", "female"].map((option) => (
                     <div key={option} className="radio-group">
                       <RadioGroupItem value={option} id={option} />
                       <Label htmlFor={option} className="cursor-pointer">{option}</Label>
@@ -199,7 +220,7 @@ const SignupForm = () => {
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
             control={form.control}
-            name="currentMedication"
+            name="currentMedications"
             label="Current Medication"
             placeholder="Ibuprofen 200mg, Paracetomol 500mg"
           />
@@ -232,7 +253,7 @@ const SignupForm = () => {
           <CustomFormField 
             fieldType={FormFieldType.SELECT}
             control={form.control}
-            name="identificationType"
+            name="idDocType"
             label="Identificatin Type"
             placeholder="Select ID Type"
           >
@@ -247,14 +268,14 @@ const SignupForm = () => {
           <CustomFormField
             fieldType={FormFieldType.INPUT}
             control={form.control}
-            name="identificationNumber"
+            name="idNumber"
             label="Identification Number"
             placeholder="ex 1234567"
           />
           <CustomFormField
             fieldType={FormFieldType.SKELETON}
             control={form.control}
-            name="identificationDocument"
+            name="idDoc"
             label="Scanned copy of identification document"
             renderSkeleton={(field) => (
               <FormControl>
@@ -290,7 +311,7 @@ const SignupForm = () => {
         <CustomFormField 
           fieldType={FormFieldType.CHECKBOX}
           control={form.control}
-          name="privacyConsent"
+          name="privacyPolicy"
           label="I consent to privacy policy"
         />
         
