@@ -20,7 +20,7 @@ import { PatientRequestType } from "@/types/entities";
 const SignupForm = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth)
+  const {user, isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth)
 
   const IdentificationTypes = ["Aadhar", "Election Id", "Licence"]
   const Doctors = ["Peter", "John", "Rashid"]
@@ -77,13 +77,23 @@ const SignupForm = () => {
           </div>
         </section>
 
-        <CustomFormField
-          fieldType={FormFieldType.INPUT}
-          control={form.control}
-          name="firstName"
-          label="Please enter your first name"
-          placeholder="John"
-        />
+        <div className="flex flex-col gap-6 xl:flex-row ">
+          <CustomFormField
+            fieldType={FormFieldType.INPUT}
+            control={form.control}
+            name="firstName"
+            label="Please enter your first name"
+            placeholder={user?.firstName}
+          />
+
+          <CustomFormField
+            fieldType={FormFieldType.INPUT}
+            control={form.control}
+            name="lastName"
+            label="Please enter your last name"
+            placeholder={user?.lastName}
+          />
+        </div>
 
         <div className="flex flex-col gap-6 xl:flex-row ">
           <CustomFormField
@@ -101,7 +111,7 @@ const SignupForm = () => {
             control={form.control}
             name="phone"
             label="Phone number"
-            placeholder="(555) 123-4567"
+            placeholder={user?.phoneNumber}
           />
         </div>
 
