@@ -7,9 +7,10 @@ import "react-phone-number-input/style.css";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Label } from "@/Components/ui/label";
 import { FileUploader } from "../FileUploader";
 import { SelectItem } from "../ui/select";
+import { Label } from "@/components/ui/label";
+import { RegistrationData } from "@/types/entities";
 
 const SignupForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,11 +18,29 @@ const SignupForm = () => {
   const Doctors = ["Peter", "John", "Rashid"]
   const form = useForm({
     defaultValues: {
-      
+      email: '',
+      birthDate: '',
+      gender: '',
+      address: '',
+      occupation: '',
+      emergencyContactName: '',
+      emergencyContactNumber: '',
+      primaryPhysician: '',
+      insuranceProvider: '',
+      insurancePolicyNumber: '',
+      currentMedication: '',
+      allergies: '',
+      familyMedicalHistory: '',
+      identificationNumber: '',
+      identificationType: '',
+      identificationDocument: '',
+      treatmentConsent: false,
+      disclosureConsent: false,
+      privacyConsent: false
     },
   });
 
-  const onSubmit = () => {
+  const onSubmit = (data: RegistrationData) => {
     // handle form submission
     console.log("onSubmit")
     setIsLoading(true)
@@ -40,7 +59,7 @@ const SignupForm = () => {
         <CustomFormField
           fieldType={FormFieldType.INPUT}
           control={form.control}
-          name="firstNmae"
+          name="firstName"
           label="Please enter your first name"
           placeholder="John"
         />

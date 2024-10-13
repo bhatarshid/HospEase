@@ -1,4 +1,4 @@
-import { signInApi, signupAPI } from '@/lib/actions/user.actions';
+import { signinApi, signupAPI } from '@/lib/actions/user.actions';
 import { CreateUserInput, LoginInput, LoginResponse, SignupResponse } from '@/types/entities';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { signIn } from 'next-auth/react';
@@ -34,10 +34,12 @@ export const signup = createAsyncThunk('auth/signup',
 export const signin = createAsyncThunk('auth/signin', 
   async (credentials: LoginInput, thunkApi) => {
     try {
-      return await signInApi(credentials);
+      const response: any = await signinApi(credentials);
+      return response;
     }
     catch (error: any) {
-      const message = error.response.data.error || 'Internal server error';
+      console.log(error)
+      const message = error || 'Internal server error';
       return thunkApi.rejectWithValue(message);
     }
   }
@@ -79,7 +81,7 @@ export const authSlice = createSlice({
       state.isError = false;
       state.isSuccess = true;
       state.message = "Sign in successful."
-      state.user = action.payload;
+      state.user = (action.payload.data.user);
     })
     .addCase(signin.rejected, (state, action: PayloadAction<any>) => {
       state.isLoading = false;

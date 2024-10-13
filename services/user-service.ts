@@ -64,18 +64,9 @@ export async function createUser(data: CreateUserInput): Promise<SignupResponse>
   }
 }
 
-export async function loginUser(phoneNo: string, password: string) {
-  try {
-    console.log(phoneNo, password);
-  }
-  catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
-
 export async function getUser(id: string): Promise<UserDataType> {
   try {
+    console.log({id})
     const user = await prisma.user.findFirst({
       where: {
         OR: [
