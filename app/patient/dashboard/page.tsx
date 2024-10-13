@@ -1,12 +1,16 @@
-import DashboardNavbar from "@/Components/patient-dashboard/Navbar"
+'use client'
+
 import RightsideBar from "@/Components/patient-dashboard/RightsideBar"
 import { CalendarDays } from "lucide-react"
 import Services from "../services/page"
+import { useSelector } from 'react-redux';
+import { RootState } from "@/redux/store";
 
 const Dashboard = () => {
+  const {user} = useSelector((state: RootState) => state.auth);
+
   return (
     <div className="bg-backgroundColor">
-      <DashboardNavbar />
       <main className="flex h-screen max-h-screen mt-16">
         <div className="remove-scrollbar max-h-full w-[80%]"> 
           <section className=" mt-5 flex flex-col sm:flex-row-reverse justify-between px-10">
@@ -15,8 +19,8 @@ const Dashboard = () => {
               <p className="text-dark2 text-xs sm:text-sm md:text-base text-[16px]">{new Date().toDateString()}</p>
             </div>
             <div>
-              <h1 className="font-semibold text-dark1 text-2xl">Welcome, John!</h1>
-              <p className="text-dark3 text-sm md:text-base lg:text-[16px]">Hello there! Welcome to out application. How can we assist you today?</p>
+              <h1 className="font-semibold text-dark1 text-2xl">Welcome, {user?.firstName}!</h1>
+              <p className="text-dark3 text-sm md:text-base lg:text-[16px]">Hello there! Welcome to our application. How can we assist you today?</p>
             </div>
           </section>
           <Services />

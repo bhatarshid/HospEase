@@ -3,6 +3,11 @@ import prisma from "@/lib/db";
 import NextAuth from "next-auth"
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
+import { JWT } from 'next-auth/jwt';
+
+export interface AuthToken extends JWT {
+  id: string;
+}
 
 const handler = NextAuth({
   providers: [
@@ -54,7 +59,7 @@ const handler = NextAuth({
   callbacks: {
     jwt: async ({ user, token }) => {
       if (user) {
-          token.id = user.id;
+          (token as AuthToken).id = user.id;
       }
       return token;
     },

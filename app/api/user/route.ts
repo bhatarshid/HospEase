@@ -1,40 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SignupResponse, UserDataType } from "@/types/entities";
-import { createUser, fetchAllUsers } from "@/services/user-service";
-import { handleErrorNextResponse } from "@/lib/App-Error";
-import { signupRequest } from "@/lib/validations/user.schema";
+import { registerPatient, signup } from "./post";
+import { getAllUsers, getUserFromPhoneNumberOrID } from "./get";
 
-// get all users
-export async function GET() {
-  try {
-    const users: UserDataType[] = await fetchAllUsers();
+export async function POST (request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const action = searchParams.get('action');
 
-    return NextResponse.json({ users }, { status: 200 });
-  }
-  catch (error) {
-    return handleErrorNextResponse(error);
+  switch (action) {
+    case 'signup':
+      return signup(request);
+    case 'register':
+      return registerPatient(request);
+    default:
+      return NextResponse.json({ message: 'Route not found' }, { status: 404 });
   }
 }
 
-// signup user
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    signupRequest.parse(body);
+export async function GET (request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const action = searchParams.get('action');
 
-    const user: SignupResponse = await createUser({
-      firstName: body.firstName,
-      lastName: body.lastName,
-      phoneNumber: body.phoneNumber,
-      password: body.password,
-    });
-
-    return NextResponse.json({ 
-      message: 'User signed up successfully',
-      data: user
-    }, { status: 201 });
-  }
-  catch (error) {
-    return handleErrorNextResponse(error);
+  switch (action) {
+    case 'all':
+      return getAllUsers();
+    case 'single':
+      return getUserFromPhoneNumberOrID(request);
+    default:
+      return NextResponse.json({ message: 'Route not found' }, { status: 404 });
   }
 }
