@@ -3,7 +3,7 @@ import Link from "next/link"
 
 const Services = () => {
   return (
-    <section className="mt-5 px-10">
+    <section className="">
       <h1 className="font-semibold text-dark1 text-[20px]">Services</h1>
       <div className="flex flex-row py-1 gap-6 flex-wrap overflow-visible">
         <Link href="#">

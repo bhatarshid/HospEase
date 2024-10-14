@@ -20,8 +20,8 @@ const RightsideBar = () => {
   ]
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full md:w-[20%] flex-col h-screen pt-[58px] bg-background hidden lg:flex">
-      <Card className="flex-grow overflow-hidden">
+    <div className="fixed inset-y-0 right-0 w-[20%] flex-col h-screen pt-[58px] bg-background hidden lg:flex">
+      <Card className="flex-grow overflow-hidden mb-0">
         <CardContent className="flex flex-col h-full p-2">
           <h2 className="text-xl font-medium mb-4">Upcoming Schedule</h2>
           <ScrollArea className="flex-grow h-[60%]">
@@ -49,9 +49,9 @@ const RightsideBar = () => {
           </ScrollArea>
         </CardContent>
       </Card>
-      <Card className="mt-4 h-[40%]">
+      <Card className="h-[45%] mt-1">
         <h2 className="text-xl font-medium mb-3 xl:mb-4 px-2">Calendar</h2>
-        <CardContent className="h-full px-2 overflow-y-scroll remove-scrollbar">
+        <CardContent className="h-[80%] px-2 overflow-y-scroll remove-scrollbar">
           <Calendar 
             value={new Date()}
             className="text-[10px] xl:text-[15px] rounded-xl"
