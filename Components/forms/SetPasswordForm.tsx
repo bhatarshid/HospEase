@@ -20,7 +20,6 @@ const SetPasswordForm = () => {
 
   const onSubmit = () => {
     // handle form submission
-    console.log("onSubmit")
     setIsLoading(true)
   }
 

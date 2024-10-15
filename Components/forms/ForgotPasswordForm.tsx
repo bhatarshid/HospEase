@@ -20,7 +20,6 @@ const ForgotPasswordForm = () => {
 
   const onSubmit = () => {
     // handle form submission
-    console.log("onSubmit")
     setIsLoading(true)
     router.push('/auth/forgot-password/?isotp=true')
     setIsLoading(false)

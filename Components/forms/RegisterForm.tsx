@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from "react-toastify";
 import { registerPatient, reset } from "@/redux/features/auth-slice";
+import { fetchDoctors, reset as doctorReset } from "@/redux/features/doctor-slice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { PatientRequestType } from "@/types/entities";
 
@@ -21,9 +22,10 @@ const SignupForm = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const {user, isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth)
+  const { doctors: Doctors, isError: doctorError } = useSelector((state: RootState) => state.doctor);
 
-  const IdentificationTypes = ["Aadhar", "Election Id", "Licence"]
-  const Doctors = ["Peter", "John", "Rashid"]
+  const IdentificationTypes = ["Aadhar", "Election Id", "Licence"];
+
   const form = useForm({
     defaultValues: {
       emailId: '',
@@ -53,6 +55,11 @@ const SignupForm = () => {
   });
 
   useEffect(() => {
+    if (doctorError) {
+      toast.error("Failed to fetch doctors. Please refresh page");
+      dispatch(doctorReset());
+    }
+
     if (isError) {
       toast.error(message)
     }
@@ -62,7 +69,11 @@ const SignupForm = () => {
     }
 
     dispatch(reset());
-  }, [isError, isSuccess, message, router, dispatch])
+  }, [isError, doctorError, isSuccess, message, router, dispatch])
+
+  useEffect(() => {
+    dispatch(fetchDoctors());
+  }, [dispatch]);
 
   const onSubmit = (data: PatientRequestType) => {
     dispatch(registerPatient(data));
@@ -194,11 +205,12 @@ const SignupForm = () => {
             label="Primary care physician"
             placeholder="Select a physician"
           >
-            {Doctors.map((doctor) => (
-              <SelectItem key={doctor} value={doctor}>
-                <p>{doctor}</p>
+            {Doctors && Doctors.map((doctor) => (
+              <SelectItem key={doctor.id} value={doctor.id}>
+                <p>{`${doctor.firstName} ${doctor.lastName}`}</p>
               </SelectItem>
             ))}
+
           </CustomFormField>
         </div>
 

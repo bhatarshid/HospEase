@@ -1,6 +1,7 @@
 import { registerPatientApi, signinApi, signupAPI } from '@/lib/actions/user.actions';
 import { CreateUserInput, LoginInput, PatientRequestType, SignupResponse } from '@/types/entities';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { signOut } from 'next-auth/react';
 
 interface AuthState {
   user: SignupResponse | null;
@@ -50,8 +51,20 @@ export const registerPatient = createAsyncThunk('auth/register',
       return response.data.message;
     }
     catch (error: any) {
-      console.log(error.response.data.error)
       const message = error.response.data.error || 'Internal Server Error';
+      return thunkApi.rejectWithValue(message);
+    }
+  }
+)
+
+export const signout = createAsyncThunk('auth/signout', 
+  async (_,thunkApi) => {
+    try {
+      await signOut()
+      return 'Signout Successfull';
+    }
+    catch (error: any) {
+      const message: string = 'Logout failed'
       return thunkApi.rejectWithValue(message);
     }
   }
@@ -112,6 +125,22 @@ export const authSlice = createSlice({
       state.message = action.payload as string;
     })
     .addCase(registerPatient.rejected, (state, action: PayloadAction<any>) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.payload as string;
+    })
+    .addCase(signout.pending, (state) => {
+      state.isLoading = true;
+    })
+    .addCase(signout.fulfilled, (state, action: PayloadAction<any>) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccess = true;
+      state.message = action.payload as string;
+      state.user = null;
+    })
+    .addCase(signout.rejected, (state, action: PayloadAction<any>) => {
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;

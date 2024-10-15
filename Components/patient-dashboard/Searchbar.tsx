@@ -16,7 +16,6 @@ const Searchbar = () => {
 
   const onSubmit = () => {
     // handle form submission
-    console.log("onSubmit")
   }
   return (      
     <Form {...form}>

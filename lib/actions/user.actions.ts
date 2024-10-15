@@ -2,7 +2,6 @@
 import { CreateUserInput, LoginInput, LoginResponse, PatientRequestType, SignupResponse } from '@/types/entities';
 import axios from 'axios';
 import { signIn } from 'next-auth/react';
-import AppError from '../App-Error';
 
 const USER_API = '/api/user';
 

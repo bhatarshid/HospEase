@@ -1,5 +1,3 @@
-import { Patient } from "@prisma/client"
-
 export type UserData = {
   id: string
   firstName: string

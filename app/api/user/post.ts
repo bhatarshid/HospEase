@@ -33,7 +33,7 @@ export async function registerPatient (request: NextRequest) {
     registerPatientRequest.parse(body);
 
     const userId: string | null = JSON.parse(request.headers.get('user_id')!);
-    console.log({userId})
+
     if(userId === null) {
       throw new AppError("You are not authenticated", 403);
     }
@@ -44,7 +44,6 @@ export async function registerPatient (request: NextRequest) {
     }, { status: 201 });
   }
   catch (error) {
-    console.log(error)
     return handleErrorNextResponse(error);
   }
 }

@@ -103,7 +103,7 @@ export async function registerPatientService(userId: string, data: PatientReques
       where : { id: userId },
       select: { id: true }
     });
-    console.log(user)
+
     if (!user) {
       throw new AppError('User not found', 404);
     }

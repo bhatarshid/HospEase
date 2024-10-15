@@ -2,29 +2,34 @@
 
 import Image from "next/image"
 import { Button } from "./ui/button"
-import { useState } from "react";
-import { signOut } from "next-auth/react";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { reset, signout } from "@/redux/features/auth-slice";
 
 
 const LogoutButton = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message)
+    }
+
+    if (isSuccess) {
+      toast.success(message)
+      router.push('/auth/signin')
+    }
+
+    dispatch(reset());
+  }, [ isError, isSuccess, message, router, dispatch]);
 
   const handleLogout = async () => {
-    try {
-      setIsLoading(true);
-      
-      await signOut({ 
-        callbackUrl: '/auth/signin',
-        redirect: true
-      });
-
-      toast.success('Logout successful');
-    } catch (error) {
-      toast.error('Logout Failed');
-    } finally {
-      setIsLoading(false);
-    }
+    dispatch(signout());
   }
   return (
     <div>
