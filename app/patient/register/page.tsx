@@ -1,7 +1,14 @@
+'use client'
 import RegisterForm from "@/Components/forms/RegisterForm"
+import PatientProfile from "@/Components/patient-dashboard/Profile"
+import { RootState } from "@/redux/store";
 import Image from "next/image"
+import { useSelector } from "react-redux";
+
 
 const Register = () => {
+  const { user, isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth);
+
   return (
     <div className="flex h-screen max-h-screen">
       <section className="remove-scrollbar container">
@@ -12,7 +19,9 @@ const Register = () => {
           </section>
           <hr className="my-6"/>
 
-          <RegisterForm />
+          {user && <PatientProfile />}
+          {!user && <RegisterForm />}
+
 
           <p className="copyright py-12 font-thin text-sm">© 2024 CarePluse</p>
         </div>
