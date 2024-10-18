@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { registerPatient, signup } from "./post";
+import { updateProfile } from "./put";
 import { getAllUsers, getUserFromPhoneNumberOrID } from "./get";
 
 export async function POST (request: NextRequest) {
@@ -25,6 +26,19 @@ export async function GET (request: NextRequest) {
       return getAllUsers();
     case 'single':
       return getUserFromPhoneNumberOrID(request);
+    default:
+      return NextResponse.json({ message: 'Route not found' }, { status: 404 });
+  }
+}
+
+export async function PUT (request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const action = searchParams.get('action');
+
+  switch (action) {
+    case 'update': {
+      return updateProfile(request);
+    }
     default:
       return NextResponse.json({ message: 'Route not found' }, { status: 404 });
   }

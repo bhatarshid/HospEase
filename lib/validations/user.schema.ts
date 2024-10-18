@@ -35,3 +35,25 @@ export const registerPatientRequest = z.object({
   insurancePolicyNumber: z.string().optional(), // Optional for insurance policy number, depending on the system requirements
   insuranceProvider: z.string().optional(),
 })
+
+export const profileUpdateSchema = z.object({
+  firstName: z.string().min(3, "First name is required").optional(),
+  lastName: z.string().min(3, "Last name is required").optional(),
+  emailId: z.string().email().optional(),
+  dateOfBirth: z.coerce.date().optional(),
+  address: z.string().optional(),
+  occupation: z.string().optional(),
+  gender: z.enum(['male', 'female']).optional(), 
+  emergencyContactName: z.string().optional(),
+  emergencyContactNumber: phoneSchema.optional(), // Basic phone number validation
+  allergies: z.string().optional(),
+  currentMedications: z.string().optional(),
+  familyMedicalHistory: z.string().optional(),
+  pastMedicalHistory: z.string().optional(),
+  primaryPhysician: z.string().uuid().nullable().or(z.literal('')).optional(),
+  idDocType: z.enum(["Aadhar", "Election Id", "Licence"]).optional(), // Adjust based on your allowed types
+  idNumber: z.string().optional(),
+  idDoc: z.instanceof(Buffer).optional(), // For Bytes type
+  insurancePolicyNumber: z.string().optional(), // Optional for insurance policy number, depending on the system requirements
+  insuranceProvider: z.string().optional(),
+})

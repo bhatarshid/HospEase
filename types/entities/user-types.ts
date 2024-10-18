@@ -1,3 +1,6 @@
+import { profileUpdateSchema } from "@/lib/validations/user.schema"
+import { z } from "zod"
+
 export type UserData = {
   id: string
   firstName: string
@@ -43,3 +46,5 @@ export type PatientRequestType = {
   idNumber: string;
   idDoc?: Buffer;
 }
+
+export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>;
