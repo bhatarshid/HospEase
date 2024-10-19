@@ -17,6 +17,7 @@ model User {
   refreshToken   String?
   createdAt      DateTime
   updatedAt      DateTime @updatedAt
+  isRegistered   Boolean  @default(false)
   patient        Patient?
 }
 

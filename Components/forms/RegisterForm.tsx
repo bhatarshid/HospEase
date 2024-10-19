@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from "react-toastify";
-import { registerPatient, reset } from "@/redux/features/auth-slice";
+import { registerPatient, reset } from "@/redux/features/profile-slice";
 import { fetchDoctors, reset as doctorReset } from "@/redux/features/doctor-slice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { PatientRequestType } from "@/types/entities";

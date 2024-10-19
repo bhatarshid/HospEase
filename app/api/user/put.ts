@@ -21,6 +21,7 @@ export async function updateProfile (request: NextRequest) {
     }, { status: 200 });
   }
   catch (error) {
+    console.log(error)
     return handleErrorNextResponse(error);
   }
 }

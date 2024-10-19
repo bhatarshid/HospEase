@@ -1,6 +1,6 @@
 import AppError from "@/lib/App-Error";
 import prisma from "@/lib/db";
-import { CreateUserInput, PatientRequestType, ProfileUpdateInput, SignupResponse, UserDataType } from "@/types/entities";
+import { CreateUserInput, PatientRequestType, ProfileType, ProfileUpdateInput, SignupResponse, UserDataType } from "@/types/entities";
 import { Patient } from "@prisma/client";
 import bcrypt from 'bcrypt';
 
@@ -15,7 +15,8 @@ export async function fetchAllUsers(): Promise<UserDataType[]> {
         profilePicture: true,
         refreshToken: true,
         createdAt: true,
-        updatedAt: true
+        updatedAt: true,
+        isRegistered: true
       }
     });
 
@@ -55,6 +56,7 @@ export async function createUser(data: CreateUserInput): Promise<SignupResponse>
         lastName: true,
         createdAt: true,
         updatedAt: true,
+        isRegistered: true,
       }
     });
 
@@ -82,7 +84,8 @@ export async function getUser(id: string): Promise<UserDataType> {
         createdAt: true,
         profilePicture: true,
         updatedAt: true,
-        patient: true
+        patient: true,
+        isRegistered: true
       }
     });
 
@@ -206,6 +209,64 @@ export const updateProfileService = async (userId: string, data: ProfileUpdateIn
     return 'Profile data updated successfully';
   }
   catch (error) { 
+    throw error;
+  }
+}
+
+export const getMeService = async (userId: string): Promise<ProfileType> => {
+  try {
+    const profile: ProfileType | null = await prisma.user.findUnique({
+      where: {
+        id: userId
+      },
+      select: {
+        id: true,
+        phoneNumber: true,
+        firstName: true,
+        lastName: true,
+        profilePicture: true,
+        isRegistered: true,
+        patient: {
+          select: {
+            id: true,
+            emailId: true,
+            dateOfBirth: true,
+            gender: true,
+            address: true,
+            occupation: true,
+            emergencyContactName: true,
+            emergencyContactNumber: true,
+            doctor: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+            insuranceProvider: true,
+            insurancePolicyNumber: true,
+            allergies: true,
+            currentMedications: true,
+            familyMedicalHistory: true,
+            pastMedicalHistory: true,
+            idDocType: true,
+            idNumber: true,
+          }
+        }
+      }
+    });
+    
+    if (!profile) {
+      throw new AppError('You need to signup first', 404);
+    }
+
+    if (!profile.patient) {
+      throw new AppError('User is not registered', 404);
+    }
+
+    return profile
+  }
+  catch (error) {
     throw error;
   }
 }

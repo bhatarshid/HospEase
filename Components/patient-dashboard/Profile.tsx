@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/Components/ui/button"
@@ -12,74 +12,88 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
 import { SelectItem } from "../ui/select"
 import SubmitButton from "../SubmitButton"
 import { toast } from "react-toastify";
-
-type PatientData = {
-  firstName: string
-  lastName: string
-  email: string
-  phoneNumber: string
-  dateOfBirth: string
-  gender: string
-  address: string
-  occupation: string
-  emergencyContactName: string
-  emergencyPhoneNumber: string
-  primaryPhysician: string
-  insuranceProvider: string
-  insurancePolicyNumber: string
-  allergies: string
-  currentMedications: string
-  familyMedicalHistory: string
-  pastMedicalHistory: string
-  identificationType: string
-  identificationNumber: string
-}
+import { AppDispatch, RootState } from "@/redux/store";
+import { ProfileUpdateInput } from "@/types/entities"
+import { useDispatch, useSelector } from "react-redux"
+import { fetchDoctors, reset as doctorReset } from "@/redux/features/doctor-slice"
+import { getMyDetails, updateProfile, reset } from "@/redux/features/profile-slice"
 
 export default function PatientProfile() {
-  const [editingField, setEditingField] = useState<keyof PatientData | null>(null)
+  const [editingField, setEditingField] = useState<keyof ProfileUpdateInput | null>(null);
+  const [formInitialized, setFormInitialized] = useState(false);
 
-  const Doctors = [{ id: '123', firstName: 'John', lastName: 'doe'},
-    { id: '456', firstName: 'Daniel', lastName: 'bait'}
-  ]
+  const dispatch = useDispatch<AppDispatch>();
+
+  const {profile, isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.profile);
+  const { doctors: Doctors, isError: doctorError } = useSelector((state: RootState) => state.doctor);
 
   const Gender = ["male", "female"];
   const IdentificationTypes = ["Aadhar", "Election Id", "Licence"]; 
 
-  const form = useForm<PatientData>({
-    defaultValues: {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john@example.com",
-      phoneNumber: "+1 234 567 8900",
-      dateOfBirth: "1990-01-01",
-      gender: "Male",
-      address: "123 Street, City, State, ZIP",
-      occupation: "Software Engineer",
-      emergencyContactName: "Jane Doe",
-      emergencyPhoneNumber: "+1 234 567 8901",
-      primaryPhysician: "Dr. Smith",
-      insuranceProvider: "HealthCare Insurance",
-      insurancePolicyNumber: "ABC123456789",
-      allergies: "Peanuts, Penicillin",
-      currentMedications: "Aspirin 81mg",
-      familyMedicalHistory: "Diabetes, Heart Disease",
-      pastMedicalHistory: "Appendectomy (2010)",
-      identificationType: "Driver's License",
-      identificationNumber: "DL1234567"
+  const form = useForm<ProfileUpdateInput>();
+
+  // Initialize form when profile data is available
+  useEffect(() => {
+    if (profile && !formInitialized) {
+      form.reset({
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        emailId: profile.patient?.emailId,
+        dateOfBirth: profile.patient?.dateOfBirth,
+        gender: profile.patient?.gender as "male" | "female" | undefined,
+        address: profile.patient?.address,
+        occupation: profile.patient?.occupation,
+        emergencyContactName: profile.patient?.emergencyContactName,
+        emergencyContactNumber: profile.patient?.emergencyContactNumber,
+        primaryPhysician: `${profile.patient?.doctor?.firstName ?? ""} ${profile.patient?.doctor?.lastName ?? ""}`.trim(),
+        primaryPhysicianId: profile.patient?.doctor?.id ?? "",
+        insuranceProvider: profile.patient?.insuranceProvider ?? "",
+        insurancePolicyNumber: profile.patient?.insurancePolicyNumber ?? "",
+        allergies: profile.patient?.allergies,
+        currentMedications: profile.patient?.currentMedications ?? "",
+        familyMedicalHistory: profile.patient?.familyMedicalHistory ?? "",
+        pastMedicalHistory: profile.patient?.pastMedicalHistory ?? "",
+        idDocType: profile.patient?.idDocType as "Aadhar" | "Election Id" | "Licence" | undefined,
+        idNumber: profile.patient?.idNumber ?? ""
+      });
+      setFormInitialized(true);
     }
-  })
+  }, [profile, form, formInitialized]);
+
+  useEffect(() => {
+    if (doctorError) {
+      toast.error("Failed to fetch doctors. Please refresh page");
+      dispatch(doctorReset());
+    }
+
+    if (isError) {
+      toast.error(message)
+    }
+
+    if (isSuccess) {
+      toast.success(message)
+    }
+
+    dispatch(reset());
+  }, [isError, doctorError, isSuccess, message, dispatch])
+
+  useEffect(() => {
+    dispatch(fetchDoctors());
+    dispatch(getMyDetails());
+  }, [dispatch]);
 
   const { control, handleSubmit, watch } = form
 
-  const onSave = (data: PatientData) => {
+  const onSave = (data: ProfileUpdateInput) => {
     setEditingField(null)
+    dispatch(updateProfile(data));
   }
 
-  const handleEdit = (field: keyof PatientData) => {
+  const handleEdit = (field: keyof ProfileUpdateInput) => {
     setEditingField(field)
   }
 
-  const handleCancel = (field: keyof PatientData) => {
+  const handleCancel = (field: keyof ProfileUpdateInput) => {
     if (form.formState.defaultValues) {
       form.setValue(field, form.formState.defaultValues[field] as string);
     }
@@ -96,7 +110,7 @@ export default function PatientProfile() {
     toast.success("All changes have been discarded.")
   }
 
-  const renderField = (label: string, field: keyof PatientData, type: FormFieldType) => {
+  const renderField = (label: string, field: keyof ProfileUpdateInput, type: FormFieldType) => {
     const value = watch(field)
 
     const renderEditMode = () => {
@@ -120,7 +134,7 @@ export default function PatientProfile() {
                 ))}
               </CustomFormField>
             )
-          } else if (field === "identificationType") {
+          } else if (field === "idDocType") {
             fieldContent = (
               <CustomFormField
                 fieldType={FormFieldType.SELECT}
@@ -190,7 +204,9 @@ export default function PatientProfile() {
     const renderViewMode = () => (
       <>
         <Label className="shad-input-label">{label}</Label>
-        <p className="mt-1 bg-[#e5e3e3] p-2 border rounded-[6px] font-normal">{value}</p>
+        <p className="mt-1 bg-[#e5e3e3] p-2 border rounded-[6px] font-normal">
+          {typeof value === 'string' ? value : value?.toLocaleString()}
+        </p>
         <Button
           variant="ghost"
           size="icon"
@@ -219,8 +235,7 @@ export default function PatientProfile() {
           <CardContent className="grid gap-4 sm:grid-cols-2">
             {renderField("First Name", "firstName", FormFieldType.INPUT)}
             {renderField("Last Name", "lastName", FormFieldType.INPUT)}
-            {renderField("Email", "email", FormFieldType.INPUT)}
-            {renderField("Phone Number", "phoneNumber", FormFieldType.PHONE_INPUT)}
+            {renderField("Email", "emailId", FormFieldType.INPUT)}
             {renderField("Date of Birth", "dateOfBirth", FormFieldType.DATE_PICKER)}
             {renderField("Gender", "gender", FormFieldType.SKELETON)}
             {renderField("Address", "address", FormFieldType.INPUT)}
@@ -234,7 +249,7 @@ export default function PatientProfile() {
           </CardHeader>
           <CardContent className="grid gap-4 sm:grid-cols-2">
             {renderField("Emergency Contact Name", "emergencyContactName", FormFieldType.INPUT)}
-            {renderField("Emergency Phone Number", "emergencyPhoneNumber", FormFieldType.PHONE_INPUT)}
+            {renderField("Emergency Phone Number", "emergencyContactNumber", FormFieldType.PHONE_INPUT)}
           </CardContent>
         </Card>
 
@@ -258,15 +273,15 @@ export default function PatientProfile() {
             <CardTitle>Identification and Verification</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4 sm:grid-cols-2">
-            {renderField("Identification Type", "identificationType", FormFieldType.SELECT)}
-            {renderField("Identification Number", "identificationNumber", FormFieldType.INPUT)}
+            {renderField("Identification Type", "idDocType", FormFieldType.SELECT)}
+            {renderField("Identification Number", "idNumber", FormFieldType.INPUT)}
           </CardContent>
         </Card>
         <div className="flex justify-end space-x-4 mt-6">
           <Button type="button" variant="outline" className="border rounded-[6px] border-dark2 w-" onClick={handleFormReset}>
             Cancel
           </Button>
-          <SubmitButton className="shad-primary-btn" isLoading={false}>Save Changes</SubmitButton>
+          <SubmitButton className="shad-primary-btn" isLoading={isLoading}>Save Changes</SubmitButton>
 
         </div>
       </form>
