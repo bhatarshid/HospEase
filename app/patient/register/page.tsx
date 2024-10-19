@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 
 
 const Register = () => {
-  const { user, isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
 
   return (
     <div className="flex h-screen max-h-screen">
