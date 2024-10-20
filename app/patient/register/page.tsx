@@ -7,23 +7,26 @@ import { useSelector } from "react-redux";
 
 
 const Register = () => {
-  const { user, isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
 
   return (
     <div className="flex h-screen max-h-screen">
       <section className="remove-scrollbar container">
         <div className="sub-container max-w-full flex-1 flex-col py-10">
           <section className="text-dark1">
-            <h1 className="text-[28px] text-start">Welcome 👋</h1>
-            <p className="text-[14px] text-dark2 font-thin text-start">Let us know more about yourself</p>
+            {user?.isRegistered === false ? (
+              <>
+                <h1 className="text-[28px] text-start">Welcome 👋</h1>
+                <p className="text-[14px] text-dark2 font-thin text-start">Let us know more about yourself</p>
+              </>
+            ) : (
+              <h1 className="text-[28px] text-start">Profile</h1>
+            )}
           </section>
           <hr className="my-6"/>
 
-          {user && <PatientProfile />}
-          {!user && <RegisterForm />}
-
-
-          <p className="copyright py-12 font-thin text-sm">© 2024 CarePluse</p>
+          {user?.isRegistered && <PatientProfile />}
+          {!user?.isRegistered && <RegisterForm />}
         </div>
       </section>
       <Image 

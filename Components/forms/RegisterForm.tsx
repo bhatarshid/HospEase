@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from "react-toastify";
-import { registerPatient, reset } from "@/redux/features/auth-slice";
+import { registerPatient, reset } from "@/redux/features/profile-slice";
 import { fetchDoctors, reset as doctorReset } from "@/redux/features/doctor-slice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { PatientRequestType } from "@/types/entities";
@@ -81,7 +81,7 @@ const SignupForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="text-gray-800 space-y-5">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="text-gray-800 space-y-5 p-4">
         <section className="space-y-6">
           <div className="mb-9 space-y-1">
             <h2 className="sub-header">Personal Information</h2>

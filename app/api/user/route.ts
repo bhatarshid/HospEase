@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { registerPatient, signup } from "./post";
 import { updateProfile } from "./put";
-import { getAllUsers, getUserFromPhoneNumberOrID } from "./get";
+import { getAllUsers, getMe, getUserFromPhoneNumberOrID } from "./get";
 
 export async function POST (request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -26,6 +26,8 @@ export async function GET (request: NextRequest) {
       return getAllUsers();
     case 'single':
       return getUserFromPhoneNumberOrID(request);
+    case 'me':
+      return getMe(request);
     default:
       return NextResponse.json({ message: 'Route not found' }, { status: 404 });
   }

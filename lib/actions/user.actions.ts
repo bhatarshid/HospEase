@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CreateUserInput, LoginInput, LoginResponse, PatientRequestType, SignupResponse } from '@/types/entities';
+import { CreateUserInput, LoginInput, LoginResponse, PatientRequestType, ProfileType, ProfileUpdateInput, SignupResponse } from '@/types/entities';
 import axios from 'axios';
 import { signIn } from 'next-auth/react';
 
@@ -43,6 +43,27 @@ export const registerPatientApi = async (registerPatientData: PatientRequestType
     return response;
   }
   catch (error: any) {
+    throw error;
+  }
+}
+
+export const updateProfileApi = async (data: ProfileUpdateInput): Promise<string> => {
+  try {
+    const response: string = await axios.put(`${USER_API}?action=update`, data);
+    return response;
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+export const getMyDetailsApi = async (): Promise<ProfileType> => {
+  try {
+    const response: ProfileType = await axios.get(`${USER_API}?action=me`);
+    return response;
+  }
+  catch (error) {
+    console.log(error);
     throw error;
   }
 }
