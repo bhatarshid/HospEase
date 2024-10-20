@@ -1,91 +1,87 @@
-import Image from "next/image"
-import Link from "next/link"
+import React from 'react';
+import { Calendar, Clock, DollarSign, User, Building2, Stethoscope } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 
-const Services = () => {
+const ServiceCard = ({ service = {} }: any) => {
+  const {
+    service_name = 'Service Name',
+    description = 'Service description',
+    picture = ''
+  } = service;
+
   return (
-    <section className="">
-      <h1 className="font-semibold text-dark1 text-[20px]">Services</h1>
-      <div className="flex flex-row py-1 gap-6 flex-wrap overflow-visible">
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/stethoscope.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">GP</h2>
-          </div>
-        </Link>
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/heart.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">Cardiologist</h2>
-          </div>
-        </Link>
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/heart.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">Oncologist</h2>
-          </div>
-        </Link>
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/heart.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">Dentist</h2>
-          </div>
-        </Link>
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/heart.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">Neurologist</h2>
-          </div>
-        </Link>
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/heart.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">Psychiatrists</h2>
-          </div>
-        </Link>
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/heart.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">ENT</h2>
-          </div>
-        </Link>
-      </div>
-    </section>
-  )
-}
+    <Card className="w-64 flex-shrink-0 transition-all hover:shadow-lg">
+      <CardHeader className="relative pb-0">
+        <img
+          src={picture || "/api/placeholder/400/200"}
+          alt={service_name}
+          className="h-48 w-full rounded-t-lg object-cover"
+        />
+        <div className="absolute bottom-2 left-4 right-4 bg-black/60 p-2 rounded-[6px]">
+          <CardTitle className="text-lg font-semibold text-white">
+            {service_name}
+          </CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent className="pt-4 space-y-4">
+        <p className="text-sm text-gray-600 line-clamp-2">
+          {description}
+        </p>
 
-export default Services
+        <button className="w-full bg-primary text-white py-2 rounded-[6px] hover:bg-blue-700 transition-colors">
+          View Service
+        </button>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Container for multiple service cards in a single row
+export const ServiceGrid = () => {
+  const services = [
+    {
+      service_name: "General Consultation",
+      description: "Comprehensive medical consultation with experienced healthcare professional",
+      picture: "",
+    },
+    {
+      service_name: "Pediatric Consultation",
+      description: "Specialized consultation for children and infants with our pediatric experts.",
+      picture: ""
+    },
+    {
+      service_name: "Dental Check-up",
+      description: "Routine dental examination to ensure optimal oral health.",
+      picture: "",
+    },
+    {
+      service_name: "Cardiology",
+      description: "Heart health check-ups and consultations with our cardiologists.",
+      picture: ""
+    }
+  ];
+
+  if (!services || services.length === 0) {
+    return (
+      <div className="p-6 text-center text-gray-500">
+        <p>No services available at the moment.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className='shadow-sm shadow-dark3 p-3'>
+      <div className='pb-2'>
+        <h2 className="text-2xl font-semibold">Our Services</h2>
+        <p className="text-sm text-dark3">
+          We offer a wide range of services to help you stay healthy and well-rounded.
+        </p>
+      </div>
+      <div className="flex space-x-4 remove-scrollbar overflow-x-hidden">
+        {services.map((service, index) => (
+          <ServiceCard key={index} service={service} />
+        ))}
+      </div>
+    </div>
+  );
+};
