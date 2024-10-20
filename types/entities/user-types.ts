@@ -49,7 +49,7 @@ export type PatientRequestType = {
   idDoc?: Buffer;
 }
 
-export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema> & { primaryPhysicianId: string };
+export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema> & { primaryPhysicianName: string };
 
 export type ProfileType = {
     id: string;

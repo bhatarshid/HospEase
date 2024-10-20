@@ -21,6 +21,7 @@ import { getMyDetails, updateProfile, reset } from "@/redux/features/profile-sli
 export default function PatientProfile() {
   const [editingField, setEditingField] = useState<keyof ProfileUpdateInput | null>(null);
   const [formInitialized, setFormInitialized] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -45,8 +46,8 @@ export default function PatientProfile() {
         occupation: profile.patient?.occupation,
         emergencyContactName: profile.patient?.emergencyContactName,
         emergencyContactNumber: profile.patient?.emergencyContactNumber,
-        primaryPhysician: `${profile.patient?.doctor?.firstName ?? ""} ${profile.patient?.doctor?.lastName ?? ""}`.trim(),
-        primaryPhysicianId: profile.patient?.doctor?.id ?? "",
+        primaryPhysicianName: `${profile.patient?.doctor?.firstName ?? ""} ${profile.patient?.doctor?.lastName ?? ""}`,
+        primaryPhysician: profile.patient?.doctor?.id ?? "",
         insuranceProvider: profile.patient?.insuranceProvider ?? "",
         insurancePolicyNumber: profile.patient?.insurancePolicyNumber ?? "",
         allergies: profile.patient?.allergies,
@@ -68,25 +69,35 @@ export default function PatientProfile() {
 
     if (isError) {
       toast.error(message)
+      dispatch(reset());
     }
 
     if (isSuccess) {
       toast.success(message)
+      dispatch(reset());
     }
 
-    dispatch(reset());
   }, [isError, doctorError, isSuccess, message, dispatch])
 
   useEffect(() => {
-    dispatch(fetchDoctors());
-    dispatch(getMyDetails());
+    const fetchInitialData = async () => {
+      setIsInitialLoading(true);
+      await Promise.all([
+        dispatch(fetchDoctors()),
+        dispatch(getMyDetails())
+      ]);
+      setIsInitialLoading(false);
+    };
+
+    fetchInitialData();
   }, [dispatch]);
 
   const { control, handleSubmit, watch } = form
 
-  const onSave = (data: ProfileUpdateInput) => {
+  const onSave = async (data: ProfileUpdateInput) => {
     setEditingField(null)
-    dispatch(updateProfile(data));
+    await dispatch(updateProfile(data));
+    dispatch(getMyDetails());
   }
 
   const handleEdit = (field: keyof ProfileUpdateInput) => {
@@ -205,7 +216,10 @@ export default function PatientProfile() {
       <>
         <Label className="shad-input-label">{label}</Label>
         <p className="mt-1 bg-[#e5e3e3] p-2 border rounded-[6px] font-normal">
-          {typeof value === 'string' ? value : value?.toLocaleString()}
+          {field === "primaryPhysician" 
+            ? (Doctors?.find(d => d.id === form.getValues("primaryPhysician"))?.firstName + " " + 
+               Doctors?.find(d => d.id === form.getValues("primaryPhysician"))?.lastName) || "Not selected"
+            : (typeof value === 'string' ? value : value?.toLocaleString())}
         </p>
         <Button
           variant="ghost"

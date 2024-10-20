@@ -194,6 +194,7 @@ export const updateProfileService = async (userId: string, data: ProfileUpdateIn
       idDoc: data.idDoc ?? undefined,
       insuranceProvider: data.insuranceProvider ?? undefined,
       insurancePolicyNumber: data.insurancePolicyNumber ?? undefined,
+      primaryPhysician: data.primaryPhysician?? undefined
     }
 
     await prisma.user.update({
