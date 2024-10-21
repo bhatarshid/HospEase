@@ -2,7 +2,7 @@
 
 import RightsideBar from "@/Components/patient-dashboard/RightsideBar"
 import { CalendarDays } from "lucide-react"
-import { ServiceGrid } from "../services/page"
+import { ServiceGrid } from "@/Components/ServiceGrid";
 import { useSelector } from 'react-redux';
 import { RootState } from "@/redux/store";
 
@@ -22,7 +22,7 @@ const Dashboard = () => {
             <p className="text-dark3 text-sm md:text-base lg:text-[16px]">Hello there! Welcome to our application. How can we assist you today?</p>
           </div>
         </section>
-        <ServiceGrid />
+        <ServiceGrid service='dashboard'/>
       </div>
       <RightsideBar />
     </div>

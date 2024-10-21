@@ -9,7 +9,7 @@ const Navbar = () => {
   const [signupIsLoading, setSignupIsLoading] = useState(false);
 
   return (
-    <div className="flex flex-row justify-between items-center mx-10 mt-3 h-8 p-5">
+    <div className="flex flex-row bg-backgroundColor justify-between items-center h-8 p-8">
       <div className="w-[10%] flex justify-start items-center">
       <Image 
         src="/assets/icons/logo-full.svg"
