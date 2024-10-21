@@ -1,91 +1,11 @@
-import Image from "next/image"
-import Link from "next/link"
+import { ServiceGrid } from "@/Components/ServiceGrid"
 
-const Services = () => {
+const Service = () => {
   return (
-    <section className="">
-      <h1 className="font-semibold text-dark1 text-[20px]">Services</h1>
-      <div className="flex flex-row py-1 gap-6 flex-wrap overflow-visible">
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/stethoscope.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">GP</h2>
-          </div>
-        </Link>
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/heart.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">Cardiologist</h2>
-          </div>
-        </Link>
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/heart.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">Oncologist</h2>
-          </div>
-        </Link>
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/heart.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">Dentist</h2>
-          </div>
-        </Link>
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/heart.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">Neurologist</h2>
-          </div>
-        </Link>
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/heart.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">Psychiatrists</h2>
-          </div>
-        </Link>
-        <Link href="#">
-          <div className="bg-white w-[110px] h-[120px] flex flex-col justify-center items-center space-y-2 rounded-[6px] shadow-md">
-            <Image 
-              src="/assets/images/heart.png"
-              height={60}
-              width={60}
-              alt="Stethoscope"
-            />
-            <h2 className="text-[16px] text-dark2 px-2">ENT</h2>
-          </div>
-        </Link>
-      </div>
-    </section>
+    <div className="max-h-full w-full">
+      <ServiceGrid service='services' />
+    </div>
   )
 }
 
-export default Services
+export default Service

@@ -2,7 +2,7 @@
 
 import RightsideBar from "@/Components/patient-dashboard/RightsideBar"
 import { CalendarDays } from "lucide-react"
-import Services from "../services/page"
+import { ServiceGrid } from "@/Components/ServiceGrid";
 import { useSelector } from 'react-redux';
 import { RootState } from "@/redux/store";
 
@@ -10,8 +10,8 @@ const Dashboard = () => {
   const {user} = useSelector((state: RootState) => state.auth);
 
   return (
-    <div className="flex h-screen max-h-screen">
-      <div className="remove-scrollbar max-h-full w-full lg:w-[80%] space-y-10 p-7"> 
+    <div className="flex h-screen">
+      <div className="remove-scrollbar max-h-full w-full lg:w-[80%] space-y-10 p-7 pr-0"> 
         <section className="flex flex-col sm:flex-row-reverse justify-between">
           <div className="flex flex-row items-center justify-center bg-white w-46 h-1/2 px-2 py-1 rounded-[8px] space-x-2 my-auto ml-4 mb-5 md:mb-0">
             <CalendarDays color="blue" size={24} className="" />
@@ -22,7 +22,7 @@ const Dashboard = () => {
             <p className="text-dark3 text-sm md:text-base lg:text-[16px]">Hello there! Welcome to our application. How can we assist you today?</p>
           </div>
         </section>
-        <Services />
+        <ServiceGrid service='dashboard'/>
       </div>
       <RightsideBar />
     </div>
