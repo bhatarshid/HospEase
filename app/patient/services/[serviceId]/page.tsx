@@ -5,11 +5,7 @@ const ServiceDetailsPage = () => {
     service_name: "Radiology",
     description: "Offers comprehensive imaging services including X-rays, MRI, and CT scans. Our department is equipped with state-of-the-art imaging technology and experienced specialists.",
     features: [
-      "Advanced MRI Technology",
-      "3D CT Scanning",
-      "Digital X-Ray Imaging",
-      "Nuclear Medicine",
-      "Ultrasound Services"
+      "Advanced MRI Technology", "3D CT Scanning", "Digital X-Ray Imaging", "Nuclear Medicine", "Ultrasound Services"
     ],
     doctors: [
       {
