@@ -2,7 +2,7 @@
 
 import RightsideBar from "@/Components/patient-dashboard/RightsideBar"
 import { CalendarDays } from "lucide-react"
-import { ServiceGrid } from "@/Components/ServiceGrid";
+import { ServiceGrid } from "@/Components/patient-dashboard/ServiceGrid";
 import { useSelector } from 'react-redux';
 import { RootState } from "@/redux/store";
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllServices } from "./get";
+import { getAllServices, getServiceDetails } from "./get";
 
 export async function GET (request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -8,6 +8,8 @@ export async function GET (request: NextRequest) {
   switch (action) {
     case 'all':
       return getAllServices();
+    case 'view':
+      return getServiceDetails(request);
     default:
       return NextResponse.json({ message: 'Route not found' }, { status: 404 });
   }

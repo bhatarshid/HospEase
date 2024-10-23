@@ -6,9 +6,13 @@ import { AppDispatch, RootState } from '@/redux/store';
 import { toast } from 'react-toastify';
 import { fetchServices, reset } from '@/redux/features/service-slice';
 import Link from 'next/link';
+import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation';
 
 const ServiceCard = ({ service = {} }: any) => {
-  const { serviceName, description, picture } = service;
+  const router = useRouter()
+
+  const { id, serviceName, description, picture } = service;
 
   const getImageSrc = () => {
     if (!picture) {
@@ -22,6 +26,10 @@ const ServiceCard = ({ service = {} }: any) => {
     
     return '/placeholder/400/320';
   };
+
+  const viewService = () => {
+    router.push(`/patient/services/${id}`);
+  }
 
   return (
     <Card className="w-72 md:w-80 lg:w-96 flex-shrink-0 transition-all hover:shadow-lg rounded-[6px]">
@@ -42,9 +50,9 @@ const ServiceCard = ({ service = {} }: any) => {
           {description}
         </p>
 
-        <button className="w-full bg-primary text-white py-2 rounded-[6px] hover:bg-blue-700 transition-colors">
+        <Button onClick={viewService} className="w-full bg-primary text-white py-2 rounded-[6px] hover:bg-blue-700 transition-colors">
           View Service
-        </button>
+        </Button>
       </CardContent>
     </Card>
   );
@@ -79,12 +87,12 @@ export const ServiceGrid = ({ service }: any) => {
       </div>
       {service === 'dashboard' ? 
         (<div className="flex space-x-4 remove-scrollbar overflow-x-hidden">
-          {services?.map((service, index) => (
+          {services?.map((service: any, index: any) => (
             <ServiceCard key={index} service={service} />
           ))}
         </div>) : (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6'>
-            {services?.map((service, index) => (
+            {services?.map((service: any, index: any) => (
               <ServiceCard key={index} service={service} />
             ))}
           </div>

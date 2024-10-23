@@ -62,6 +62,7 @@ model Doctor {
   picture        Bytes?
   specialization String
   department     String // make enum for this
+  experience     String
   createdAt      DateTime
   updatedAt      DateTime        @updatedAt
   appointments   Appointment[]
@@ -87,6 +88,7 @@ model Service {
   serviceName      String
   description      String
   picture          Bytes?
+  features         String[]
   createdAt        DateTime
   updatedAt        DateTime         @updatedAt
   feedback         Feedback[]
@@ -109,6 +111,7 @@ model Feedback {
 model ServiceDoctor {
   id        String   @id @default(uuid())
   cost      Int
+  slots     String[]
   createdAt DateTime
   updatedAt DateTime @updatedAt
   doctor    Doctor   @relation(fields: [doctorId], references: [id])
