@@ -6,7 +6,8 @@ import { AuthToken } from './app/api/auth/[...nextauth]/route';
 const PUBLIC_PATHS = ['/auth', '/about', '/contact', '/departments', '/services'];
 const PROTECTED_API_ROUTES = [
   { path: '/api/user', action: ['register', 'update', 'me'] },
-  { path: '/api/doctor', action: ['all', 'single'] }
+  { path: '/api/doctor', action: ['all', 'single'] },
+  { path: '/api/service', action: ['view'] }
 ];
 
 export async function middleware(request: NextRequest) {

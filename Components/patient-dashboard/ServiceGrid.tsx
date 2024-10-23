@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from '@/redux/store';
 import { toast } from 'react-toastify';
 import { fetchServices, reset } from '@/redux/features/service-slice';
 import Link from 'next/link';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 
 const ServiceCard = ({ service = {} }: any) => {
@@ -87,12 +87,12 @@ export const ServiceGrid = ({ service }: any) => {
       </div>
       {service === 'dashboard' ? 
         (<div className="flex space-x-4 remove-scrollbar overflow-x-hidden">
-          {services?.map((service, index) => (
+          {services?.map((service: any, index: any) => (
             <ServiceCard key={index} service={service} />
           ))}
         </div>) : (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6'>
-            {services?.map((service, index) => (
+            {services?.map((service: any, index: any) => (
               <ServiceCard key={index} service={service} />
             ))}
           </div>

@@ -1,4 +1,4 @@
-import { ServiceGrid } from "@/Components/ServiceGrid"
+import { ServiceGrid } from "@/Components/patient-dashboard/ServiceGrid"
 
 const Service = () => {
   return (

@@ -38,8 +38,7 @@ export const fetchServiceDetails = async (id: string): Promise<SingleServiceType
                 picture: true,
                 specialization: true,
                 department: true,
-                experience: true,
-
+                experience: true
               }
             }
           }
