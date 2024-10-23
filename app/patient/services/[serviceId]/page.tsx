@@ -2,7 +2,7 @@
 
 import { fetchServiceDetails, reset } from '@/redux/features/service-slice'
 import { AppDispatch, RootState } from '@/redux/store'
-import { Calendar, Clock, Medal, Phone, MapPin, DollarSign, Star } from 'lucide-react'
+import { Calendar, Clock, Medal, Phone, DollarSign, Star } from 'lucide-react'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
@@ -28,7 +28,6 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
   }, [isError, dispatch, serviceId])
 
   const getImageSrc = (picture: any) => {
-    console.log(picture)
     if (!picture) {
       return '/placeholder';
     }
@@ -51,7 +50,7 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
       <div className="relative bg-primary text-white">
         <div className="absolute inset-0 opacity-30">
           <img 
-            src="/radiology.jpg" 
+            src={getImageSrc(service?.picture)} 
             alt="Radiology Department"
             className="w-full h-full object-cover"
           />
@@ -64,29 +63,30 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
 
       {/* Features Grid */}
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          <div className="relative rounded-2xl overflow-hidden shadow-lg">
-            <img 
-              src="/mri.jpg" 
-              alt="Modern MRI Machine"
-              className="w-full h-64 object-cover"
-            />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
-              <h3 className="text-white text-xl font-semibold">State-of-the-art Equipment</h3>
+        <div className="mb-12">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl shadow-lg p-8">
+            <h3 className="text-2xl font-semibold mb-6 text-indigo-800">Key Features</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {service?.features?.map((feature: string, index: number) => (
+                <div key={index} className="flex items-start space-x-3 bg-white p-4 rounded-lg shadow transition-all duration-300 hover:shadow-md hover:scale-105">
+                  <div className="flex-shrink-0">
+                    <div className="h-8 w-8 bg-indigo-500 rounded-full flex items-center justify-center">
+                      <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 font-medium">{feature}</p>
+                </div>
+              )) || (
+                <div className="col-span-2 text-center text-gray-500">
+                  <p>Loading features...</p>
+                </div>
+              )}
             </div>
           </div>
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h3 className="text-xl font-semibold mb-4">Features</h3>
-            <ul className="grid grid-cols-1 gap-3">
-              {service?.features?.map((feature: string, index: number) => (
-                <li key={index} className="flex items-center text-gray-700">
-                  <div className="h-2 w-2 bg-blue-500 rounded-full mr-3"></div>
-                  {feature}
-                </li>
-              )) || <li>Loading features...</li>}
-            </ul>
-          </div>
         </div>
+
 
         {/* Doctors Section */}
         <h2 className="text-2xl font-semibold text-gray-900 mb-8">Our Specialists</h2>
