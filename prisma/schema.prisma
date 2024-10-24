@@ -111,7 +111,7 @@ model Feedback {
 model ServiceDoctor {
   id        String   @id @default(uuid())
   cost      Int
-  slots     String[]
+  slots     DateTime[] @default(["2023-10-10T10:00:00Z"])
   createdAt DateTime
   updatedAt DateTime @updatedAt
   doctor    Doctor   @relation(fields: [doctorId], references: [id])

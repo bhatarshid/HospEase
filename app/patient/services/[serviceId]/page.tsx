@@ -2,8 +2,8 @@
 
 import { fetchServiceDetails, reset } from '@/redux/features/service-slice'
 import { AppDispatch, RootState } from '@/redux/store'
-import { Calendar, Clock, Medal, Phone, DollarSign, Star } from 'lucide-react'
-import { useEffect } from 'react'
+import { Calendar, Clock, Medal, Phone, DollarSign, Star, ChevronsDown, ChevronsRight } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Skeleton } from "@/Components/ui/skeleton"
@@ -17,6 +17,52 @@ interface SearchParamProps {
 export default function ServiceDetailsPage({ params: { serviceId } }: SearchParamProps) {
   const dispatch = useDispatch<AppDispatch>()
   const { service, isError, isLoading } = useSelector((state: RootState) => state.service)
+  const [expandedDoctor, setExpandedDoctor] = useState(null);
+  const [expandedDate, setExpandedDate] = useState(null);
+
+  // Function to format time in 12-hour format
+  const formatTimeSlot = (dateTimeStr: string) => {
+    const date = new Date(dateTimeStr);
+    const startTime = date.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit', 
+      hour12: true 
+    });
+    
+    // Calculate end time (30 minutes later)
+    const endDate = new Date(date.getTime() + 30 * 60000);
+    const endTime = endDate.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit', 
+      hour12: true 
+    });
+    
+    return `${startTime} - ${endTime}`;
+  };
+
+  // Format date for display
+  const formatDate = (dateTimeStr: string) => {
+    const date = new Date(dateTimeStr);
+    return date.toLocaleDateString('en-US', { 
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  // Group timeslots by date
+  const groupSlotsByDate = (slots: string[]) => {
+    const groups: Record<string, string[]> = {};
+    slots.forEach((slot: string) => {
+      const date = new Date(slot);
+      const dateStr = date.toISOString().split('T')[0];
+      if (!groups[dateStr]) {
+        groups[dateStr] = [];
+      }
+      groups[dateStr].push(slot);
+    });
+    return groups;
+  };
 
   useEffect(() => {
     if (isError) {
@@ -99,7 +145,7 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
                   <img 
                     src={getImageSrc(doctor.doctor.picture)}
                     alt={`Dr. ${doctor.doctor.firstname} ${doctor.doctor.lastname}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-64 object-fill"
                   />
                 </div>
 
@@ -135,19 +181,46 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
 
                 {/* Timeslots Section */}
                 <div className="lg:col-span-3 p-6 border-t lg:border-t-0 lg:border-l border-gray-200">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Available Times</h4>
-                  <div className="grid grid-cols-1 gap-3">
-                    {doctor?.slots?.map((slot: string, slotIndex: number) => (
-                      <button
-                        key={slotIndex}
-                        className="flex items-center justify-center px-4 py-2 border border-blue-200 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
-                      >
-                        <Calendar className="h-4 w-4 mr-2" />
-                        {slot}
-                      </button>
-                    )) || <p>No available times</p>}
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Available Dates</h4>
+                  <div className="space-y-2">
+                    {Object.entries(groupSlotsByDate(doctor.slots)).map(([dateStr, slots]: any[]) => (
+                      <div key={dateStr} className="border border-blue-200 rounded-lg overflow-hidden">
+                        <button
+                          className="w-full flex items-center justify-between p-3 bg-white hover:bg-blue-50 transition-colors"
+                          onClick={() => {
+                            setExpandedDoctor(doctor.id);
+                            setExpandedDate(expandedDate === dateStr ? null : dateStr);
+                          }}
+                        >
+                          <div className="flex items-center text-blue-600">
+                            <Calendar className="h-4 w-4 mr-2" />
+                            <span>{formatDate(dateStr)}</span>
+                          </div>
+                          <div className="h-4 w-4 text-blue-600">
+                            {expandedDate === dateStr && expandedDoctor === doctor.id ? (<ChevronsRight/>) : (<ChevronsDown/>)}
+                          </div>
+                        </button>
+                        
+                        {expandedDate === dateStr && expandedDoctor === doctor.id && (
+                          <div className=" border-t border-blue-200 bg-blue-50 p-2">
+                            <div className="grid grid-cols-1 gap-2">
+                              {slots.map((slot: string, index: string) => (
+                                <button
+                                  key={index}
+                                  className="flex items-center justify-center p-2 bg-white border border-blue-200 rounded-md text-blue-600 hover:bg-blue-100 transition-colors"
+                                >
+                                  <Clock className="h-4 w-4 mr-2" />
+                                  <span className="text-sm">{formatTimeSlot(slot)}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
+
 
                 {/* Action Section */}
                 <div className="lg:col-span-2 p-6 bg-gray-50 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-gray-200">
