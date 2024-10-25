@@ -17,7 +17,6 @@ export const fetchServicesAPI = async (): Promise<Service[]> => {
 export const fetchServiceDetailsAPI = async (serviceId: string): Promise<ServiceDetailsResponse> => {
   try {
     const response: ServiceDetailsResponse = await axios.get(`${SERVICE_API}?action=view&id=${serviceId}`);
-    console.log({response})
     return response;
   }
   catch (error: any) {

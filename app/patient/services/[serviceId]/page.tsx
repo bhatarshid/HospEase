@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'
 import { Skeleton } from "@/Components/ui/skeleton"
 import { Button } from '@/Components/ui/button'
 import { AppointmentModal } from '@/Components/AppointmentModal'
+import { formatDate, formatTimeSlot } from '@/lib/utils'
 
 interface SearchParamProps {
   params: {
@@ -24,40 +25,9 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
-  // Function to format time in 12-hour format
-  const formatTimeSlot = (dateTimeStr: string) => {
-    const date = new Date(dateTimeStr);
-    const startTime = date.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
-      minute: '2-digit', 
-      hour12: true 
-    });
-    
-    // Calculate end time (30 minutes later)
-    const endDate = new Date(date.getTime() + 30 * 60000);
-    const endTime = endDate.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
-      minute: '2-digit', 
-      hour12: true 
-    });
-    
-    return `${startTime} - ${endTime}`;
-  };
-
-  // Format date for display
-  const formatDate = (dateTimeStr: string) => {
-    const date = new Date(dateTimeStr);
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  const handleBookNow = (doctorData: any, cost: any, slots: any) => {
-    console.log({ doctorData, cost, slots })
+  const handleBookNow = (doctorData: any) => {
     setSelectedDoctor({
-      ...doctorData, cost, slots
+      ...doctorData
     });
     setIsBookingModalOpen(true);
   }
@@ -181,7 +151,7 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
                 <div className="lg:col-span-3 p-6 border-t lg:border-t-0 lg:border-l border-gray-200">
                   <h4 className="text-lg font-semibold text-gray-900 mb-4">Available Dates</h4>
                   <div className="space-y-2">
-                    {doctor.slots.map(([dateStr, slots]: any[]) => (
+                    {Object.keys(doctor.slots).map((dateStr: any) => (
                       <div key={dateStr} className="border border-blue-200 rounded-lg overflow-hidden">
                         <button
                           className="w-full flex items-center justify-between p-3 bg-white hover:bg-blue-50 transition-colors"
@@ -202,7 +172,7 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
                         {expandedDate === dateStr && expandedDoctor === doctor.id && (
                           <div className=" border-t border-blue-200 bg-blue-50 p-2">
                             <div className="grid grid-cols-1 gap-2">
-                              {slots.map((slot: string, index: string) => (
+                              {doctor.slots[`${dateStr}`].map((slot: string, index: string) => (
                                 <button
                                   key={index}
                                   className="flex items-center justify-center p-2 bg-white border border-blue-200 rounded-md text-blue-600 hover:bg-blue-100 transition-colors"
@@ -224,7 +194,7 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
                 <div className="lg:col-span-2 p-6 bg-gray-50 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-gray-200">
                   <Button 
                     className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors mb-3"
-                    onClick={() => handleBookNow(doctor, doctor.cost, doctor.slots)}  
+                    onClick={() => handleBookNow(doctor)}  
                   >
                     Book Now
                   </Button>
@@ -241,7 +211,7 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
       <AppointmentModal
         isOpen={isBookingModalOpen}
         onClose={() => setIsBookingModalOpen(false)}
-        doctorData={selectedDoctor}
+        doctorData={selectedDoctor!}
       />
     </div>
   )

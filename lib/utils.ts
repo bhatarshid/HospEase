@@ -25,3 +25,33 @@ export const groupSlotsByDate = (slots: Date[]) => {
   });
   return groups;
 };
+
+// Function to format time in 12-hour format
+export const formatTimeSlot = (dateTimeStr: string) => {
+  const date = new Date(dateTimeStr);
+  const startTime = date.toLocaleTimeString('en-US', { 
+    hour: 'numeric', 
+    minute: '2-digit', 
+    hour12: true 
+  });
+  
+  // Calculate end time (30 minutes later)
+  const endDate = new Date(date.getTime() + 30 * 60000);
+  const endTime = endDate.toLocaleTimeString('en-US', { 
+    hour: 'numeric', 
+    minute: '2-digit', 
+    hour12: true 
+  });
+  
+  return `${startTime} - ${endTime}`;
+};
+
+// Format date for display
+export const formatDate = (dateTimeStr: string) => {
+  const date = new Date(dateTimeStr);
+  return date.toLocaleDateString('en-US', { 
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric'
+  });
+};

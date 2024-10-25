@@ -19,6 +19,9 @@ import { Label } from "@/components/ui/label"
 import CustomFormField, { FormFieldType } from "./CustomFormField";
 import { Button } from "./ui/button";
 import SubmitButton from "./SubmitButton";
+import { useEffect, useState } from "react";
+import { formatDate, formatTimeSlot } from "@/lib/utils";
+import { ServiceDoctorDetails } from "@/types/entities/service-types";
 
 
 export const AppointmentModal = ({
@@ -28,18 +31,33 @@ export const AppointmentModal = ({
 }: {
   isOpen: boolean,
   onClose: () => void,
-  doctorData: {
-    firstName: string,
-    lastName: string,
-    cost: string
-  }  | null,
+  doctorData: ServiceDoctorDetails,
 }) => { 
-
+  const [availableDates, setAvailableDates] = useState<string[]>([]);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+  
   const form = useForm({
     defaultValues: {
-
+      selectedDate: '',
+      selectedTime: '',
+      reason: ''
     }
   })
+
+  useEffect(() => {
+    if(doctorData?.slots) {
+      const dates = Object.keys(doctorData.slots);
+      setAvailableDates(dates);
+    }
+  }, [doctorData])
+
+  const handleDateChange = (date: string) => {
+    form.setValue('selectedDate', date);
+    form.setValue('selectedTime', '');
+
+    const timeSlots = doctorData.slots[date];
+    setAvailableTimeSlots(timeSlots);
+  }
 
   const onSubmit = async (data: any) => {
     console.log(data)
@@ -70,13 +88,43 @@ export const AppointmentModal = ({
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="">
+              <div>
                 <Label className="shad-input-label">Date</Label>
-                <p>this is it</p>
+                <Select
+                  onValueChange={handleDateChange}
+                  value={form.watch('selectedDate')}
+                >
+                  <SelectTrigger className="w-full bg-[#ebe9e9] rounded-[6px]">
+                    <SelectValue placeholder="Select date" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    {availableDates.map((date) => (
+                      <SelectItem key={date} value={date}>
+                        {formatDate(date)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <div className="">
+              
+              <div>
                 <Label className="shad-input-label">Time</Label>
-                <p>this is it</p>
+                <Select
+                  onValueChange={(time) => form.setValue('selectedTime', time)}
+                  value={form.watch('selectedTime')}
+                  disabled={!form.watch('selectedDate')}
+                >
+                  <SelectTrigger className="w-full bg-[#ebe9e9] rounded-[6px]">
+                    <SelectValue placeholder="Select time" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    {availableTimeSlots.map((time, index) => (
+                      <SelectItem key={index} value={time}>
+                        {formatTimeSlot(time)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <CustomFormField
