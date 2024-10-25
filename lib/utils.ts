@@ -12,3 +12,16 @@ export const convertFileToUrl = (file: File) => URL.createObjectURL(file);
 
 // Password validation with specific requirements
 export const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+
+// Group timeslots by date
+export const groupSlotsByDate = (slots: Date[]) => {
+  const groups: Record<string, string[]> = {};
+  slots.forEach((slot: Date) => {
+    const dateStr = slot.toISOString().split('T')[0];
+    if (!groups[dateStr]) {
+      groups[dateStr] = [];
+    }
+    groups[dateStr].push(slot.toISOString());
+  });
+  return groups;
+};

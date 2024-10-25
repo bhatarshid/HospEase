@@ -1,11 +1,11 @@
 import { fetchServiceDetailsAPI, fetchServicesAPI } from "@/lib/actions/service.actions";
-import { SingleServiceType } from "@/types/entities/service-types";
+import { ServiceDetailsResponse } from "@/types/entities/service-types";
 import { Service } from "@prisma/client";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface ServiceState {
   services: Service[] | null;
-  service: SingleServiceType | null;
+  service: ServiceDetailsResponse | null;
   isError: boolean;
   isSuccess: boolean;
   isLoading: boolean;
@@ -86,7 +86,7 @@ export const serviceSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.message = '';
-        state.service = (action.payload.data.service as SingleServiceType);
+        state.service = (action.payload.data.service as ServiceDetailsResponse);
       })
      .addCase(fetchServiceDetails.rejected, (state, action) => {
         state.isLoading = false;

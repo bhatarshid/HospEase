@@ -1,7 +1,7 @@
 import AppError from "@/lib/App-Error";
 import prisma from "@/lib/db";
-import { SingleServiceType } from "@/types/entities/service-types";
-import { Service } from "@prisma/client";
+import { groupSlotsByDate } from "@/lib/utils";
+import { ServiceDetails, Service, ServiceDetailsResponse, ServiceDoctorDetails } from "@/types/entities/service-types";
 
 export const fetchAllServices = async (): Promise<Service[]> => {
   try {
@@ -13,34 +13,14 @@ export const fetchAllServices = async (): Promise<Service[]> => {
   }
 }
 
-export const fetchServiceDetails = async (id: string): Promise<SingleServiceType> => {
+export const fetchServiceDetails = async (id: string): Promise<ServiceDetailsResponse> => {
   try {
-    const service: SingleServiceType | null = await prisma.service.findUnique({
+    const service: ServiceDetails | null = await prisma.service.findUnique({
       where: { id },
-      select: {
-        id: true,
-        serviceName: true,
-        description: true,
-        features: true,
-        picture: true,
+      include: {
         serviceDoctors: {
-          select: {
-            id: true,
-            cost: true,
-            slots: true,
-            doctor: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                phoneNumber: true,
-                emailId: true,
-                picture: true,
-                specialization: true,
-                department: true,
-                experience: true
-              }
-            }
+          include: {
+            doctor: true
           }
         }
       }
@@ -50,7 +30,32 @@ export const fetchServiceDetails = async (id: string): Promise<SingleServiceType
       throw new AppError('Service not found', 404);
     }
 
-    return service;
+    const serviceDoctors: ServiceDoctorDetails[] = []
+    service.serviceDoctors.forEach((serviceDoctor) => {
+      serviceDoctors.push({
+        id: serviceDoctor.id,
+        cost: serviceDoctor.cost,
+        slots: groupSlotsByDate(serviceDoctor.slots),
+        doctorId: serviceDoctor.doctor.id,
+        firstName: serviceDoctor.doctor.firstName,
+        lastName: serviceDoctor.doctor.lastName,
+        phoneNumber: serviceDoctor.doctor.phoneNumber,
+        emailId: serviceDoctor.doctor.emailId,
+        doctorPicture: serviceDoctor.doctor.picture,
+        specialization: serviceDoctor.doctor.specialization,
+        department: serviceDoctor.doctor.department,
+        experience: serviceDoctor.doctor.experience
+      })
+    });
+
+    return {
+      id: service.id,
+      serviceName: service.serviceName,
+      description: service.description,
+      features: service.features,
+      picture: service.picture,
+      serviceDoctors
+    }
   }
   catch (error) {
     throw error;

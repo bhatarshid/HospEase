@@ -2,7 +2,7 @@ import AppError, { handleErrorNextResponse } from "@/lib/App-Error";
 import { fetchAllServices, fetchServiceDetails } from "@/services/services-service";
 import { NextRequest, NextResponse } from "next/server";
 import { Service } from "@prisma/client";
-import { SingleServiceType } from "@/types/entities/service-types";
+import { ServiceDetails, ServiceDetailsResponse } from "@/types/entities/service-types";
 
 export async function getAllServices() {
   try {
@@ -24,7 +24,7 @@ export async function getServiceDetails(request: NextRequest) {
       throw new AppError('Provide Id of service', 400);
     }
 
-    const service: SingleServiceType = await fetchServiceDetails(id);
+    const service: ServiceDetailsResponse = await fetchServiceDetails(id);
 
     return NextResponse.json({ service }, { status: 200 });
   }

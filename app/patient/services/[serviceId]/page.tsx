@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Skeleton } from "@/Components/ui/skeleton"
+import { Button } from '@/Components/ui/button'
+import { AppointmentModal } from '@/Components/AppointmentModal'
 
 interface SearchParamProps {
   params: {
@@ -19,6 +21,8 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
   const { service, isError, isLoading } = useSelector((state: RootState) => state.service)
   const [expandedDoctor, setExpandedDoctor] = useState(null);
   const [expandedDate, setExpandedDate] = useState(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
 
   // Function to format time in 12-hour format
   const formatTimeSlot = (dateTimeStr: string) => {
@@ -50,19 +54,13 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
     });
   };
 
-  // Group timeslots by date
-  const groupSlotsByDate = (slots: string[]) => {
-    const groups: Record<string, string[]> = {};
-    slots.forEach((slot: string) => {
-      const date = new Date(slot);
-      const dateStr = date.toISOString().split('T')[0];
-      if (!groups[dateStr]) {
-        groups[dateStr] = [];
-      }
-      groups[dateStr].push(slot);
+  const handleBookNow = (doctorData: any, cost: any, slots: any) => {
+    console.log({ doctorData, cost, slots })
+    setSelectedDoctor({
+      ...doctorData, cost, slots
     });
-    return groups;
-  };
+    setIsBookingModalOpen(true);
+  }
 
   useEffect(() => {
     if (isError) {
@@ -143,8 +141,8 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
                 {/* Doctor Image Column */}
                 <div className="lg:col-span-3 relative">
                   <img 
-                    src={getImageSrc(doctor.doctor.picture)}
-                    alt={`Dr. ${doctor.doctor.firstname} ${doctor.doctor.lastname}`}
+                    src={getImageSrc(doctor.doctorPicture)}
+                    alt={`Dr. ${doctor.firstName} ${doctor.lastName}`}
                     className="w-full h-64 object-fill"
                   />
                 </div>
@@ -152,7 +150,7 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
                 {/* Doctor Info Section */}
                 <div className="lg:col-span-4 p-6 bg-gray-50">
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Dr. {doctor.doctor.firstName} {doctor.doctor.lastName}
+                    Dr. {doctor.firstName} {doctor.lastName}
                   </h3>
                   <div className="flex items-center mb-4">
                     <Star className="h-4 w-4 text-yellow-400 fill-current" />
@@ -162,15 +160,15 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
                   <div className="space-y-3 text-gray-600">
                     <div className="flex items-center">
                       <Medal className="h-4 w-4 mr-2" />
-                      <span>{doctor.doctor.specialization}</span>
+                      <span>{doctor.specialization}</span>
                     </div>
                     <div className="flex items-center">
                       <Clock className="h-4 w-4 mr-2" />
-                      <span>{doctor.doctor.experience} experience</span>
+                      <span>{doctor.experience} experience</span>
                     </div>
                     <div className="flex items-center">
                       <Phone className="h-4 w-4 mr-2" />
-                      <span>{doctor.doctor.phoneNumber}</span>
+                      <span>{doctor.phoneNumber}</span>
                     </div>
                     <div className="flex items-center">
                       <DollarSign className="h-4 w-4 mr-2" />
@@ -183,7 +181,7 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
                 <div className="lg:col-span-3 p-6 border-t lg:border-t-0 lg:border-l border-gray-200">
                   <h4 className="text-lg font-semibold text-gray-900 mb-4">Available Dates</h4>
                   <div className="space-y-2">
-                    {Object.entries(groupSlotsByDate(doctor.slots)).map(([dateStr, slots]: any[]) => (
+                    {doctor.slots.map(([dateStr, slots]: any[]) => (
                       <div key={dateStr} className="border border-blue-200 rounded-lg overflow-hidden">
                         <button
                           className="w-full flex items-center justify-between p-3 bg-white hover:bg-blue-50 transition-colors"
@@ -224,9 +222,12 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
 
                 {/* Action Section */}
                 <div className="lg:col-span-2 p-6 bg-gray-50 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-gray-200">
-                  <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors mb-3">
+                  <Button 
+                    className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors mb-3"
+                    onClick={() => handleBookNow(doctor, doctor.cost, doctor.slots)}  
+                  >
                     Book Now
-                  </button>
+                  </Button>
                   <button className="w-full bg-white text-blue-600 py-3 px-4 rounded-lg border border-blue-200 hover:bg-blue-50 transition-colors">
                     View Profile
                   </button>
@@ -236,6 +237,12 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
           )) || <p>No doctors available</p>}
         </div>
       </div>
+       {/* Booking Modal */}
+      <AppointmentModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        doctorData={selectedDoctor}
+      />
     </div>
   )
 }
