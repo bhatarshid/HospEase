@@ -7,7 +7,7 @@ const PUBLIC_PATHS = ['/auth', '/about', '/contact', '/departments', '/services'
 const PROTECTED_API_ROUTES = [
   { path: '/api/user', action: ['register', 'update', 'me'] },
   { path: '/api/doctor', action: ['all', 'single'] },
-  { path: '/api/service', action: ['view'] }
+  { path: '/api/service', action: ['view', 'appointment'] }
 ];
 
 export async function middleware(request: NextRequest) {

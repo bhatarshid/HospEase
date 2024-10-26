@@ -65,22 +65,22 @@ model Doctor {
   experience     String
   createdAt      DateTime
   updatedAt      DateTime        @updatedAt
-  appointments   Appointment[]
   serviceDoctors ServiceDoctor[]
   Patient        Patient[]
 }
 
 model Appointment {
-  id              String   @id @default(uuid())
+  id              String        @id @default(uuid())
   appointmentDate DateTime
   reason          String
-  status          Boolean  @default(false)
+  status          Boolean       @default(false)
+  closed          Boolean       @default(false)
   createdAt       DateTime
-  updatedAt       DateTime @updatedAt
-  patient         Patient  @relation(fields: [patientId], references: [id])
+  updatedAt       DateTime      @updatedAt
+  patient         Patient       @relation(fields: [patientId], references: [id])
   patientId       String
-  doctor          Doctor   @relation(fields: [doctorId], references: [id])
-  doctorId        String
+  serviceDoctor   ServiceDoctor @relation(fields: [serviceDoctorId], references: [id])
+  serviceDoctorId String
 }
 
 model Service {
@@ -109,15 +109,16 @@ model Feedback {
 }
 
 model ServiceDoctor {
-  id        String   @id @default(uuid())
-  cost      Int
-  slots     DateTime[] @default(["2023-10-10T10:00:00Z"])
-  createdAt DateTime
-  updatedAt DateTime @updatedAt
-  doctor    Doctor   @relation(fields: [doctorId], references: [id])
-  doctorId  String
-  service   Service  @relation(fields: [serviceId], references: [id])
-  serviceId String
+  id          String        @id @default(uuid())
+  cost        Int
+  slots       DateTime[]
+  createdAt   DateTime
+  updatedAt   DateTime      @updatedAt
+  doctor      Doctor        @relation(fields: [doctorId], references: [id])
+  doctorId    String
+  service     Service       @relation(fields: [serviceId], references: [id])
+  serviceId   String
+  Appointment Appointment[]
 
   @@unique([doctorId, serviceId])
   @@index([doctorId, serviceId])

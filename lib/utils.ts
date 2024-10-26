@@ -35,16 +35,29 @@ export const formatTimeSlot = (dateTimeStr: string) => {
     hour12: true 
   });
   
-  // Calculate end time (30 minutes later)
+  // // Calculate end time (30 minutes later)
+  // const endDate = new Date(date.getTime() + 30 * 60000);
+  // const endTime = endDate.toLocaleTimeString('en-US', { 
+  //   hour: 'numeric', 
+  //   minute: '2-digit', 
+  //   hour12: true 
+  // });
+  
+  // return `${startTime} - ${endTime}`;
+  return startTime
+};
+
+export const formatEndTimeSlot = (startTime: string) => {
+  const date = new Date(startTime);
   const endDate = new Date(date.getTime() + 30 * 60000);
   const endTime = endDate.toLocaleTimeString('en-US', { 
     hour: 'numeric', 
     minute: '2-digit', 
     hour12: true 
   });
-  
-  return `${startTime} - ${endTime}`;
-};
+
+  return endTime
+}
 
 // Format date for display
 export const formatDate = (dateTimeStr: string) => {

@@ -35,3 +35,9 @@ export type ServiceDetailsResponse = {
   picture: Buffer | null;
   serviceDoctors: ServiceDoctorDetails[];
 }
+
+export type BookAppointment = {
+  serviceDoctorId: string;
+  appointmentDate: string;
+  reason: string;
+}

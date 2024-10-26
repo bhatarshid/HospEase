@@ -2,7 +2,7 @@ import AppError, { handleErrorNextResponse } from "@/lib/App-Error";
 import { fetchAllServices, fetchServiceDetails } from "@/services/services-service";
 import { NextRequest, NextResponse } from "next/server";
 import { Service } from "@prisma/client";
-import { ServiceDetails, ServiceDetailsResponse } from "@/types/entities/service-types";
+import { ServiceDetailsResponse } from "@/types/entities/service-types";
 
 export async function getAllServices() {
   try {

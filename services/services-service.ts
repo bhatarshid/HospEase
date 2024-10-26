@@ -1,7 +1,7 @@
 import AppError from "@/lib/App-Error";
 import prisma from "@/lib/db";
 import { groupSlotsByDate } from "@/lib/utils";
-import { ServiceDetails, Service, ServiceDetailsResponse, ServiceDoctorDetails } from "@/types/entities/service-types";
+import { ServiceDetails, Service, ServiceDetailsResponse, ServiceDoctorDetails, BookAppointment } from "@/types/entities/service-types";
 
 export const fetchAllServices = async (): Promise<Service[]> => {
   try {
@@ -56,6 +56,41 @@ export const fetchServiceDetails = async (id: string): Promise<ServiceDetailsRes
       picture: service.picture,
       serviceDoctors
     }
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+export const bookAppointmentService = async (userId: string, data: BookAppointment): Promise<string> => {
+  try {
+    const user: { id: string } | null = await prisma.user.findUnique({
+      where : { id: userId },
+      select: { id: true }
+    });
+    if (!user) {
+      throw new AppError('User not found', 404);
+    }
+
+    const patient: { id: string } | null = await prisma.patient.findUnique({
+      where: { userId: user.id },
+      select: { id: true }
+    });
+    if (!patient) {
+      throw new AppError('User is not registered as patient', 400);
+    }
+
+    await prisma.appointment.create({
+      data: {
+        patientId: patient.id,
+        serviceDoctorId: data.serviceDoctorId,
+        appointmentDate: data.appointmentDate,
+        reason: data.reason,
+        createdAt: new Date()
+      }
+    });
+
+    return 'Appointment Booked Successfully'
   }
   catch (error) {
     throw error;
