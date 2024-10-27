@@ -1,34 +1,43 @@
 import { Prisma } from "@prisma/client";
 
-export type SingleServiceType = Prisma.ServiceGetPayload<{
-  select: {
-    id: true,
-    serviceName: true,
-    description: true,
-    features: true,
-    picture: true,
+export type ServiceDetails = Prisma.ServiceGetPayload<{
+  include: {
     serviceDoctors: {
-      select: {
-        id: true,
-        cost: true,
-        slots: true,
-        doctor: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            phoneNumber: true,
-            emailId: true,
-            picture: true,
-            specialization: true,
-            department: true,
-            experience: true,
-            
-          }
-        }
+      include: {
+        doctor: true
       }
     }
   }
-}>;
+}>
 
+export type Service = Prisma.ServiceGetPayload<{}>
 
+export type ServiceDoctorDetails = {
+  id: string;
+  doctorId: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  emailId: string | null;
+  doctorPicture: Buffer | null;
+  specialization: string;
+  department: string;
+  experience: string;
+  cost: number;
+  slots: Record<string, string[]>;
+}
+
+export type ServiceDetailsResponse = {
+  id: string;
+  serviceName: string;
+  description: string;
+  features: string[];
+  picture: Buffer | null;
+  serviceDoctors: ServiceDoctorDetails[];
+}
+
+export type BookAppointment = {
+  serviceDoctorId: string;
+  appointmentDate: string;
+  reason: string;
+}
