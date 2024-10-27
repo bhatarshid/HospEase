@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllServices, getServiceDetails } from "./get";
+import { getAllServices, getServiceDetails, getAllAppointments } from "./get";
 import { bookAppointment } from "./post";
 
 export async function GET (request: NextRequest) {
@@ -11,6 +11,8 @@ export async function GET (request: NextRequest) {
       return getAllServices();
     case 'view':
       return getServiceDetails(request);
+    case 'appointment':
+      return getAllAppointments(request);
     default:
       return NextResponse.json({ message: 'Route not found' }, { status: 404 });
   }

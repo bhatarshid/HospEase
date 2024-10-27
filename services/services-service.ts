@@ -1,7 +1,7 @@
 import AppError from "@/lib/App-Error";
 import prisma from "@/lib/db";
 import { groupSlotsByDate } from "@/lib/utils";
-import { ServiceDetails, Service, ServiceDetailsResponse, ServiceDoctorDetails, BookAppointment } from "@/types/entities/service-types";
+import { ServiceDetails, Service, ServiceDetailsResponse, ServiceDoctorDetails, BookAppointment, AppointmentWithDetails, AppointmentDetails } from "@/types/entities/service-types";
 
 export const fetchAllServices = async (): Promise<Service[]> => {
   try {
@@ -91,6 +91,63 @@ export const bookAppointmentService = async (userId: string, data: BookAppointme
     });
 
     return 'Appointment Booked Successfully'
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+export const fetchAllAppointments = async (userId: string) : Promise<any> => {
+  try {
+    const user: { id: string } | null = await prisma.user.findUnique({
+      where : { id: userId },
+      select: { id: true }
+    });
+    if (!user) {
+      throw new AppError('User not found', 404);
+    }
+
+    const patient: { id: string } | null = await prisma.patient.findUnique({
+      where: { userId: user.id },
+      select: { id: true }
+    });
+    if (!patient) {
+      throw new AppError('User is not registered as patient', 400);
+    }
+
+    const appointmentsWithDetails: AppointmentWithDetails[] = await prisma.appointment.findMany({
+      where: { patientId: patient.id },
+      include: {
+        serviceDoctor: {
+          include: {
+            doctor: true,
+            service: true
+          }
+        }
+      },
+      orderBy: {
+        appointmentDate: 'desc'
+      }
+    });
+
+    const appointments: AppointmentDetails = appointmentsWithDetails.map((appointment) => {
+      return {
+        id: appointment.id,
+        appointmentDate: appointment.appointmentDate,
+        reason: appointment.reason,
+        status: appointment.status,
+        closed: appointment.closed,
+        serviceName: appointment.serviceDoctor.service.serviceName,
+        cost: appointment.serviceDoctor.cost,
+        doctorId: appointment.serviceDoctor.doctor.id,
+        doctorFirstName: appointment.serviceDoctor.doctor.firstName,
+        doctorLastName: appointment.serviceDoctor.doctor.lastName,
+        doctorSpecialization: appointment.serviceDoctor.doctor.specialization,     
+        doctorPicture: appointment.serviceDoctor.doctor.picture
+      }
+    })
+
+    return appointments;
   }
   catch (error) {
     throw error;
