@@ -10,6 +10,17 @@ export type ServiceDetails = Prisma.ServiceGetPayload<{
   }
 }>
 
+export type AppointmentWithDetails = Prisma.AppointmentGetPayload<{
+  include: {
+    serviceDoctor: {
+      include: {
+        doctor: true
+        service: true
+      }
+    }
+  }
+}>
+
 export type Service = Prisma.ServiceGetPayload<{}>
 
 export type ServiceDoctorDetails = {
@@ -41,3 +52,17 @@ export type BookAppointment = {
   appointmentDate: string;
   reason: string;
 }
+
+export type AppointmentDetails = {
+      id: string;
+      appointmentDate: Date;
+      reason: string;
+      status: string;
+      serviceName: string;
+      cost: number;
+      doctorId: string;
+      doctorFirstName: string;
+      doctorLastName: string;
+      doctorPicture: Buffer | null;
+      doctorSpecialization: string;
+    }[]

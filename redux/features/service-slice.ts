@@ -1,11 +1,12 @@
-import { bookAppointmentAPI, fetchServiceDetailsAPI, fetchServicesAPI } from "@/lib/actions/service.actions";
-import { BookAppointment, ServiceDetailsResponse } from "@/types/entities/service-types";
+import { bookAppointmentAPI, fetchAllAppointmentsAPI, fetchServiceDetailsAPI, fetchServicesAPI } from "@/lib/actions/service.actions";
+import { AppointmentDetails, BookAppointment, ServiceDetailsResponse } from "@/types/entities/service-types";
 import { Service } from "@prisma/client";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface ServiceState {
   services: Service[] | null;
   service: ServiceDetailsResponse | null;
+  appointments: AppointmentDetails[] | null;
   isError: boolean;
   isSuccess: boolean;
   isLoading: boolean;
@@ -15,6 +16,7 @@ interface ServiceState {
 const initialState: ServiceState = {
   services: null,
   service: null,
+  appointments: null,
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -50,6 +52,19 @@ export const bookAppointment = createAsyncThunk('service/book',
   async (appointmentData: BookAppointment, thunkApi) => {
     try {
       const response: any = await bookAppointmentAPI(appointmentData);
+      return response;
+    }
+    catch (error: any) {
+      const message = error.response.data.error || 'Internal server error';
+      return thunkApi.rejectWithValue(message);
+    }
+  }
+)
+
+export const fetchAllAppointments = createAsyncThunk('appointment/view', 
+  async (_, thunkApi) => {
+    try {
+      const response: any = await fetchAllAppointmentsAPI();
       return response;
     }
     catch (error: any) {
@@ -118,6 +133,23 @@ export const serviceSlice = createSlice({
         state.message = 'Appointment Booked Successfully';
       })
       .addCase(bookAppointment.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload as string;
+      })
+      .addCase(fetchAllAppointments.pending, (state) => {
+        state.isLoading = true;
+        state.message = '';
+      })
+      .addCase(fetchAllAppointments.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.message = '';
+        state.appointments = (action.payload.data.appointments as AppointmentDetails[]);
+      })
+      .addCase(fetchAllAppointments.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
