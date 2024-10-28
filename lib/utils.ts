@@ -13,6 +13,19 @@ export const convertFileToUrl = (file: File) => URL.createObjectURL(file);
 // Password validation with specific requirements
 export const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
+export const getImageSrc = (picture: any) => {
+    if (!picture) {
+      return '';
+    }
+
+    if (picture.type === 'Buffer' && picture.data) {
+      const buffer = Buffer.from(picture.data);
+      return `data:image/jpg;base64,${buffer.toString('base64')}`;
+    }
+    
+    return '';
+  };
+
 // Group timeslots by date
 export const groupSlotsByDate = (slots: Date[]) => {
   const groups: Record<string, string[]> = {};
@@ -34,16 +47,7 @@ export const formatTimeSlot = (dateTimeStr: string) => {
     minute: '2-digit', 
     hour12: true 
   });
-  
-  // // Calculate end time (30 minutes later)
-  // const endDate = new Date(date.getTime() + 30 * 60000);
-  // const endTime = endDate.toLocaleTimeString('en-US', { 
-  //   hour: 'numeric', 
-  //   minute: '2-digit', 
-  //   hour12: true 
-  // });
-  
-  // return `${startTime} - ${endTime}`;
+
   return startTime
 };
 

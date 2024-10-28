@@ -57,8 +57,7 @@ export type AppointmentDetails = {
       id: string;
       appointmentDate: Date;
       reason: string;
-      status: boolean;
-      closed: boolean;
+      status: string;
       serviceName: string;
       cost: number;
       doctorId: string;

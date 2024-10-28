@@ -1,4 +1,4 @@
-import { BookAppointment, ServiceDetailsResponse } from "@/types/entities/service-types";
+import { AppointmentDetails, BookAppointment, ServiceDetailsResponse } from "@/types/entities/service-types";
 import { Service } from "@prisma/client";
 import axios from "axios";
 
@@ -27,6 +27,16 @@ export const fetchServiceDetailsAPI = async (serviceId: string): Promise<Service
 export const bookAppointmentAPI = async (data: BookAppointment) => {
   try {
     const response: string = await axios.post(`${SERVICE_API}?action=appointment`, data);
+    return response;
+  }
+  catch (error: any) {
+    throw error;
+  }
+}
+
+export const fetchAllAppointmentsAPI = async (): Promise<AppointmentDetails[]> => {
+  try {
+    const response: AppointmentDetails[] = await axios.get(`${SERVICE_API}?action=appointment`);
     return response;
   }
   catch (error: any) {

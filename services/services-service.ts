@@ -136,7 +136,6 @@ export const fetchAllAppointments = async (userId: string) : Promise<any> => {
         appointmentDate: appointment.appointmentDate,
         reason: appointment.reason,
         status: appointment.status,
-        closed: appointment.closed,
         serviceName: appointment.serviceDoctor.service.serviceName,
         cost: appointment.serviceDoctor.cost,
         doctorId: appointment.serviceDoctor.doctor.id,

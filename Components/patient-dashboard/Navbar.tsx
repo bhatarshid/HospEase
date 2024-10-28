@@ -26,7 +26,7 @@ const DashboardNavbar = () => {
       </div>
       <section className="flex flex-1 justify-end md:items-center md:justify-between space-x-4">
         <div className="hidden md:flex w-[50%] justify-between text-base px-2 h-7 text-dark2">
-          <Link href="#">Appointments</Link>
+          <Link href="/patient/appointments">Appointments</Link>
           <Link href="/patient/services">Services</Link>
           <Link href="#">Medical History</Link>
           <Link href="#">Settings</Link>

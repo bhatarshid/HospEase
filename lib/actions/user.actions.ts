@@ -63,7 +63,6 @@ export const getMyDetailsApi = async (): Promise<ProfileType> => {
     return response;
   }
   catch (error) {
-    console.log(error);
     throw error;
   }
 }
