@@ -4,14 +4,20 @@ import { CalendarIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
 import { Card, CardContent } from "@/Components/ui/card";
 import { ScrollArea } from "@/Components/ui/scroll-area";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { toast } from "react-toastify";
+import { fetchAllAppointments } from "@/redux/features/service-slice";
+import Image from "next/image";
+import { formatDate, formatTimeSlot, getImageSrc } from "@/lib/utils";
 
 const RightsideBar = () => {
   const [date, setDate] = useState<Date | undefined>(new Date())
   // dummy data
-  const appointments = [
+  const appointmentsPrev = [
     { id: 1, doctor: "Dr. Alexander Boje", specialty: "Orthopedic", date: "June 12, 2025", time: "09:00 - 10:00" },
     { id: 2, doctor: "Dr. Sarah Lee", specialty: "Cardiologist", date: "June 13, 2025", time: "11:00 - 12:00" },
     { id: 3, doctor: "Dr. Michael Chen", specialty: "Dermatologist", date: "June 14, 2025", time: "14:00 - 15:00" },
@@ -19,32 +25,50 @@ const RightsideBar = () => {
     { id: 5, doctor: "Dr. David Kim", specialty: "Pediatrician", date: "June 16, 2025", time: "13:00 - 14:00" },
   ]
 
+  const { appointments, isLoading, isError, isSuccess } = useSelector((state: RootState) => state.service);
+  const dispatch = useDispatch<AppDispatch>();
+  
+  useEffect(() => {
+    if(isError) {
+      toast.error("Failed to load appointments. Please refresh page");
+    }
+
+    dispatch(fetchAllAppointments())
+  }, [isError])
+
+
   return (
     <div className="fixed inset-y-0 right-0 w-[20%] flex-col h-screen pt-[58px] bg-background hidden lg:flex">
       <Card className="flex-grow overflow-hidden mb-0">
         <CardContent className="flex flex-col h-full p-2">
           <h2 className="text-xl font-medium mb-4">Upcoming Schedule</h2>
           <ScrollArea className="flex-grow h-[60%]">
-            {appointments.map(appointment => (
-              <div key={appointment.id} className="mb-4 p-4 bg-white rounded-xl">
-                <div className="flex items-center space-x-4">
-                  <Avatar>
-                    <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${appointment.doctor}`} />
-                    <AvatarFallback>{appointment.doctor.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="font-normal">{appointment.doctor}</h3>
-                    <p className="text-sm text-gray-500">{appointment.specialty}</p>
+            {appointments
+              ?.filter((appointment: any) => appointment.status === "PENDING" && new Date(appointment.appointmentDate) >= new Date())
+              .reverse()
+              .map((appointment: any) => (
+                <div key={appointment.id} className="mb-4 p-4 bg-white rounded-xl">
+                  <div className="flex items-center space-x-4">
+                    <Image
+                      src={getImageSrc(appointment.doctorPicture)}
+                      alt="doctor"
+                      height={1000}
+                      width={1000}
+                      className='w-16 h-16 rounded-full mx-auto sm:mx-0'
+                    />
+                    <div>
+                      <h3 className="font-normal">Dr. {appointment.doctorFirstName} {appointment.doctorLastName}</h3>
+                      <p className="text-sm text-gray-500">{appointment.doctorSpecialization}</p>
+                    </div>
+                  </div>
+                  <div className="mt-2 flex justify-between items-center text-[11px] font-base space-x-2">
+                    <div className="flex items-center space-x-2">
+                      <CalendarIcon className="w-4 h-4 text-blue-500" />
+                      <span>{formatDate(appointment.appointmentDate)}</span>
+                    </div>
+                    <div>{formatTimeSlot(appointment.appointmentDate)}</div>
                   </div>
                 </div>
-                <div className="mt-2 flex justify-between items-center text-[11px] font-base space-x-2">
-                  <div className="flex items-center space-x-2">
-                    <CalendarIcon className="w-4 h-4 text-blue-500" />
-                    <span>{appointment.date}</span>
-                  </div>
-                  <div>{appointment.time}</div>
-                </div>
-              </div>
             ))}
           </ScrollArea>
         </CardContent>
