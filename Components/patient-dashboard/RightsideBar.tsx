@@ -15,17 +15,7 @@ import Image from "next/image";
 import { formatDate, formatTimeSlot, getImageSrc } from "@/lib/utils";
 
 const RightsideBar = () => {
-  const [date, setDate] = useState<Date | undefined>(new Date())
-  // dummy data
-  const appointmentsPrev = [
-    { id: 1, doctor: "Dr. Alexander Boje", specialty: "Orthopedic", date: "June 12, 2025", time: "09:00 - 10:00" },
-    { id: 2, doctor: "Dr. Sarah Lee", specialty: "Cardiologist", date: "June 13, 2025", time: "11:00 - 12:00" },
-    { id: 3, doctor: "Dr. Michael Chen", specialty: "Dermatologist", date: "June 14, 2025", time: "14:00 - 15:00" },
-    { id: 4, doctor: "Dr. Emily Brown", specialty: "Neurologist", date: "June 15, 2025", time: "10:00 - 11:00" },
-    { id: 5, doctor: "Dr. David Kim", specialty: "Pediatrician", date: "June 16, 2025", time: "13:00 - 14:00" },
-  ]
-
-  const { appointments, isLoading, isError, isSuccess } = useSelector((state: RootState) => state.service);
+  const { appointments, isError } = useSelector((state: RootState) => state.service);
   const dispatch = useDispatch<AppDispatch>();
   
   useEffect(() => {

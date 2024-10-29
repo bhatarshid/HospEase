@@ -3,14 +3,32 @@ import { BellPlus, Contact, Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import Searchbar from "./Searchbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import LogoutButton from "../LogoutButton";
+import { getImageSrc } from "@/lib/utils";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { toast } from "react-toastify";
+import { getMyDetails, reset } from "@/redux/features/profile-slice";
+import { Avatar, AvatarImage } from "../ui/avatar";
 
 const DashboardNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  
+  const {profile, isError } = useSelector((state: RootState) => state.profile);
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    console.log(profile?.profilePicture)
+    if(isError) { 
+      toast.error("Failed to load profile. Please refresh page");
+      dispatch(reset());
+    }
+
+    dispatch(getMyDetails());
+  }, [isError, dispatch])
+
   return (
     <div className="flex flex-row justify-between items-center bg-backgroundColor h-8 fixed top-0 left-0 right-0 z-50 p-7 border-b-2 shadow-md border-dark3 rounded-[6px]">
       <div className="w-[15%] flex justify-start items-center">
@@ -39,7 +57,19 @@ const DashboardNavbar = () => {
               variant="ghost" 
               onClick={() => setIsOpen(!isOpen)}
             >
-              <Contact size={24} />
+              {profile?.profilePicture ? (
+                <Image
+                  src={getImageSrc(profile?.profilePicture)}
+                  alt="profile"
+                  height={1000}
+                  width={1000}
+                  className='w-9 h-9 rounded-full mx-auto sm:mx-0'
+                />
+              ) : (
+                <Avatar>
+                  <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${profile?.firstName[0]}${profile?.lastName[0]}`} />
+                </Avatar>
+              )}
             </Button>
             {isOpen && (
               <div className="absolute top-full right-0 w-32 bg-backgroundColor text-dark1 flex flex-col items-start space-y-4 z-0 p-3 mr-2 rounded-xl shadow-lg border-2 border-dark3">
