@@ -14,6 +14,11 @@ enum AppointmentStatus {
   COMPLETED
 }
 
+enum SlotStatus {
+  OPEN
+  BOOKED
+}
+
 model User {
   id             String   @id @default(uuid())
   firstName      String
@@ -74,6 +79,7 @@ model Doctor {
   updatedAt      DateTime        @updatedAt
   serviceDoctors ServiceDoctor[]
   Patient        Patient[]
+  Slot           Slot[]
 }
 
 model Appointment {
@@ -117,7 +123,6 @@ model Feedback {
 model ServiceDoctor {
   id          String        @id @default(uuid())
   cost        Int
-  slots       DateTime[]
   createdAt   DateTime
   updatedAt   DateTime      @updatedAt
   doctor      Doctor        @relation(fields: [doctorId], references: [id])
@@ -125,9 +130,23 @@ model ServiceDoctor {
   service     Service       @relation(fields: [serviceId], references: [id])
   serviceId   String
   Appointment Appointment[]
+  slot        Slot[]
 
   @@unique([doctorId, serviceId])
   @@index([doctorId, serviceId])
+}
+
+model Slot {
+  id              String        @id @default(uuid())
+  startTime       DateTime
+  status          SlotStatus    @default(OPEN)
+  doctor          Doctor        @relation(fields: [doctorId], references: [id])
+  doctorId        String
+  serviceDoctor   ServiceDoctor @relation(fields: [serviceDoctorId], references: [id])
+  serviceDoctorId String @default("be4518bd-ca11-4ce9-89bf-8ce5a0251446")
+
+  @@unique([doctorId, startTime])
+  @@index([doctorId, startTime])
 }
 
 model MedicalHistory {

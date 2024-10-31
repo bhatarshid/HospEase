@@ -20,12 +20,13 @@ export const fetchServiceDetails = async (id: string): Promise<ServiceDetailsRes
       include: {
         serviceDoctors: {
           include: {
-            doctor: true
+            doctor: true,
+            slot: true
           }
         }
       }
     });
-
+    // donot fetch slots that are in past
     if (!service) {
       throw new AppError('Service not found', 404);
     }
@@ -35,7 +36,7 @@ export const fetchServiceDetails = async (id: string): Promise<ServiceDetailsRes
       serviceDoctors.push({
         id: serviceDoctor.id,
         cost: serviceDoctor.cost,
-        slots: groupSlotsByDate(serviceDoctor.slots),
+        slots: {"string": ["stringd"]},   //modify this
         doctorId: serviceDoctor.doctor.id,
         firstName: serviceDoctor.doctor.firstName,
         lastName: serviceDoctor.doctor.lastName,
