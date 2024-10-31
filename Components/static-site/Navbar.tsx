@@ -4,9 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Navbar = () => {
-  const [singinIsLoading, setSigninIsLoading] = useState(false);
-  const [signupIsLoading, setSignupIsLoading] = useState(false);
-
   return (
     <div className="flex flex-row bg-backgroundColor justify-between items-center h-8 p-8">
       <div className="w-[10%] flex justify-start items-center">

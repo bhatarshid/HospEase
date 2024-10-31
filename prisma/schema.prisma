@@ -20,7 +20,7 @@ model User {
   lastName       String
   phoneNumber    String   @unique
   password       String
-  profilePicture String?
+  profilePicture Bytes?
   refreshToken   String?
   createdAt      DateTime
   updatedAt      DateTime @updatedAt
