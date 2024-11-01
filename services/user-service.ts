@@ -145,9 +145,15 @@ export async function registerPatientService(userId: string, data: PatientReques
       }
     });
 
+    await prisma.user.update({
+      where: { id: userId },
+      data: { isRegistered: true }
+    });
+    
     return 'Registration complete';
   }
   catch (error) {
+    console.log(error)
     throw error;
   }
 } 
