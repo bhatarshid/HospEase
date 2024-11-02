@@ -18,7 +18,7 @@ const Dashboard = () => {
             <p className="text-dark2 text-xs sm:text-sm md:text-base text-[16px]">{new Date().toDateString()}</p>
           </div>
           <div>
-            <h1 className="font-semibold text-dark1 text-2xl">Welcome, {user?.firstName}!</h1>
+            <h1 className="font-semibold text-dark1 text-2xl">Welcome, {user?.firstName ?? 'User'}! </h1>
             <p className="text-dark3 text-sm md:text-base lg:text-[16px]">Hello there! Welcome to our application. How can we assist you today?</p>
           </div>
         </section>
