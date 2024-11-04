@@ -1,7 +1,7 @@
 import AppError from "@/lib/App-Error";
 import prisma from "@/lib/db";
 import { groupSlotsByDate } from "@/lib/utils";
-import { ServiceDetails, Service, ServiceDetailsResponse, ServiceDoctorDetails, BookAppointment, AppointmentWithDetails, AppointmentDetails } from "@/types/entities/service-types";
+import { ServiceDetails, Service, ServiceDetailsResponse, ServiceDoctorDetails, BookAppointment, AppointmentWithDetails, AppointmentDetails, CreateServiceBody } from "@/types/entities/service-types";
 
 export const fetchAllServices = async (): Promise<Service[]> => {
   try {
@@ -148,6 +148,32 @@ export const fetchAllAppointments = async (userId: string) : Promise<any> => {
     })
 
     return appointments;
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+export const createServiceFunction = async (data: CreateServiceBody): Promise<string> => {
+  try {
+    const service = await prisma.service.findUnique({ where: { serviceName: data.serviceName } });
+
+    if (service) {
+      throw new AppError('Service with the same name already exists', 400);
+    }
+
+    await prisma.service.create({
+      data: {
+        serviceName: data.serviceName,
+        description: data.description,
+        features: data.features,
+        picture: data.picture,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    });
+
+    return 'Service created'
   }
   catch (error) {
     throw error;

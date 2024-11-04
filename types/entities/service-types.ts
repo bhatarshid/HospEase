@@ -1,4 +1,6 @@
+import { createServiceBody } from "@/lib/validations/service.schema";
 import { Prisma } from "@prisma/client";
+import { z } from "zod";
 
 export type ServiceDetails = Prisma.ServiceGetPayload<{
   include: {
@@ -54,15 +56,17 @@ export type BookAppointment = {
 }
 
 export type AppointmentDetails = {
-      id: string;
-      appointmentDate: Date;
-      reason: string;
-      status: string;
-      serviceName: string;
-      cost: number;
-      doctorId: string;
-      doctorFirstName: string;
-      doctorLastName: string;
-      doctorPicture: Buffer | null;
-      doctorSpecialization: string;
-    }[]
+  id: string;
+  appointmentDate: Date;
+  reason: string;
+  status: string;
+  serviceName: string;
+  cost: number;
+  doctorId: string;
+  doctorFirstName: string;
+  doctorLastName: string;
+  doctorPicture: Buffer | null;
+  doctorSpecialization: string;
+}[]
+
+export type CreateServiceBody = z.infer<typeof createServiceBody>;

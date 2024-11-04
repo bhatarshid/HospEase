@@ -97,7 +97,7 @@ model Appointment {
 
 model Service {
   id               String           @id @default(uuid())
-  serviceName      String
+  serviceName      String           @unique
   description      String
   picture          Bytes?
   features         String[]
@@ -143,7 +143,7 @@ model Slot {
   doctor          Doctor        @relation(fields: [doctorId], references: [id])
   doctorId        String
   serviceDoctor   ServiceDoctor @relation(fields: [serviceDoctorId], references: [id])
-  serviceDoctorId String @default("be4518bd-ca11-4ce9-89bf-8ce5a0251446")
+  serviceDoctorId String        @default("be4518bd-ca11-4ce9-89bf-8ce5a0251446")
 
   @@unique([doctorId, startTime])
   @@index([doctorId, startTime])
