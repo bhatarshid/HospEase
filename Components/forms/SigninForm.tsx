@@ -33,10 +33,13 @@ const SigninForm = () => {
 
     if (isSuccess) {
       toast.success(message)
-      router.push('/patient/dashboard')
+      if (user?.isRegistered) {
+        router.push('/patient/dashboard')
+      }
+      else {
+        router.push('/patient/register')
+      }
     }
-
-    dispatch(reset());
   }, [ isError, isSuccess, message, router, dispatch]);
 
   const onSubmit = async (data: LoginInput) => {

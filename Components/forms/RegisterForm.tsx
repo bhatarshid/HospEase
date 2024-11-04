@@ -17,6 +17,9 @@ import { registerPatient, reset } from "@/redux/features/profile-slice";
 import { fetchDoctors, reset as doctorReset } from "@/redux/features/doctor-slice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { PatientRequestType } from "@/types/entities";
+import { registerPatientRequest } from "@/lib/validations/user.schema";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod";
 
 const SignupForm = () => {
   const router = useRouter();
@@ -26,11 +29,12 @@ const SignupForm = () => {
 
   const IdentificationTypes = ["Aadhar", "Election Id", "Licence"];
 
-  const form = useForm({
+  const form = useForm<z.infer<typeof registerPatientRequest>>({
+    resolver: zodResolver(registerPatientRequest),
     defaultValues: {
       emailId: '',
-      dateOfBirth: '',
-      gender: '',
+      dateOfBirth: new Date(),
+      gender: undefined,
       address: '',
       occupation: '',
       emergencyContactName: '',
@@ -42,13 +46,10 @@ const SignupForm = () => {
       pastMedicalHistory: '',
       allergies: '',
       familyMedicalHistory: '',
-      identificationNumber: '',
-      identificationType: '',
-      identificationDocument: '',
       treatmentConsent: false,
       disclosureConsent: false,
       privacyPolicy: false,
-      idDocType: '',
+      idDocType: undefined,
       idNumber: '',
       idDoc: undefined
     },
@@ -66,14 +67,15 @@ const SignupForm = () => {
 
     if (isSuccess) {
       toast.success(message)
+      router.push('/patient/dashboard')
     }
 
     dispatch(reset());
-  }, [isError, doctorError, isSuccess, message, router, dispatch])
+  }, [isError, doctorError, isSuccess, message, user, dispatch])
 
   useEffect(() => {
     dispatch(fetchDoctors());
-  }, [dispatch]);
+  }, [isSuccess, isError, doctorError, dispatch]);
 
   const onSubmit = (data: PatientRequestType) => {
     dispatch(registerPatient(data));

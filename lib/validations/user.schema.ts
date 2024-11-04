@@ -22,7 +22,7 @@ export const registerPatientRequest = z.object({
   emergencyContactName: z.string(),
   emergencyContactNumber: phoneSchema, // Basic phone number validation
   allergies: z.string(),
-  currentMedications: z.string().optional(),
+  currentMedications: z.string(),
   familyMedicalHistory: z.string().optional(),
   pastMedicalHistory: z.string().optional(),
   primaryPhysician: z.string().uuid().nullable().or(z.literal('')),

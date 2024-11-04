@@ -8,7 +8,7 @@ export type UserData = {
   lastName: string
   phoneNumber: string   
   password: string
-  profilePicture?: string | null,
+  profilePicture?: Buffer | null,
   refreshToken?: string | null,
   isRegistered: boolean
   createdAt: Date
@@ -25,7 +25,7 @@ export type LoginInput = { phoneNumber: string; password: string };
 
 export type PatientRequestType = {
   emailId: string;
-  dateOfBirth: string;
+  dateOfBirth: Date;
   gender: string;
   address: string;
   occupation: string;
@@ -35,12 +35,9 @@ export type PatientRequestType = {
   insuranceProvider?: string | null;
   insurancePolicyNumber?: string | null;
   currentMedications: string;
-  pastMedicalHistory: string;
+  pastMedicalHistory?: string;
   allergies: string;
-  familyMedicalHistory: string;
-  identificationNumber: string;
-  identificationType: string;
-  identificationDocument: string;
+  familyMedicalHistory?: string;
   treatmentConsent: boolean;
   disclosureConsent: boolean;
   privacyPolicy: boolean;
@@ -56,7 +53,7 @@ export type ProfileType = {
     phoneNumber: string;
     firstName: string;
     lastName: string;
-    profilePicture?: string | null;
+    profilePicture?: Buffer | null;
     isRegistered: boolean;
     patient?: {
         id: string;
