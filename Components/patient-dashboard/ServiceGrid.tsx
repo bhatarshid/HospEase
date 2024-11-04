@@ -8,24 +8,12 @@ import { fetchServices, reset } from '@/redux/features/service-slice';
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
+import { getImageSrc } from '@/lib/utils';
 
 const ServiceCard = ({ service = {} }: any) => {
   const router = useRouter()
 
   const { id, serviceName, description, picture } = service;
-
-  const getImageSrc = () => {
-    if (!picture) {
-      return '/placeholder';
-    }
-
-    if (picture.type === 'Buffer' && picture.data) {
-      const buffer = Buffer.from(picture.data);
-      return `data:image/jpg;base64,${buffer.toString('base64')}`;
-    }
-    
-    return '/placeholder/400/320';
-  };
 
   const viewService = () => {
     router.push(`/patient/services/${id}`);
@@ -35,7 +23,7 @@ const ServiceCard = ({ service = {} }: any) => {
     <Card className="w-72 md:w-80 lg:w-96 flex-shrink-0 transition-all hover:shadow-lg rounded-[6px]">
       <CardHeader className="relative pb-0">
         <img
-          src={getImageSrc()}
+          src={getImageSrc(picture)}
           alt={serviceName}
           className="h-48 w-full rounded-[6px] object-cover"
         />
@@ -61,16 +49,11 @@ const ServiceCard = ({ service = {} }: any) => {
 // Container for multiple service cards in a single row
 export const ServiceGrid = ({ service }: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { services, isError } = useSelector((state: RootState) => state.service)
+  const { services } = useSelector((state: RootState) => state.service)
 
   useEffect(() => {
-    if(isError) {
-      toast.error('Failed to fetch services. Please refresh page')
-      dispatch(reset())
-    }
-
     dispatch(fetchServices());
-  }, [isError, dispatch]);
+  }, [dispatch]);
 
   return (
     <div className='shadow-sm shadow-dark3 p-3'>

@@ -20,14 +20,13 @@ const DashboardNavbar = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    console.log(profile?.profilePicture)
     if(isError) { 
       toast.error("Failed to load profile. Please refresh page");
       dispatch(reset());
     }
 
     dispatch(getMyDetails());
-  }, [isError, dispatch])
+  }, [dispatch])
 
   return (
     <div className="flex flex-row justify-between items-center bg-backgroundColor h-8 fixed top-0 left-0 right-0 z-50 p-7 border-b-2 shadow-md border-dark3 rounded-[6px]">

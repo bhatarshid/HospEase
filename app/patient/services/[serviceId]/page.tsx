@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 import { Skeleton } from "@/Components/ui/skeleton"
 import { Button } from '@/Components/ui/button'
 import { AppointmentModal } from '@/Components/AppointmentModal'
-import { formatDate, formatTimeSlot } from '@/lib/utils'
+import { formatDate, formatTimeSlot, getImageSrc } from '@/lib/utils'
 
 interface SearchParamProps {
   params: {
@@ -39,20 +39,8 @@ export default function ServiceDetailsPage({ params: { serviceId } }: SearchPara
     }
 
     dispatch(fetchServiceDetails(serviceId))
-  }, [isError, dispatch, serviceId])
+  }, [dispatch, serviceId])
 
-  const getImageSrc = (picture: any) => {
-    if (!picture) {
-      return '/placeholder';
-    }
-
-    if (picture.type === 'Buffer' && picture.data) {
-      const buffer = Buffer.from(picture.data);
-      return `data:image/jpg;base64,${buffer.toString('base64')}`;
-    }
-    
-    return '/placeholder/400/320';
-  };
 
   if (isLoading) {
     return <LoadingSkeleton />

@@ -40,7 +40,9 @@ const SigninForm = () => {
         router.push('/patient/register')
       }
     }
-  }, [ isError, isSuccess, message, router, dispatch]);
+
+    dispatch(reset())
+  }, [ isError, isSuccess, router, dispatch]);
 
   const onSubmit = async (data: LoginInput) => {
     // handle form submission

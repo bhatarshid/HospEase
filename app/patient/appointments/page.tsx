@@ -13,16 +13,12 @@ import { fetchAllAppointments } from '@/redux/features/service-slice'
 import { formatDate, formatTimeSlot, getImageSrc } from '@/lib/utils'
 
 const Appointment = () => {
-  const { appointments, isLoading, isError, isSuccess } = useSelector((state: RootState) => state.service);
+  const { appointments } = useSelector((state: RootState) => state.service);
   const dispatch = useDispatch<AppDispatch>();
   
   useEffect(() => {
-    if(isError) {
-      toast.error("Failed to load appointments. Please refresh page");
-    }
-
     dispatch(fetchAllAppointments())
-  }, [isError])
+  }, [dispatch])
 
   const handleCancelAppointment = () => {
     console.log('Appointment cancelled')
