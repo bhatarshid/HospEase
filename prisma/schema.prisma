@@ -69,12 +69,12 @@ model Doctor {
   id             String          @id @default(uuid())
   firstName      String
   lastName       String
-  phoneNumber    String
+  phoneNumber    String          @unique
   emailId        String?
   picture        Bytes?
   specialization String
-  department     String // make enum for this
-  experience     String
+  department     String
+  experience     Int
   createdAt      DateTime
   updatedAt      DateTime        @updatedAt
   serviceDoctors ServiceDoctor[]
