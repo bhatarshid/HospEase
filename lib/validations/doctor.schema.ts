@@ -11,3 +11,15 @@ export const createDoctorBody = z.object({
   department: z.string().min(3, 'Department must be at least 3 characters long'),
   experience: z.number().int().max(50, 'Experience must be at most 50')
 })
+
+export const updateDoctorBody = z.object({
+  id: z.string(),
+  firstName: z.string().min(3, 'First Name must be at least 3 characters long').optional(),
+  lastName: z.string().min(3, 'Last Name must be at least 3 characters long').optional(),
+  phoneNumber: phoneSchema.optional(),
+  emailId: z.string().email().optional(),
+  picture: z.instanceof(Buffer).optional(),
+  specialization: z.string().optional(),
+  department: z.string().optional(),
+  experience: z.number().int().optional()
+});
