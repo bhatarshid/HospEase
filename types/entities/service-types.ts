@@ -1,3 +1,4 @@
+import { serviceDoctorBody } from "@/lib/validations/doctor.schema";
 import { createServiceBody } from "@/lib/validations/service.schema";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
@@ -70,3 +71,4 @@ export type AppointmentDetails = {
 }[]
 
 export type CreateServiceBody = z.infer<typeof createServiceBody>;
+export type ServiceDoctorBody = z.infer<typeof serviceDoctorBody>;
