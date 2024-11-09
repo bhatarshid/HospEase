@@ -31,3 +31,12 @@ export async function createService(request: NextRequest) {
     return handleErrorNextResponse(error); 
   }
 }
+
+export async function addServiceDoctor(request: NextRequest) {
+  try {
+
+  }
+  catch (error) {
+    return handleErrorNextResponse(error)
+  }
+}

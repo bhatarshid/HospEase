@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createService } from "./post";
+import { createService, addServiceDoctor } from "./post";
 
 // TODO: Add admin authorization in below apis
 
@@ -10,6 +10,8 @@ export async function POST (request: NextRequest) {
   switch (action) {
     case 'create':
       return createService(request);
+    case 'add':
+      return addServiceDoctor(request);
     default:
       return NextResponse.json({ message: 'Route not found' }, { status: 404 });
   }
