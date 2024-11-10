@@ -179,3 +179,12 @@ export const createServiceFunction = async (data: CreateServiceBody): Promise<st
     throw error;
   }
 }
+
+export const addServiceDoctorFunction = async (data: any): Promise<string> => {
+  try {
+    return 'Details of service added';
+  }
+  catch (error) {
+    throw error;
+  }
+}
