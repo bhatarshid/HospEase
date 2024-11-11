@@ -12,3 +12,10 @@ export const createServiceBody = z.object({
   picture: z.instanceof(Buffer).optional(),
   features: z.array(z.string())
 })
+
+export const serviceDoctorBody = z.object({
+  serviceId: z.string().uuid("Service id is invalid"),
+  doctorId: z.string().uuid("Doctor id is invalid"),
+  slotId: z.array(z.string().uuid('Slot id is invalid')),
+  cost: z.number().int()
+});

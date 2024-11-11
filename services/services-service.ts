@@ -1,7 +1,7 @@
 import AppError from "@/lib/App-Error";
 import prisma from "@/lib/db";
 import { groupSlotsByDate } from "@/lib/utils";
-import { ServiceDetails, Service, ServiceDetailsResponse, ServiceDoctorDetails, BookAppointment, AppointmentWithDetails, AppointmentDetails, CreateServiceBody } from "@/types/entities/service-types";
+import { ServiceDetails, Service, ServiceDetailsResponse, ServiceDoctorDetails, BookAppointment, AppointmentWithDetails, AppointmentDetails, CreateServiceBody, ServiceDoctorBody } from "@/types/entities/service-types";
 
 export const fetchAllServices = async (): Promise<Service[]> => {
   try {
@@ -180,8 +180,35 @@ export const createServiceFunction = async (data: CreateServiceBody): Promise<st
   }
 }
 
-export const addServiceDoctorFunction = async (data: any): Promise<string> => {
+export const addServiceDoctorFunction = async (data: ServiceDoctorBody): Promise<string> => {
   try {
+    // add transactions
+    const serviceDoctor = await prisma.serviceDoctor.create({
+      data: {
+        serviceId: data.serviceId,
+        doctorId: data.doctorId,
+        cost: data.cost,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    });
+
+    const slots = await prisma.slot.updateMany({
+      where: {
+        id: { in: data.slotId },
+        status: 'OPEN',
+        doctorId: data.doctorId
+      },
+      data: {
+        serDocId: serviceDoctor.id,
+        status: 'PENDING'
+      }
+    });
+    console.log(slots.count)
+    if (slots.count < data.slotId.length) {
+      throw new AppError('Some slots were already updated', 404);
+    }
+
     return 'Details of service added';
   }
   catch (error) {

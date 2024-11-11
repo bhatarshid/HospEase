@@ -138,13 +138,13 @@ model ServiceDoctor {
 }
 
 model Slot {
-  id        String        @id @default(uuid())
+  id        String         @id @default(uuid())
   startTime DateTime
-  status    SlotStatus    @default(OPEN)
-  doctor    Doctor        @relation(fields: [doctorId], references: [id])
+  status    SlotStatus     @default(OPEN)
+  doctor    Doctor         @relation(fields: [doctorId], references: [id])
   doctorId  String
-  serDoc    ServiceDoctor @relation(fields: [serDocId], references: [id])
-  serDocId  String
+  serDoc    ServiceDoctor? @relation(fields: [serDocId], references: [id])
+  serDocId  String?
 
   @@unique([doctorId, startTime])
   @@index([doctorId, startTime])

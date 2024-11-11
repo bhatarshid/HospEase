@@ -1,6 +1,6 @@
 import { handleErrorNextResponse } from "@/lib/App-Error";
-import { createServiceBody } from "@/lib/validations/service.schema";
-import { createServiceFunction } from "@/services/services-service";
+import { createServiceBody, serviceDoctorBody } from "@/lib/validations/service.schema";
+import { addServiceDoctorFunction, createServiceFunction } from "@/services/services-service";
 import { CreateServiceBody } from "@/types/entities";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -34,9 +34,14 @@ export async function createService(request: NextRequest) {
 
 export async function addServiceDoctor(request: NextRequest) {
   try {
-
+    const body = await request.json();
+    serviceDoctorBody.parse(body);
+    
+    await addServiceDoctorFunction(body);
+    return NextResponse.json({ message: "Data added successfully!" }, { status: 201 });
   }
   catch (error) {
+    console.log(error)
     return handleErrorNextResponse(error)
   }
 }

@@ -23,17 +23,3 @@ export const updateDoctorBody = z.object({
   department: z.string().optional(),
   experience: z.number().int().optional()
 });
-
-export const serviceDoctorBody = z.object({
-  serviceId: z.string(),
-  doctorId: z.string(),
-  cost: z.number().int(),
-  description: z.string().min(3, 'Description should be at least 3 characters long').optional()
-});
-
-export const timeSlot = z.object({
-  serviceDoctorId: z.string(),
-  doctorId: z.string(),
-  startTime: z.date(),
-  status: z.string()
-})
