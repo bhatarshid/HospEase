@@ -15,7 +15,7 @@ export const fetchAllServices = async (): Promise<Service[]> => {
 
 export const fetchServiceDetails = async (id: string): Promise<ServiceDetailsResponse> => {
   try {
-    const service: ServiceDetails | null = await prisma.service.findUnique({
+    const service: any = await prisma.service.findUnique({
       where: { id },
       include: {
         serviceDoctors: {
@@ -182,32 +182,33 @@ export const createServiceFunction = async (data: CreateServiceBody): Promise<st
 
 export const addServiceDoctorFunction = async (data: ServiceDoctorBody): Promise<string> => {
   try {
-    // add transactions
-    const serviceDoctor = await prisma.serviceDoctor.create({
-      data: {
-        serviceId: data.serviceId,
-        doctorId: data.doctorId,
-        cost: data.cost,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
-    });
+    await prisma.$transaction(async (prisma) => {
+      const serviceDoctor = await prisma.serviceDoctor.create({
+        data: {
+          serviceId: data.serviceId,
+          doctorId: data.doctorId,
+          cost: data.cost,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      });
 
-    const slots = await prisma.slot.updateMany({
-      where: {
-        id: { in: data.slotId },
-        status: 'OPEN',
-        doctorId: data.doctorId
-      },
-      data: {
-        serDocId: serviceDoctor.id,
-        status: 'PENDING'
+      const slots = await prisma.slot.updateMany({
+        where: {
+          id: { in: data.slotId },
+          status: 'OPEN',
+          doctorId: data.doctorId
+        },
+        data: {
+          serDocId: serviceDoctor.id,
+          status: 'PENDING'
+        }
+      });
+      
+      if (slots.count < data.slotId.length) {
+        throw new AppError('Some slots are not available', 404);
       }
     });
-    console.log(slots.count)
-    if (slots.count < data.slotId.length) {
-      throw new AppError('Some slots were already updated', 404);
-    }
 
     return 'Details of service added';
   }
