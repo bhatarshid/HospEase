@@ -1,7 +1,6 @@
 import AppError from "@/lib/App-Error";
 import prisma from "@/lib/db";
-import { groupSlotsByDate } from "@/lib/utils";
-import { ServiceDetails, Service, ServiceDetailsResponse, ServiceDoctorDetails, BookAppointment, AppointmentWithDetails, AppointmentDetails, CreateServiceBody, ServiceDoctorBody } from "@/types/entities/service-types";
+import { Service, ServiceDetailsResponse, ServiceDoctorDetails, BookAppointment, AppointmentWithDetails, AppointmentDetails, CreateServiceBody, ServiceDoctorBody } from "@/types/entities/service-types";
 
 export const fetchAllServices = async (): Promise<Service[]> => {
   try {
