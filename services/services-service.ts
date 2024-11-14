@@ -20,7 +20,7 @@ export const fetchServiceDetails = async (id: string): Promise<ServiceDetailsRes
         serviceDoctors: {
           include: {
             doctor: true,
-            slot: true
+            slots: true
           }
         }
       }
