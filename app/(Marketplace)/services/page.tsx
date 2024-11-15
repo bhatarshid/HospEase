@@ -2,7 +2,12 @@ import React from 'react'
 
 const Services = () => {
   return (
-    <div>Our Services</div>
+    <div className=''>
+      <h2 className="text-2xl font-semibold">Our Services</h2>
+      <p className="text-sm text-dark3">
+        We offer a wide range of services to help you stay healthy and well-rounded.
+      </p>
+    </div>
   )
 }
 
