@@ -2,7 +2,12 @@ import React from 'react'
 
 const Departments = () => {
   return (
-    <div>This page is under construction</div>
+    <div className=''>
+      <h2 className="text-2xl font-semibold">Our Departement</h2>
+      <p className="text-sm text-dark3">
+        We have a wide range of departments to help you stay healthy and well-rounded.
+      </p>
+    </div>
   )
 }
 
