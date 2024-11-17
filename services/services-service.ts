@@ -1,6 +1,7 @@
 import AppError from "@/lib/App-Error";
 import prisma from "@/lib/db";
-import { Service, ServiceDetailsResponse, ServiceDoctorDetails, BookAppointment, AppointmentWithDetails, AppointmentDetails, CreateServiceBody, ServiceDoctorBody } from "@/types/entities/service-types";
+import { groupSlotsByDate } from "@/lib/utils";
+import { Service, ServiceDetailsResponse, ServiceDoctorDetails, BookAppointment, AppointmentWithDetails, AppointmentDetails, CreateServiceBody, ServiceDoctorBody, ServiceDoctor } from "@/types/entities/service-types";
 
 export const fetchAllServices = async (): Promise<Service[]> => {
   try {
@@ -25,17 +26,24 @@ export const fetchServiceDetails = async (id: string): Promise<ServiceDetailsRes
         }
       }
     });
-    // donot fetch slots that are in past
+
     if (!service) {
       throw new AppError('Service not found', 404);
     }
 
     const serviceDoctors: ServiceDoctorDetails[] = []
-    service.serviceDoctors.forEach((serviceDoctor) => {
+    service.serviceDoctors.forEach((serviceDoctor: ServiceDoctor) => {
+      let slots: Date[] = []
+      serviceDoctor.slots.forEach((slot) => {
+        if(slot.startTime > new Date()) {
+          slots.push(slot.startTime);
+        }
+      });
+      
       serviceDoctors.push({
         id: serviceDoctor.id,
         cost: serviceDoctor.cost,
-        slots: {"string": ["stringd"]},   //modify this
+        slots: groupSlotsByDate(slots),
         doctorId: serviceDoctor.doctor.id,
         firstName: serviceDoctor.doctor.firstName,
         lastName: serviceDoctor.doctor.lastName,
