@@ -7,6 +7,7 @@ import { JWT } from 'next-auth/jwt';
 
 export interface AuthToken extends JWT {
   id: string;
+  isRegistered: boolean;
 }
 
 const handler = NextAuth({
@@ -43,6 +44,7 @@ const handler = NextAuth({
             firstName: user.firstName,
             lastName: user.lastName,
             phoneNumber: user.phoneNumber,
+            isRegistered: user.isRegistered
           }
         }
         catch (error) {
@@ -60,6 +62,7 @@ const handler = NextAuth({
     jwt: async ({ user, token }) => {
       if (user) {
           (token as AuthToken).id = user.id;
+          (token as AuthToken).isRegistered = user?.isRegistered
       }
       return token;
     },
