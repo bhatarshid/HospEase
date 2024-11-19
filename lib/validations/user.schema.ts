@@ -23,8 +23,8 @@ export const registerPatientRequest = z.object({
   emergencyContactNumber: phoneSchema, // Basic phone number validation
   allergies: z.string(),
   currentMedications: z.string(),
-  familyMedicalHistory: z.string().optional(),
-  pastMedicalHistory: z.string().optional(),
+  familyMedicalHistory: z.string().nullable().optional(),
+  pastMedicalHistory: z.string().nullable().optional(),
   primaryPhysician: z.string().uuid().nullable().or(z.literal('')),
   idDocType: z.enum(["Aadhar", "Election Id", "Licence"]), // Adjust based on your allowed types
   idNumber: z.string(),
@@ -32,8 +32,9 @@ export const registerPatientRequest = z.object({
   treatmentConsent: z.boolean(),
   disclosureConsent: z.boolean(),
   privacyPolicy: z.boolean(),
-  insurancePolicyNumber: z.string().optional(), // Optional for insurance policy number, depending on the system requirements
-  insuranceProvider: z.string().optional(),
+  insurancePolicyNumber: z.string().nullable().optional(), // Optional for insurance policy number, depending on the system requirements
+  insuranceProvider: z.string().nullable().optional(),
+  picture: z.instanceof(Buffer).optional(), 
 })
 
 export const profileUpdateSchema = z.object({
@@ -56,4 +57,5 @@ export const profileUpdateSchema = z.object({
   idDoc: z.instanceof(Buffer).optional(), // For Bytes type
   insurancePolicyNumber: z.string().optional(), // Optional for insurance policy number, depending on the system requirements
   insuranceProvider: z.string().optional(),
+  picture: z.instanceof(Buffer).optional() 
 })

@@ -35,18 +35,40 @@ export type PatientRequestType = {
   insuranceProvider?: string | null;
   insurancePolicyNumber?: string | null;
   currentMedications: string;
-  pastMedicalHistory?: string;
+  pastMedicalHistory?: string | null;
   allergies: string;
-  familyMedicalHistory?: string;
+  familyMedicalHistory?: string | null;
   treatmentConsent: boolean;
   disclosureConsent: boolean;
   privacyPolicy: boolean;
   idDocType: string;
   idNumber: string;
   idDoc?: Buffer;
+  picture?: Buffer;
 }
 
-export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema> & { primaryPhysicianName: string };
+export type ProfileUpdateInput = {
+  firstName?:  string
+  lastName?: string
+  emailId?:  string
+  dateOfBirth?:  Date | null
+  address?:  string
+  occupation?: string
+  gender?: string | null
+  emergencyContactName?: string
+  emergencyContactNumber?: string
+  allergies?:  string
+  currentMedications?: string
+  familyMedicalHistory?: string
+  pastMedicalHistory?: string
+  primaryPhysician?: string
+  idDocType?:  string
+  idNumber?: string
+  idDoc?:  Buffer | null
+  insurancePolicyNumber?:  string
+  insuranceProvider?:  string
+  picture?:  Buffer | null
+}
 
 export type ProfileType = {
     id: string;
