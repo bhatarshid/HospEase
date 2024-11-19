@@ -19,7 +19,7 @@ const initialState: ProfileState = {
 }
 
 export const registerPatient = createAsyncThunk('auth/register',
-  async (patientData: PatientRequestType, thunkApi) => {
+  async (patientData: any, thunkApi) => {
     try {
       const response: any = await registerPatientApi(patientData);
       return response.data.message;

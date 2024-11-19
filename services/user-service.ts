@@ -147,7 +147,7 @@ export async function registerPatientService(userId: string, data: PatientReques
 
     await prisma.user.update({
       where: { id: userId },
-      data: { isRegistered: true }
+      data: { isRegistered: true, profilePicture: data.picture }
     });
     
     return 'Registration complete';

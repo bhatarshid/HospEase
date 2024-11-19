@@ -30,7 +30,7 @@ const SignupForm = () => {
   const IdentificationTypes = ["Aadhar", "Election Id", "Licence"];
 
   const form = useForm<z.infer<typeof registerPatientRequest>>({
-    resolver: zodResolver(registerPatientRequest),
+    // resolver: zodResolver(registerPatientRequest),
     defaultValues: {
       emailId: '',
       dateOfBirth: new Date(),
@@ -43,15 +43,16 @@ const SignupForm = () => {
       insuranceProvider: '',
       insurancePolicyNumber: '',
       currentMedications: '',
-      pastMedicalHistory: '',
+      pastMedicalHistory: null,
       allergies: '',
-      familyMedicalHistory: '',
+      familyMedicalHistory: null,
       treatmentConsent: false,
       disclosureConsent: false,
       privacyPolicy: false,
       idDocType: undefined,
       idNumber: '',
-      idDoc: undefined
+      idDoc: undefined,
+      picture: undefined
     },
   });
 
@@ -78,8 +79,25 @@ const SignupForm = () => {
   }, [isSuccess, isError, doctorError, dispatch]);
 
   const onSubmit = (data: PatientRequestType) => {
-    dispatch(registerPatient(data));
-  }
+    const formData = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === 'idDoc' || key === 'picture') {
+        // Ensure value is an array before iterating
+        if (Array.isArray(value)) {
+          value.forEach((file) => {
+            formData.append(key, file);
+          });
+        }
+      } else if (value instanceof Date) {
+        formData.append(key, value.toISOString());
+      } else if (value !== undefined && value !== null) {
+        formData.append(key, value as string | Blob);
+      }
+    });
+
+    dispatch(registerPatient(formData));
+  };
 
   return (
     <Form {...form}>
@@ -296,21 +314,36 @@ const SignupForm = () => {
             label="Identification Number"
             placeholder="ex 1234567"
           />
-          <CustomFormField
-            fieldType={FormFieldType.SKELETON}
-            control={form.control}
-            name="idDoc"
-            label="Scanned copy of identification document"
-            renderSkeleton={(field) => (
-              <FormControl>
-                <FileUploader 
-                  files={field.value}
-                  onChange={field.onChange}
-                />
-              </FormControl>
-            )}
-            
-          />
+          <div className="flex space-x-3">
+            <CustomFormField
+              fieldType={FormFieldType.SKELETON}
+              control={form.control}
+              name="idDoc"
+              label="Scanned copy of identification document"
+              renderSkeleton={(field) => (
+                <FormControl>
+                  <FileUploader 
+                    files={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+              )}
+            />
+            <CustomFormField
+              fieldType={FormFieldType.SKELETON}
+              control={form.control}
+              name="picture"
+              label="Upload Profile Picture"
+              renderSkeleton={(field) => (
+                <FormControl>
+                  <FileUploader 
+                    files={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+              )}
+            />
+          </div>
         </div>
 
         <section className="space-y-6">

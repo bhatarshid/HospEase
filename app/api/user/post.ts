@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createUser, registerPatientService } from "@/services/user-service";
 import AppError, { handleErrorNextResponse } from "@/lib/App-Error";
 import { registerPatientRequest, signupRequest } from "@/lib/validations/user.schema";
-import { SignupResponse } from "@/types/entities";
+import { PatientRequestType, SignupResponse } from "@/types/entities";
 
 // signup user
 export async function signup(request: NextRequest) {
@@ -29,21 +29,54 @@ export async function signup(request: NextRequest) {
 
 export async function registerPatient (request: NextRequest) {
   try {
-    const body = await request.json();
-    registerPatientRequest.parse(body);
+    const formData = await request.formData();
+
+    const picture = formData.get('picture') instanceof Blob 
+        ? Buffer.from(await (formData.get('picture') as Blob).arrayBuffer())
+        : undefined;
+    const idDoc = formData.get('idDoc') instanceof Blob 
+        ? Buffer.from(await (formData.get('idDoc') as Blob).arrayBuffer())
+        : undefined
+
+    const profileData: PatientRequestType = {
+      emailId: formData.get('emailId') as string,
+      dateOfBirth: new Date(formData.get('dateOfBirth') as string),
+      address: formData.get('address') as string,
+      occupation: formData.get('occupation') as string,
+      gender: formData.get('gender') as "male" | "female",
+      emergencyContactName: formData.get('emergencyContactName') as string,
+      emergencyContactNumber:formData.get('emergencyContactNumber') as string,
+      allergies: formData.get('allergies') as string ?? null,
+      currentMedications: formData.get('currentMedications') as string,
+      familyMedicalHistory: formData.get('familyMedicalHistory') as string,
+      pastMedicalHistory: formData.get('pastMedicalHistory') as string,
+      primaryPhysician: formData.get('primaryPhysician') as string,
+      idDocType:  formData.get('idDocType') as string,
+      idNumber: formData.get('idNumber') as string,
+      insurancePolicyNumber: formData.get('insurancePolicyNumber') as string,
+      insuranceProvider: formData.get('insuranceProvider') as string,
+      idDoc,
+      picture,
+      treatmentConsent: formData.get('treatmentConsent') !== null ? (formData.get('treatmentConsent') as string) === 'true' : false,
+      disclosureConsent: formData.get('disclosureConsent') !== null ? (formData.get('disclosureConsent') as string) === 'true' : false,
+      privacyPolicy: formData.get('privacyPolicy') !== null ? (formData.get('privacyPolicy') as string) === 'true' : false
+    }
+
+    registerPatientRequest.parse(profileData);
 
     const userId: string | null = JSON.parse(request.headers.get('user_id')!);
 
     if (userId === null) {
       throw new AppError("You are not authenticated", 403);
     }
-    const response: string = await registerPatientService(userId, body);
+    const response: string = await registerPatientService(userId, profileData);
 
     return NextResponse.json({
       message: response
     }, { status: 201 });
   }
   catch (error) {
+    console.log({ error})
     return handleErrorNextResponse(error);
   }
 }

@@ -39,7 +39,11 @@ export const signinApi = async (loginData: LoginInput): Promise<LoginResponse> =
 
 export const registerPatientApi = async (registerPatientData: PatientRequestType): Promise<string> => {
   try {
-    const response: string = await axios.post(`${USER_API}?action=register`, registerPatientData);
+    const response: string = await axios.post(`${USER_API}?action=register`, registerPatientData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return response;
   }
   catch (error: any) {
