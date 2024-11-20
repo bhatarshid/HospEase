@@ -18,7 +18,7 @@ import { fetchDoctors, reset as doctorReset } from "@/redux/features/doctor-slic
 import { AppDispatch, RootState } from "@/redux/store";
 import { PatientRequestType } from "@/types/entities";
 import { registerPatientRequest } from "@/lib/validations/user.schema";
-import { zodResolver } from "@hookform/resolvers/zod"
+// import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod";
 
 const SignupForm = () => {
