@@ -24,7 +24,8 @@ import { z } from "zod";
 const SignupForm = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const {user, isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth)
+  const {user} = useSelector((state: RootState) => state.auth)
+  const {isLoading, isError, isSuccess, message} = useSelector((state: RootState) => state.profile);
   const { doctors: Doctors, isError: doctorError } = useSelector((state: RootState) => state.doctor);
 
   const IdentificationTypes = ["Aadhar", "Election Id", "Licence"];
@@ -79,6 +80,7 @@ const SignupForm = () => {
   }, [isSuccess, isError, doctorError, dispatch]);
 
   const onSubmit = (data: PatientRequestType) => {
+    console.log(data)
     const formData = new FormData();
 
     Object.entries(data).forEach(([key, value]) => {
