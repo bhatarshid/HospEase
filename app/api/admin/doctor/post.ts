@@ -59,7 +59,6 @@ export async function updateDoctor(request: NextRequest) {
     return NextResponse.json({ message: "Doctor Created updated!" }, { status: 200 })
   }
   catch (error) {
-    console.log(error)
     return handleErrorNextResponse(error);
   }
 }
