@@ -1,10 +1,26 @@
+'use client'
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
-import { Input } from '@/Components/ui/input';
-import { Textarea } from '@/Components/ui/textarea';
-import { Button } from '@/Components/ui/button';
 import { MapPin, Mail, Phone } from 'lucide-react';
+import { Form } from '@/Components/ui/form';
+import CustomFormField, { FormFieldType } from '@/Components/CustomFormField';
+import SubmitButton from '@/Components/SubmitButton';
+import { useForm } from "react-hook-form";
 
 const ContactUsPage = () => {
+  const form = useForm({
+    defaultValues: {
+      name: '',
+      email: '',
+      message: ''
+    },
+  });
+
+  const onSubmit = async (data: any) => {
+    // handle form submission
+
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-5xl mx-auto">
@@ -21,12 +37,33 @@ const ContactUsPage = () => {
               <CardTitle>Send Us a Message</CardTitle>
             </CardHeader>
             <CardContent>
-              <form className="space-y-4">
-                <Input placeholder="Your Name" />
-                <Input placeholder="Your Email" type="email" />
-                <Textarea placeholder="Your Message" rows={5} />
-                <Button>Submit</Button>
-              </form>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="px-5 text-[#8f8e8e] space-y-5">
+                  <CustomFormField
+                    fieldType={FormFieldType.INPUT}
+                    control={form.control}
+                    name="name"
+                    label="Please enter your name"
+                    placeholder=""
+                  />
+                  <CustomFormField
+                    fieldType={FormFieldType.INPUT}
+                    control={form.control}
+                    name="name"
+                    label="Please enter your name"
+                    placeholder=""
+                  />
+                  <CustomFormField
+                    fieldType={FormFieldType.TEXTAREA}
+                    control={form.control}
+                    name="name"
+                    label="Please enter your name"
+                    placeholder=""
+                  />
+
+                  <SubmitButton isLoading={false}>Send</SubmitButton>
+                </form>
+              </Form>
             </CardContent>
           </Card>
 
