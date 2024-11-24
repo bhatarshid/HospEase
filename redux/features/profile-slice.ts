@@ -32,7 +32,7 @@ export const registerPatient = createAsyncThunk('auth/register',
 )
 
 export const updateProfile = createAsyncThunk('auth/profile', 
-  async (patientData: ProfileUpdateInput, thunkApi) => {
+  async (patientData: any, thunkApi) => {
     try {
       const response: any = await updateProfileApi(patientData);
       return response.data.message;
@@ -86,14 +86,13 @@ export const profileSlice = createSlice({
         state.isSuccess = false;
         state.message = action.payload as string;
       })
-     .addCase(updateProfile.pending, (state) => {
-      state.isLoading = true;
+      .addCase(updateProfile.pending, (state) => {
+        state.isLoading = true;
       })
       .addCase(updateProfile.fulfilled, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.message = action.payload as string;
       })
       .addCase(updateProfile.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;

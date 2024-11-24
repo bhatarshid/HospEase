@@ -26,7 +26,7 @@ export default function PatientProfile() {
   const dispatch = useDispatch<AppDispatch>();
 
   const {profile, isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.profile);
-  const { doctors: Doctors, isError: doctorError } = useSelector((state: RootState) => state.doctor);
+  const { doctors: Doctors, isError: doctorError, isSuccess: doctorSuccess } = useSelector((state: RootState) => state.doctor);
 
   const Gender = ["male", "female"];
   const IdentificationTypes = ["Aadhar", "Election Id", "Licence"]; 
@@ -73,11 +73,11 @@ export default function PatientProfile() {
     }
 
     if (isSuccess) {
-      toast.success(message)
+      toast.success('Profile data updated successfully')
       dispatch(reset());
     }
 
-  }, [isError, doctorError, isSuccess, message, dispatch])
+  }, [isError, isSuccess, message, dispatch])
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -96,7 +96,23 @@ export default function PatientProfile() {
 
   const onSave = async (data: ProfileUpdateInput) => {
     setEditingField(null)
-    await dispatch(updateProfile(data));
+    const formData = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === 'idDoc' || key === 'picture') {
+        // Ensure value is an array before iterating
+        if (Array.isArray(value)) {
+          value.forEach((file) => {
+            formData.append(key, file);
+          });
+        }
+      } else if (value instanceof Date) {
+        formData.append(key, value.toISOString());
+      } else if (value !== undefined && value !== null) {
+        formData.append(key, value as string | Blob);
+      }
+    });
+    await dispatch(updateProfile(formData));
     dispatch(getMyDetails());
   }
 

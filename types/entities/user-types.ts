@@ -62,12 +62,13 @@ export type ProfileUpdateInput = {
   familyMedicalHistory?: string
   pastMedicalHistory?: string
   primaryPhysician?: string
+  primaryPhysicianName?: string
   idDocType?:  string
   idNumber?: string
-  idDoc?:  Buffer | null
+  idDoc?:  Buffer
   insurancePolicyNumber?:  string
   insuranceProvider?:  string
-  picture?:  Buffer | null
+  picture?:  Buffer
 }
 
 export type ProfileType = {

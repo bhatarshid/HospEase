@@ -38,24 +38,24 @@ export const registerPatientRequest = z.object({
 })
 
 export const profileUpdateSchema = z.object({
-  firstName: z.string().min(3, "First name is required").optional(),
-  lastName: z.string().min(3, "Last name is required").optional(),
-  emailId: z.string().email().optional(),
-  dateOfBirth: z.coerce.date().optional(),
-  address: z.string().optional(),
-  occupation: z.string().optional(),
-  gender: z.enum(['male', 'female']).optional(), 
-  emergencyContactName: z.string().optional(),
-  emergencyContactNumber: phoneSchema.optional(), // Basic phone number validation
-  allergies: z.string().optional(),
-  currentMedications: z.string().optional(),
-  familyMedicalHistory: z.string().optional(),
+  firstName: z.string().min(3, "First name is required").nullable().optional(),
+  lastName: z.string().min(3, "Last name is required").nullable().optional(),
+  emailId: z.string().email().nullable().optional(),
+  dateOfBirth: z.coerce.date().nullable().optional(),
+  address: z.string().nullable().optional(),
+  occupation: z.string().nullable().optional(),
+  gender: z.enum(['male', 'female']).nullable().optional(), 
+  emergencyContactName: z.string().nullable().optional(),
+  emergencyContactNumber: phoneSchema.nullable().optional(), // Basic phone number validation
+  allergies: z.string().nullable().optional(),
+  currentMedications: z.string().nullable().optional(),
+  familyMedicalHistory: z.string().nullable().optional(),
   pastMedicalHistory: z.string().optional(),
   primaryPhysician: z.string().uuid().nullable().or(z.literal('')).optional(),
-  idDocType: z.enum(["Aadhar", "Election Id", "Licence"]).optional(), // Adjust based on your allowed types
-  idNumber: z.string().optional(),
+  idDocType: z.enum(["Aadhar", "Election Id", "Licence"]).nullable().optional(), // Adjust based on your allowed types
+  idNumber: z.string().nullable().optional(),
   idDoc: z.instanceof(Buffer).optional(), // For Bytes type
-  insurancePolicyNumber: z.string().optional(), // Optional for insurance policy number, depending on the system requirements
-  insuranceProvider: z.string().optional(),
+  insurancePolicyNumber: z.string().nullable().optional(), // Optional for insurance policy number, depending on the system requirements
+  insuranceProvider: z.string().nullable().optional(),
   picture: z.instanceof(Buffer).optional() 
 })

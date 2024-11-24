@@ -80,7 +80,6 @@ const SignupForm = () => {
   }, [isSuccess, isError, doctorError, dispatch]);
 
   const onSubmit = (data: PatientRequestType) => {
-    console.log(data)
     const formData = new FormData();
 
     Object.entries(data).forEach(([key, value]) => {

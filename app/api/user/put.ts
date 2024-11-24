@@ -16,26 +16,26 @@ export async function updateProfile (request: NextRequest) {
         : undefined
 
     const profileData: ProfileUpdateInput = {
-      firstName: formData.get('firstName') as string ?? null,
-      lastName: formData.get('lastName') as string ?? null,
-      emailId: formData.get('emailId') as string ?? null,
-      dateOfBirth: formData.get('dateOfBirth') ? new Date(formData.get('dateOfBirth') as string) : null,
-      address: formData.get('address') as string ?? null,
-      occupation: formData.get('occupation') as string ?? null,
-      gender: formData.get('gender') as "male" | "female" | null ?? null,
-      emergencyContactName: formData.get('emergencyContactName') as string ?? null,
-      emergencyContactNumber:formData.get('emergencyContackNumber') as string ?? null,
-      allergies: formData.get('allergies') as string ?? null,
-      currentMedications: formData.get('currentMedications') as string ?? null,
-      familyMedicalHistory: formData.get('familyMedicalHistory') as string ?? null,
-      pastMedicalHistory: formData.get('pastMedicalHistory') as string ?? null,
-      primaryPhysician: formData.get('primaryPhysician') as string ?? null,
-      idDocType:  formData.get('idDocType') as string ?? null,
-      idNumber: formData.get('idNumber') as string ?? null,
+      firstName: formData.get('firstName') as string,
+      lastName: formData.get('lastName') as string,
+      emailId: formData.get('emailId') as string,
+      dateOfBirth: new Date(formData.get('dateOfBirth') as string),
+      address: formData.get('address') as string,
+      occupation: formData.get('occupation') as string,
+      gender: formData.get('gender') as "male" | "female",
+      emergencyContactName: formData.get('emergencyContactName') as string,
+      emergencyContactNumber:formData.get('emergencyContackNumber') as string,
+      allergies: formData.get('allergies') as string,
+      currentMedications: formData.get('currentMedications') as string,
+      familyMedicalHistory: formData.get('familyMedicalHistory') as string,
+      pastMedicalHistory: formData.get('pastMedicalHistory') as string,
+      primaryPhysician: formData.get('primaryPhysician') as string,
+      idDocType:  formData.get('idDocType') as string,
+      idNumber: formData.get('idNumber') as string,
+      insurancePolicyNumber: formData.get('insurancePolicyNumber') as string,
+      insuranceProvider: formData.get('insuranceProvider') as string,
       idDoc,
-      insurancePolicyNumber: formData.get('insurancePolicyNumber') as string ?? null,
-      insuranceProvider: formData.get('insuranceProvider') as string ?? null,
-      picture
+      picture,
     }
 
     profileUpdateSchema.parse(profileData);
@@ -46,10 +46,10 @@ export async function updateProfile (request: NextRequest) {
       throw new AppError('You are not authenticated', 403);
     }
 
-    // const response: string = await updateProfileService(userId, profileData);
+    const response: string = await updateProfileService(userId, profileData);
 
     return NextResponse.json({
-      message: 'response',
+      message: response,
     }, { status: 200 });
   }
   catch (error) {
