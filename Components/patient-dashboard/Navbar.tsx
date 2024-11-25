@@ -72,7 +72,7 @@ const DashboardNavbar = () => {
             </Button>
             {isOpen && (
               <div className="absolute top-full right-0 w-32 bg-backgroundColor text-dark1 flex flex-col items-start space-y-4 z-0 p-3 mr-2 rounded-xl shadow-lg border-2 border-dark3">
-                <Link href="/patient/register">Profile</Link>
+                <Link href="/patient/register" onClick={() => setIsOpen(false)}>Profile</Link>
                 <LogoutButton />  
               </div>
             )}

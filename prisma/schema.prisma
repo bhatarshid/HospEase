@@ -85,7 +85,8 @@ model Doctor {
 
 model Appointment {
   id              String            @id @default(uuid())
-  appointmentDate DateTime
+  appointment     Slot              @relation(fields: [appointmentId], references: [id])
+  appointmentId   String            @unique
   reason          String
   status          AppointmentStatus @default(PENDING)
   createdAt       DateTime
@@ -138,13 +139,14 @@ model ServiceDoctor {
 }
 
 model Slot {
-  id        String         @id @default(uuid())
-  startTime DateTime
-  status    SlotStatus     @default(OPEN)
-  doctor    Doctor         @relation(fields: [doctorId], references: [id])
-  doctorId  String
-  serDoc    ServiceDoctor? @relation(fields: [serDocId], references: [id])
-  serDocId  String?
+  id          String         @id @default(uuid())
+  startTime   DateTime
+  status      SlotStatus     @default(OPEN)
+  doctor      Doctor         @relation(fields: [doctorId], references: [id])
+  doctorId    String
+  serDoc      ServiceDoctor? @relation(fields: [serDocId], references: [id])
+  serDocId    String?
+  appointment Appointment?
 
   @@unique([doctorId, startTime])
   @@index([doctorId, startTime])

@@ -59,6 +59,7 @@ export type ServiceDetailsResponse = {
 
 export type BookAppointment = {
   serviceDoctorId: string;
+  doctorId: string;
   appointmentDate: string;
   reason: string;
 }
