@@ -32,6 +32,24 @@ export async function createService(request: NextRequest) {
   }
 }
 
+export async function updateService(request: NextRequest) {
+  try {
+    const formData = await request.formData();
+    
+    const picture = formData.get('picture') instanceof Blob 
+        ? Buffer.from(await (formData.get('picture') as Blob).arrayBuffer())
+        : undefined
+    const featuresString: string = formData.get('features') as string;
+    const features: string[] = JSON.parse(featuresString);
+
+    // TODO: pending work
+    return NextResponse.json({ message: "Service Updated Sucessfully!" }, { status: 200 })
+  }
+  catch (error) {
+    return handleErrorNextResponse(error); 
+  }
+}
+
 export async function addServiceDoctor(request: NextRequest) {
   try {
     const body = await request.json();
