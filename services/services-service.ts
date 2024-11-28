@@ -223,3 +223,12 @@ export const addServiceDoctorFunction = async (data: ServiceDoctorBody): Promise
     throw error;
   }
 }
+
+export const updateServiceFunction = async (data: any) => {
+  try {
+
+  }
+  catch (error) {
+    throw error;
+  }
+}

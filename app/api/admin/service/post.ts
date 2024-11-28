@@ -1,6 +1,6 @@
 import { handleErrorNextResponse } from "@/lib/App-Error";
 import { createServiceBody, serviceDoctorBody } from "@/lib/validations/service.schema";
-import { addServiceDoctorFunction, createServiceFunction } from "@/services/services-service";
+import { addServiceDoctorFunction, createServiceFunction, /*updateServiceFunction */ } from "@/services/services-service";
 import { CreateServiceBody } from "@/types/entities";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -43,6 +43,7 @@ export async function updateService(request: NextRequest) {
     const features: string[] = JSON.parse(featuresString);
 
     // TODO: pending work
+    // await updateServiceFunction(serviceData);
     return NextResponse.json({ message: "Service Updated Sucessfully!" }, { status: 200 })
   }
   catch (error) {
