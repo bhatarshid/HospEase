@@ -226,7 +226,7 @@ export const addServiceDoctorFunction = async (data: ServiceDoctorBody): Promise
 
 export const updateServiceFunction = async (data: any) => {
   try {
-
+    // add code for update service here
   }
   catch (error) {
     throw error;
