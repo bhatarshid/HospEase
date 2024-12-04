@@ -226,7 +226,28 @@ export const addServiceDoctorFunction = async (data: ServiceDoctorBody): Promise
 
 export const updateServiceFunction = async (data: any) => {
   try {
-    // add code for update service here
+    // modify this
+    await prisma.$transaction(async (prisma) => {
+      // const serviceDoctor = await prisma.serviceDoctor.update();
+
+      const slots = await prisma.slot.updateMany({
+        where: {
+          id: { in: data.slotId },
+          status: 'OPEN',
+          doctorId: data.doctorId
+        },
+        data: {
+          // serDocId: serviceDoctor.id,
+          status: 'PENDING'
+        }
+      });
+      
+      if (slots.count < data.slotId.length) {
+        throw new AppError('Some slots are not available', 404);
+      }
+    });
+
+    return 'Details of service added';
   }
   catch (error) {
     throw error;
