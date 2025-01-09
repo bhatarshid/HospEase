@@ -5,43 +5,43 @@ import { getAllUsers, getMe, getUserFromPhoneNumberOrID } from "./get";
 
 export async function POST (request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const action = searchParams.get('action');
+  const action = searchParams.get("action");
 
   switch (action) {
-    case 'signup':
+    case "signup":
       return signup(request);
-    case 'register':
+    case "register":
       return registerPatient(request);
     default:
-      return NextResponse.json({ message: 'Route not found' }, { status: 404 });
+      return NextResponse.json({ message: "Route not found" }, { status: 404 });
   }
 }
 
 export async function GET (request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const action = searchParams.get('action');
+  const action = searchParams.get("action");
 
   switch (action) {
-    case 'all':
+    case "all":
       return getAllUsers();
-    case 'single':
+    case "single":
       return getUserFromPhoneNumberOrID(request);
-    case 'me':
+    case "me":
       return getMe(request);
     default:
-      return NextResponse.json({ message: 'Route not found' }, { status: 404 });
+      return NextResponse.json({ message: "Route not found" }, { status: 404 });
   }
 }
 
 export async function PUT (request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const action = searchParams.get('action');
+  const action = searchParams.get("action");
 
   switch (action) {
-    case 'update': {
+    case "update": {
       return updateProfile(request);
     }
     default:
-      return NextResponse.json({ message: 'Route not found' }, { status: 404 });
+      return NextResponse.json({ message: "Route not found" }, { status: 404 });
   }
 }

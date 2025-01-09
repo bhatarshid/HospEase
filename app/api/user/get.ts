@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserDataType } from "@/types/entities";
+import { ProfileType, UserDataType } from "@/types/entities";
 import { fetchAllUsers, getUser, getMeService } from "@/services/user-service";
 import AppError, { handleErrorNextResponse } from "@/lib/App-Error";
+import { getToken } from "next-auth/jwt";
+import { AuthToken } from "../auth/[...nextauth]/route";
 
 // get all users
 export async function getAllUsers() {
@@ -18,10 +20,10 @@ export async function getAllUsers() {
 export async function getUserFromPhoneNumberOrID (request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
-    const id = searchParams.get('id');
+    const id = searchParams.get("id");
 
     if (!id) {
-      throw new Error('Missing or invalid id');
+      throw new Error("Missing or invalid id");
     }
 
     const user: UserDataType = await getUser(id);
@@ -35,13 +37,14 @@ export async function getUserFromPhoneNumberOrID (request: NextRequest) {
 
 export async function getMe (request: NextRequest) {
   try {
-    const userId: string | null = JSON.parse(request.headers.get('user_id')!);
+    const token = (await getToken({ req: request })) as AuthToken | null
+    const userId = JSON.stringify(token?.id);
     
     if (!userId) {
-      throw new AppError('Please authenticate', 401)
+      throw new AppError("Please authenticate", 401)
     }
 
-    const profile: any = await getMeService(userId);
+    const profile: ProfileType = await getMeService(userId);
 
     return NextResponse.json({ profile });
   }

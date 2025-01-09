@@ -1,12 +1,12 @@
 import AppError from "@/lib/App-Error";
 import prisma from "@/lib/db";
-import { CreateUserInput, PatientRequestType, ProfileType, ProfileUpdateInput, SignupResponse, UserDataType } from "@/types/entities";
+import { CreateUserInput, ProfileType, ProfileUpdateInput, RegisterPatientRequest, SignupResponse, UserData, UserDataType } from "@/types/entities";
 import { Patient } from "@prisma/client";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
 export async function fetchAllUsers(): Promise<UserDataType[]> {
   try {
-    const users = await prisma.user.findMany({
+    const users: UserDataType[] = await prisma.user.findMany({
       select: {
         id: true,
         phoneNumber: true,
@@ -29,14 +29,14 @@ export async function fetchAllUsers(): Promise<UserDataType[]> {
 
 export async function createUser(data: CreateUserInput): Promise<SignupResponse> {
   try {
-    const user = await prisma.user.findUnique({
+    const user: UserData | null = await prisma.user.findUnique({
       where: {
         phoneNumber: data.phoneNumber,
       }
     });
 
     if (user) {
-      throw new AppError('User already exists', 409);
+      throw new AppError("User already exists", 409);
     }
 
     const hashPassword: string = await bcrypt.hash(data.password, 10)
@@ -69,7 +69,7 @@ export async function createUser(data: CreateUserInput): Promise<SignupResponse>
 
 export async function getUser(id: string): Promise<UserDataType> {
   try {
-    const user = await prisma.user.findFirst({
+    const user: UserDataType | null = await prisma.user.findFirst({
       where: {
         OR: [
           { id: id },
@@ -90,7 +90,7 @@ export async function getUser(id: string): Promise<UserDataType> {
     });
 
     if (!user) {
-      throw new AppError('User not found', 404);
+      throw new AppError("User not found", 404);
     }
 
     return user;
@@ -100,7 +100,7 @@ export async function getUser(id: string): Promise<UserDataType> {
   }
 }
 
-export async function registerPatientService(userId: string, data: PatientRequestType): Promise<string> {
+export async function registerPatientService(userId: string, data: RegisterPatientRequest): Promise<string> {
   try {
     const user: { id: string } | null = await prisma.user.findUnique({
       where : { id: userId },
@@ -108,14 +108,14 @@ export async function registerPatientService(userId: string, data: PatientReques
     });
 
     if (!user) {
-      throw new AppError('User not found', 404);
+      throw new AppError("User not found", 404);
     }
 
     const userRegistered: Patient | null = await prisma.patient.findUnique({
       where: { userId: user.id }
     });
     if (userRegistered) {
-      throw new AppError('User already registered', 400);
+      throw new AppError("User already registered", 400);
     }
 
     await prisma.patient.create({
@@ -150,10 +150,9 @@ export async function registerPatientService(userId: string, data: PatientReques
       data: { isRegistered: true, profilePicture: data.picture }
     });
     
-    return 'Registration complete';
+    return "Registration complete";
   }
   catch (error) {
-    console.log(error)
     throw error;
   }
 } 
@@ -166,7 +165,7 @@ export const updateProfileService = async (userId: string, data: ProfileUpdateIn
     });
 
     if (!user) {
-      throw new AppError('User not found', 404);
+      throw new AppError("User not found", 404);
     }
 
     const patient: { id: string } | null = await prisma.patient.findUnique({
@@ -175,7 +174,7 @@ export const updateProfileService = async (userId: string, data: ProfileUpdateIn
     });
 
     if (!patient) {
-      throw new AppError('User not registered', 400);
+      throw new AppError("User not registered", 400);
     }
 
     const updateUserData: any = {
@@ -213,7 +212,7 @@ export const updateProfileService = async (userId: string, data: ProfileUpdateIn
       data: updatePatientData
     });
 
-    return 'Profile data updated successfully';
+    return "Profile data updated successfully";
   }
   catch (error) { 
     throw error;
@@ -264,11 +263,11 @@ export const getMeService = async (userId: string): Promise<ProfileType> => {
     });
     
     if (!profile) {
-      throw new AppError('You need to signup first', 404);
+      throw new AppError("You need to signup first", 404);
     }
 
     if (!profile.patient) {
-      throw new AppError('User is not registered', 404);
+      throw new AppError("User is not registered", 404);
     }
 
     return profile
