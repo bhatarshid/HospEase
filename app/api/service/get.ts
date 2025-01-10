@@ -18,10 +18,10 @@ export async function getAllServices() {
 export async function getServiceDetails(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
-    const id = searchParams.get('id');
+    const id = searchParams.get("id");
 
     if (!id) {
-      throw new AppError('Provide Id of service', 400);
+      throw new AppError("Provide Id of service", 400);
     }
 
     const service: ServiceDetailsResponse = await fetchServiceDetails(id);
@@ -35,10 +35,10 @@ export async function getServiceDetails(request: NextRequest) {
 
 export async function getAllAppointments(request: NextRequest) {
   try {
-    const userId: string | null = JSON.parse(request.headers.get('user_id')!);
+    const userId: string | null = JSON.parse(request.headers.get("user_id")!);
 
     if (userId === null) {
-      throw new AppError('You are not authenticated', 403);
+      throw new AppError("You are not authenticated", 403);
     }
 
     const appointments: AppointmentDetails[] = await fetchAllAppointments(userId);
