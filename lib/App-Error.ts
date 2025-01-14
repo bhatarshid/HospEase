@@ -14,14 +14,22 @@ class AppError extends Error {
 
 export function handleErrorNextResponse(error: unknown) {
   if (error instanceof ZodError) {
-    return NextResponse.json({ error: error.errors[0].message }, { status: 400 });
+    return NextResponse.json({ 
+      error: error.errors.map(err => ({
+          path: err.path.join("."),
+          message: err.message
+        })),
+      message: "Validation Error"
+      }, 
+      { status: 400 }
+    );
   }
 
   if (error instanceof AppError) {
     return NextResponse.json({ error: error.message }, { status: error.statusCode });
   }
 
-  return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 }
 
 export default AppError 

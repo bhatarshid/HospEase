@@ -4,28 +4,28 @@ import { bookAppointment } from "./post";
 
 export async function GET (request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const action = searchParams.get('action');
+  const action = searchParams.get("action");
 
   switch (action) {
-    case 'all':
+    case "all":
       return getAllServices();
-    case 'view':
+    case "view":
       return getServiceDetails(request);
-    case 'appointment':
+    case "appointment":
       return getAllAppointments(request);
     default:
-      return NextResponse.json({ message: 'Route not found' }, { status: 404 });
+      return NextResponse.json({ message: "Route not found" }, { status: 404 });
   }
 }
 
 export async function POST (request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const action = searchParams.get('action');
+  const action = searchParams.get("action");
 
   switch (action) {
-    case 'appointment':
+    case "appointment":
       return bookAppointment(request);
     default:
-      return NextResponse.json({ message: 'Route not found' }, { status: 404 });
+      return NextResponse.json({ message: "Route not found" }, { status: 404 });
   }
 }
