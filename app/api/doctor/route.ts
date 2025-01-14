@@ -3,14 +3,14 @@ import { getAllDoctors, getDoctorById } from "./get";
 
 export async function GET (request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const action = searchParams.get('action');
+  const action = searchParams.get("action");
 
   switch (action) {
-    case 'all':
+    case "all":
       return getAllDoctors();
-    case 'single':
+    case "single":
       return getDoctorById(request);
     default:
-      return NextResponse.json({ message: 'Route not found' }, { status: 404 });
+      return NextResponse.json({ message: "Route not found" }, { status: 404 });
   }
 }
