@@ -29,7 +29,7 @@ const LogoutButton = () => {
   }, [ isError, isSuccess, message, router, dispatch]);
 
   const handleLogout = async () => {
-    dispatch(signout());
+    await dispatch(signout());
   }
   return (
     <div>

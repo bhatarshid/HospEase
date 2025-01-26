@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CreateUserInput, LoginInput, LoginResponse, PatientRequestType, ProfileType, ProfileUpdateInput, SignupResponse } from '@/types/entities';
+import { CreateUserInput, LoginInput, LoginResponse, ProfileType, ProfileUpdateInput, SignupResponse } from '@/types/entities';
 import axios from 'axios';
 import { signIn } from 'next-auth/react';
 
@@ -37,7 +37,7 @@ export const signinApi = async (loginData: LoginInput): Promise<LoginResponse> =
   }
 }
 
-export const registerPatientApi = async (registerPatientData: PatientRequestType): Promise<string> => {
+export const registerPatientApi = async (registerPatientData: any): Promise<string> => {
   try {
     const response: string = await axios.post(`${USER_API}?action=register`, registerPatientData, {
       headers: {

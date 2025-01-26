@@ -38,7 +38,7 @@ export async function getUserFromPhoneNumberOrID (request: NextRequest) {
 export async function getMe (request: NextRequest) {
   try {
     const token = (await getToken({ req: request })) as AuthToken | null
-    const userId = JSON.stringify(token?.id);
+    const userId = token?.id;
     
     if (!userId) {
       throw new AppError("Please authenticate", 401)

@@ -14,17 +14,17 @@ export const convertFileToUrl = (file: File) => URL.createObjectURL(file);
 export const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
 export const getImageSrc = (picture: any) => {
-    if (!picture) {
-      return '';
-    }
-
-    if (picture.type === 'Buffer' && picture.data) {
-      const buffer = Buffer.from(picture.data);
-      return `data:image/jpg;base64,${buffer.toString('base64')}`;
-    }
-    
+  if (!picture) {
     return '';
-  };
+  }
+
+  if (picture.type === 'Buffer' && picture.data) {
+    const buffer = Buffer.from(picture.data);
+    return `data:image/jpg;base64,${buffer.toString('base64')}`;
+  }
+  
+  return '';
+};
 
 // Group timeslots by date
 export const groupSlotsByDate = (slots: Date[]) => {

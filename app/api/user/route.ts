@@ -27,7 +27,7 @@ export async function GET (request: NextRequest) {
     case "single":
       return getUserFromPhoneNumberOrID(request);
     case "me":
-      return getMe(request);
+      return await getMe(request);
     default:
       return NextResponse.json({ message: "Route not found" }, { status: 404 });
   }
