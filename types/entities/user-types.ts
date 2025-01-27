@@ -24,7 +24,7 @@ export type LoginInput = { phoneNumber: string; password: string };
 
 
 export type RegisterPatientRequest = z.infer<typeof registerPatientRequest>;
-export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>;
+export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema> & { primaryPhysicianName?: string };
 
 export type ProfileType = {
     id: string;

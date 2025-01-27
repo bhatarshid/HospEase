@@ -67,12 +67,12 @@ export async function registerPatient (request: NextRequest) {
     registerPatientRequest.parse(profileData);
 
     const token = (await getToken({ req: request })) as AuthToken | null
-    const userId = JSON.stringify(token?.id);
-
+    const userId = token?.id;
+    
     if (userId === null) {
       throw new AppError("You are not authenticated", 403);
     }
-    const response: string = await registerPatientService(userId, profileData);
+    const response: string = await registerPatientService(userId!, profileData);
 
     return NextResponse.json({
       message: response

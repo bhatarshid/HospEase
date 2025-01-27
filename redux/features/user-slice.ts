@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getMyDetailsApi } from '@/lib/actions/user.actions';
+import { getMyDetailsApi, registerPatientApi, updateProfileApi } from '@/lib/actions/user.actions';
 import { ProfileType } from '@/types/entities';
 
 interface ProfileState {
@@ -18,7 +18,7 @@ const initialState: ProfileState = {
   message: ''
 }
 
-export const getMyDetails = createAsyncThunk('auth/details', 
+export const getMyDetails = createAsyncThunk('user/details', 
   async (_, thunkApi) => {
     try {
       const response: ProfileType = await getMyDetailsApi();
@@ -31,8 +31,34 @@ export const getMyDetails = createAsyncThunk('auth/details',
   }
 )
 
-export const profileSlice = createSlice({
-  name: 'profile',
+export const registerPatient = createAsyncThunk('user/register',
+  async (patientData: any, thunkApi) => {
+    try {
+      const response: any = await registerPatientApi(patientData);
+      return response.data.message;
+    }
+    catch (error: any) {
+      const message = error.response.data.error || 'Internal Server Error';
+      return thunkApi.rejectWithValue(message);
+    }
+  }
+)
+
+export const updateProfile = createAsyncThunk('auth/profile', 
+  async (patientData: any, thunkApi) => {
+    try {
+      const response: any = await updateProfileApi(patientData);
+      return response.data.message;
+    }
+    catch (error: any) {
+      const message = error.message.data.error || 'Internal Server Error';
+      return thunkApi.rejectWithValue(message);
+    }
+  }
+)
+
+export const userSlice = createSlice({
+  name: 'user',
   initialState,
   reducers: {
     reset: (state) => {
@@ -61,8 +87,38 @@ export const profileSlice = createSlice({
         state.isSuccess = false;
         state.message = action.payload as string;
       })
+      .addCase(registerPatient.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(registerPatient.fulfilled, (state, action: PayloadAction<any>) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.message = action.payload as string;
+      })
+      .addCase(registerPatient.rejected, (state, action: PayloadAction<any>) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload as string;
+      })
+      .addCase(updateProfile.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateProfile.fulfilled, (state, action: PayloadAction<any>) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.message = "Profile updated"
+      })
+      .addCase(updateProfile.rejected, (state, action: PayloadAction<any>) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload as string;
+      })
   }
 })
 
-export const { reset } = profileSlice.actions
-export default profileSlice.reducer
+export const { reset } = userSlice.actions
+export default userSlice.reducer

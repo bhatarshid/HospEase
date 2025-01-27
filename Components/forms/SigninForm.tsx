@@ -28,16 +28,16 @@ const SigninForm = () => {
 
   useEffect(() => {
     if (isError) {
-      toast.error(message)
+      toast.error(message);
     }
 
     if (isSuccess) {
       toast.success(message)
       if (user?.isRegistered) {
-        router.push('/patient/dashboard')
+        router.push('/patient/dashboard');
       }
       else {
-        router.push('/patient/register')
+        router.push('/patient/register');
       }
     }
 

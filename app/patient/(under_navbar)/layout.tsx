@@ -8,7 +8,7 @@ export default function PatientLayout({
   return (
     <>
       <DashboardNavbar />
-      <main className="bg-backgroundColor mt-14">{children}</main>
+      <main className="bg-backgroundColor">{children}</main>
     </>
   )
 }

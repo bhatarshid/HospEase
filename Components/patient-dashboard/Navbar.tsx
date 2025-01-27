@@ -47,7 +47,7 @@ export default function Navbar() {
     }
 
     fetchData();
-  }, [dispatch, isError, profile])
+  }, [dispatch])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -108,7 +108,7 @@ export default function Navbar() {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuItem>
-                <Link href="/profile">Profile</Link>
+                <Link href="/patient/profile">Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <LogoutButton />

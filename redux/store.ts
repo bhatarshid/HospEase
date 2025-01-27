@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './features/auth-slice';
 import userReducer from './features/user-slice';
+import doctorReducer from './features/doctor-slice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     user: userReducer,
+    doctor: doctorReducer
   },    // function takes current state, action and returns new state
 });
 
