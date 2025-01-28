@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Lexend } from "@next/font/google";
+import { Inter } from "@next/font/google";
 import "./globals.css";
 import AuthProvider from "@/context/AuthProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ReduxProvider } from "@/redux/provider";
 
-const lexend = Lexend({
+const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"]
 });
@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
         <body
-          className={`${lexend.className} antialiased`}
+          className={`${inter.className} antialiased`}
           >
           <ReduxProvider>
             <AuthProvider>

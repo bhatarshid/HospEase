@@ -89,9 +89,9 @@ export const ServiceGrid: React.FC<ServiceGridProps> = ({ service = 'full' }) =>
   }
 
   return (
-    <div className="shadow-sm shadow-dark3 p-3">
-      <div className="pb-2 flex justify-between">
-        <div>
+    <div className="shadow-sm shadow-dark3">
+      <div className="flex justify-between">
+        <div className={`${service == 'full' ? "container" : ""}`}>
           <h2 className="text-2xl font-semibold">Our Services</h2>
           <p className="text-sm text-dark3">
             We offer a wide range of services to help you stay healthy and well-rounded.
@@ -108,7 +108,7 @@ export const ServiceGrid: React.FC<ServiceGridProps> = ({ service = 'full' }) =>
         )}
       </div>
       {isLoading ? (
-        <div className={service === 'dashboard' ? 'max-w-72 flex space-x-4 remove-scrollbar overflow-x-auto' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6'}>
+        <div className={service === 'dashboard' ? 'w-full flex space-x-4 remove-scrollbar overflow-x-auto' : 'container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6'}>
           {[...Array(6)].map((_, index) => (
             <SkeletonCard key={index} />
           ))}
@@ -122,7 +122,7 @@ export const ServiceGrid: React.FC<ServiceGridProps> = ({ service = 'full' }) =>
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+            <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services && services.map((service: any, index: number) => (
                 <ServiceCard key={service.id || index} service={service} />
               ))}

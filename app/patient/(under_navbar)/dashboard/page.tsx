@@ -8,8 +8,8 @@ const Dashboard = () => {
   let {profile, isLoading} = useSelector((state: RootState) => state.user);
  
   return (
-    <div className="container flex flex-col lg:flex-row min-h-screen">
-      <div className="flex-grow space-y-8 py-6 overflow-auto">
+    <div className="container bg-gradient-to-b from-slate-50 to-slate-100 flex flex-col lg:flex-row min-h-screen">
+      <div className="flex-grow space-y-8 overflow-auto">
         <WelcomeSection userName={profile ? profile.firstName : 'User'} isLoading={isLoading} />
         <ServiceGrid service='dashboard'/>
       </div>

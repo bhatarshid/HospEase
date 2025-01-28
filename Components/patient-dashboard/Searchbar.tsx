@@ -1,46 +1,30 @@
 "use client"
 
-import { Form, FormControl, FormField, FormItem } from "@/Components/ui/form";
-import { useForm } from "react-hook-form";
-import { Search } from "lucide-react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-
+import { useForm } from "react-hook-form"
+import { Search } from 'lucide-react'
+import { Input } from "@/Components/ui/input"
 
 const Searchbar = () => {
   const form = useForm({
     defaultValues: {
       searchInput: ''
     },
-  });
+  })
 
-  const onSubmit = () => {
+  const onSubmit = (data: { searchInput: string }) => {
     // handle form submission
+    console.log(data.searchInput)
   }
-  return (      
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center w-[60%]">
-        <FormField
-          control={form.control}
-          name="searchInput"
-          render={({ field }) => (
-            <FormItem className="flex-grow">
-              <FormControl>
-                <Input
-                  placeholder="Search..."
-                  {...field}
-                  className="h-8 rounded-l-full focus-visible:ring-0 focus-visible:ring-offset-0 border-r-0"
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <Button type="submit" className="w-1/5 h-8 rounded-r-full bg-primary text-white hover:bg-dark1">
-          <Search className="h-4 w-4" size={24} />
-          <span className="sr-only">Search</span>
-        </Button>
-      </form>
-    </Form>
+
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)} className="relative w-64">
+      <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+      <Input
+        {...form.register("searchInput")}
+        placeholder="Search..."
+        className="pl-8 pr-4 py-2 w-full h-9 bg-white rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      />
+    </form>
   )
 }
 

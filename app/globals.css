@@ -3,6 +3,67 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
   /* Remove scrollbar */
   .remove-scrollbar::-webkit-scrollbar {
     width: 0px;
@@ -27,7 +88,7 @@
 
 @layer utilities {
   .container {
-    @apply relative flex-1 overflow-y-auto px-[5%];
+    @apply relative flex-1 overflow-y-auto px-[5%] py-8;
   }
   .sub-container {
     @apply mx-auto flex size-full flex-col py-10;
@@ -60,7 +121,7 @@
     @apply overflow-hidden border-transparent w-full text-[14px] h-11 px-3 py-3 outline-none !important;
   }
   .checkbox-label {
-    @apply cursor-pointer text-sm font-medium text-dark2 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 md:leading-none;
+    @apply cursor-pointer text-sm font-medium text-gray-600 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 md:leading-none;
   }
   .file-upload {
     @apply text-[12px] flex cursor-pointer  flex-col items-center justify-center gap-3 rounded-[8px] border border-dashed border-gray-500 bg-gray-200 p-5;
@@ -69,10 +130,10 @@
     @apply flex flex-col justify-center gap-2 text-center text-gray-600;
   }
   .shad-select-trigger {
-    @apply bg-white border-gray-500 placeholder:text-dark3 rounded-[6px] h-11 focus:ring-0 focus:ring-offset-0 !important;
+    @apply bg-white border-gray-500 placeholder:text-gray-800 rounded-[6px] h-11 focus:ring-0 focus:ring-offset-0 !important;
   }
   .shad-select-content {
-    @apply bg-gray-200 border-dark1 !important;
+    @apply bg-gray-200 border-gray-500 !important;
   }
 
 }

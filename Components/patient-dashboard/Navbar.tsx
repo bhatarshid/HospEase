@@ -2,28 +2,19 @@
 
 import * as React from "react"
 import Link from "next/link"
-import Image from "next/image";
-import { BellIcon, MenuIcon, Search } from "lucide-react"
+import Image from "next/image"
+import { Bell, Search } from "lucide-react"
+import { useDispatch, useSelector } from "react-redux"
+import { toast } from "react-toastify"
 
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from "@/Components/ui/navigation-menu"
 import { Button } from "@/Components/ui/button"
-import { Input } from "@/Components/ui/input"
-import { Sheet, SheetContent, SheetTrigger } from "@/Components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/Components/ui/dropdown-menu"
-import Searchbar from "./Searchbar";
-import LogoutButton from "../LogoutButton";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { toast } from "react-toastify";
-import { getMyDetails, reset } from "@/redux/features/user-slice";
-import { getImageSrc } from "@/lib/utils";
+import Searchbar from "./Searchbar"
+import LogoutButton from "../LogoutButton"
+import type { AppDispatch, RootState } from "@/redux/store"
+import { getMyDetails } from "@/redux/features/user-slice"
+import { getImageSrc } from "@/lib/utils"
 
 const navigation = [
   { name: "Appointments", href: "/patient/appointments" },
@@ -33,121 +24,87 @@ const navigation = [
 ]
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const {profile, isError } = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch<AppDispatch>();
+  const { profile, isError } = useSelector((state: RootState) => state.user)
+  const dispatch = useDispatch<AppDispatch>()
 
   React.useEffect(() => {
     async function fetchData() {
-      if(isError) { 
-        toast.error("Failed to load profile. Please refresh page");
+      if (isError) {
+        toast.error("Failed to load profile. Please refresh page")
       }
-
-      dispatch(getMyDetails());
+      dispatch(getMyDetails())
     }
-
-    fetchData();
-  }, [dispatch])
+    fetchData()
+  }, [dispatch, isError])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <div className="mr-4 flex">
-          <Link href="/patient/dashboard">
-            <Image
-              src="/assets/icons/logo-full.svg"
-              alt="logo"
-              width={200}
-              height={40}
-              className="h-7 w-fit bg-primary rounded-[8px] p-1"
-            />
-          </Link>
-        </div>
-
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex md:flex-1">
-          <NavigationMenu>
-            <NavigationMenuList>
-              {navigation.map((item) => (
-                <NavigationMenuItem key={item.name}>
-                  <Link href={item.href} legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>{item.name}</NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              ))}
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
-
-        <div className="flex flex-1 items-center justify-end space-x-4">
-          <div className="hidden w-full md:flex md:w-auto md:flex-1 md:justify-end md:space-x-4">
-            <Searchbar />
-            <Button variant="ghost" size="icon">
-              <BellIcon className="h-5 w-5" />
-            </Button>
-          </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                {profile?.profilePicture ? (
-                  <Image
-                    src={getImageSrc(profile?.profilePicture)}
-                    alt="profile"
-                    height={1000}
-                    width={1000}
-                    className='w-9 h-9 rounded-full mx-auto sm:mx-0'
-                  />
-                ) : (
-                  <Avatar>
-                    <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${profile?.firstName[0]}${profile?.lastName[0]}`} />
-                    <AvatarFallback>HE</AvatarFallback>
-                  </Avatar>
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuItem>
-                <Link href="/patient/profile">Profile</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <LogoutButton />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Mobile Navigation */}
-          <div className="flex md:hidden">
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <MenuIcon className="h-5 w-5" />
-                  <span className="sr-only">Toggle navigation menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right">
-                <div className="flex flex-col space-y-4">
-                  {navigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                  <div className="relative w-full">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search..." className="pl-8" />
-                  </div>
+    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <Link href="/patient/dashboard" className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-center">
+                  <span className="text-white font-semibold">CP</span>
                 </div>
-              </SheetContent>
-            </Sheet>
+                <span className="text-xl font-semibold text-gray-900">CarePulse</span>
+              </Link>
+            </div>
+            <div className="hidden md:block ml-10">
+              <div className="flex items-center space-x-4">
+                {navigation.map((item) => (
+                  <Button key={item.name} variant="ghost" className="text-gray-600 hover:text-gray-900" asChild>
+                    <Link href={item.href}>{item.name}</Link>
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="hidden md:block">
+              <Searchbar />
+            </div>
+            <Button variant="ghost" size="icon">
+              <Bell className="h-5 w-5" />
+              <span className="sr-only">Notifications</span>
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  {profile?.profilePicture ? (
+                    <Image
+                      src={getImageSrc(profile?.profilePicture) || "/placeholder.svg"}
+                      alt="profile"
+                      height={32}
+                      width={32}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <Avatar>
+                      <AvatarImage
+                        src={`https://api.dicebear.com/6.x/initials/svg?seed=${profile?.firstName[0]}${profile?.lastName[0]}`}
+                      />
+                      <AvatarFallback>
+                        {profile?.firstName[0]}
+                        {profile?.lastName[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuItem asChild>
+                  <Link href="/patient/profile">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <LogoutButton />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
-    </header>
+    </nav>
   )
 }
 
