@@ -35,7 +35,7 @@ const Searchbar = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-1/5 h-8 rounded-r-full bg-dark3 hover:text-white hover:bg-dark1">
+        <Button type="submit" className="w-1/5 h-8 rounded-r-full bg-primary text-white hover:bg-dark1">
           <Search className="h-4 w-4" size={24} />
           <span className="sr-only">Search</span>
         </Button>

@@ -59,7 +59,7 @@ export default function Navbar() {
               alt="logo"
               width={200}
               height={40}
-              className="h-7 w-fit bg-dark1 rounded-[8px] p-1"
+              className="h-7 w-fit bg-primary rounded-[8px] p-1"
             />
           </Link>
         </div>

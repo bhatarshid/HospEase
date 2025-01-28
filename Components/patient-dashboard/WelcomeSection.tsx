@@ -19,7 +19,7 @@ export function WelcomeSection({ userName, isLoading }: WelcomeSectionProps) {
       <Card className="w-auto rounded-xl">
         <CardContent className="flex items-center space-x-2 p-2">
           <CalendarDays className="h-4 w-4 text-primary" />
-          <p className="text-sm">{new Date().toDateString()}</p>
+          <p className="text-sm text-primary">{new Date().toDateString()}</p>
         </CardContent>
       </Card>
     </section>
