@@ -1,36 +1,72 @@
-'use client'
-import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+"use client"
 
-const Navbar = () => {
+import { useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { Button } from "@/Components/ui/button"
+import { Menu, X } from "lucide-react"
+
+export function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
   return (
-    <div className="flex flex-row bg-backgroundColor justify-between items-center h-8 p-8">
-      <div className="w-[10%] flex justify-start items-center">
-      <Image 
-        src="/assets/icons/logo-full.svg"
-        alt="logo"
-        width={200}
-        height={40}
-        className="h-7 w-fit bg-primary rounded-[8px] p-1"
-      />
+    <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <div className="flex items-center justify-between px-4 md:px-6 h-16 w-full">
+        <div className="flex-shrink-0">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-center">
+              <span className="text-white font-semibold">CP</span>
+            </div>
+            <span className="text-xl font-semibold text-darkcolor-top">CarePulse</span>
+          </Link>
+        </div>
+
+        <nav
+          className={`${isMenuOpen ? "flex" : "hidden"} absolute top-16 left-0 right-0 flex-col items-center bg-white p-4 md:static md:flex md:flex-row md:space-x-6 md:bg-transparent md:p-0`}
+        >
+          <Link
+            href="/about"
+            className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors py-2 md:py-0"
+          >
+            About
+          </Link>
+          <Link
+            href="/services"
+            className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors py-2 md:py-0"
+          >
+            Services
+          </Link>
+          <Link
+            href="/departments"
+            className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors py-2 md:py-0"
+          >
+            Departments
+          </Link>
+          <Link
+            href="/contact"
+            className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors py-2 md:py-0"
+          >
+            Contact Us
+          </Link>
+        </nav>
+
+        <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4">
+            <Link href="/auth/signin">
+              <Button variant="ghost" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                Login
+              </Button>
+            </Link>
+            <Link href="/auth/signup">
+              <Button className="bg-blue-600 text-white hover:bg-blue-700">Sign up</Button>
+            </Link>
+          </div>
+          <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
-      <section className="bg-white w-[65%] flex items-center justify-between px-10 py-1 rounded-2xl mr-6">
-        <Link href='/about'>About</Link>
-        <Link href='/services'>Services</Link>
-        <Link href='/departments'>Departments</Link>
-        <Link href='/contact'>Contact Us</Link>
-      </section>
-      <section className="w-[15%] flex justify-between px-3 py-1 space-x-2">
-        <Link href='/auth/signin' className="bg-primary px-5 py-1 rounded-xl text-white">
-          Login
-        </Link>
-        <Link href='/auth/signup' className="bg-white px-5 py-1 border border-primary rounded-xl">
-          Signup
-        </Link> 
-      </section>
-    </div>
+    </header>
   )
 }
 
-export default Navbar
