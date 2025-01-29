@@ -100,7 +100,7 @@ export const ServiceGrid: React.FC<ServiceGridProps> = ({ service = 'full' }) =>
         {service === 'dashboard' && (
           <Link
             href="/patient/services"
-            className="bg-darkcolor-low text-white text-xs rounded-[6px] p-2 h-1/2"
+            className="bg-white text-darkcolor-medium text-sm rounded-[6px] p-2 h-1/2"
             aria-label="View All Services"
           >
             View All

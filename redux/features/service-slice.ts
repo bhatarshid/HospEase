@@ -1,4 +1,4 @@
-import { fetchServicesAPI } from "@/lib/actions/service.actions";
+import { fetchServiceDetailsAPI, fetchServicesAPI } from "@/lib/actions/service.actions";
 import { AppointmentDetails, ServiceDetailsResponse } from "@/types/entities/service-types";
 import { Service } from "@prisma/client";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
@@ -34,6 +34,19 @@ export const fetchServices = createAsyncThunk('service/all',
   }
 )
 
+export const fetchServiceDetails = createAsyncThunk('service/view', 
+  async (serviceId: string, thunkApi) => {
+    try {
+      const response: any = await fetchServiceDetailsAPI(serviceId);
+      return response;
+    }
+    catch (error: any) {
+      const message = error.response.data.error || 'Internal server error';
+      return thunkApi.rejectWithValue(message);
+    }
+  }
+)
+
 export const serviceSlice = createSlice({
   name: 'service',
   initialState,
@@ -44,6 +57,7 @@ export const serviceSlice = createSlice({
       state.isError = false
       state.message = ''
       state.services = null
+      state.service = null
     }
   },
   extraReducers: (builder) => {
@@ -60,6 +74,23 @@ export const serviceSlice = createSlice({
         state.services = (action.payload.data.services);
       })
       .addCase(fetchServices.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload as string;
+      })
+      .addCase(fetchServiceDetails.pending, (state) => {
+        state.isLoading = true;
+        state.message = '';
+      })
+      .addCase(fetchServiceDetails.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.message = '';
+        state.service = (action.payload.data.service as ServiceDetailsResponse);
+      })
+      .addCase(fetchServiceDetails.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

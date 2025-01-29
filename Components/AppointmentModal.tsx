@@ -25,7 +25,7 @@ import { ServiceDoctorDetails } from "@/types/entities/service-types";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { toast } from "react-toastify";
-import { bookAppointment, reset } from "@/redux/features/service-slice";
+// import { bookAppointment, reset } from "@/redux/features/service-slice";
 
 export const AppointmentModal = ({
   isOpen, 
@@ -67,16 +67,16 @@ export const AppointmentModal = ({
   useEffect(() => {
     if(isError) {
       toast.error("Failed to book an appointment")
-      dispatch(reset())
+      // dispatch(reset())
     }
 
     if(isSuccess && doctorData) {
       toast.success("Appointment booked successfully")
-      dispatch(reset())
+      // dispatch(reset())
       onClose()
     }
 
-    dispatch(reset());
+    // dispatch(reset());
   }, [isError, isSuccess, dispatch]);
 
   const handleDateChange = (date: string) => {
@@ -108,7 +108,7 @@ export const AppointmentModal = ({
       appointmentDate,
       reason: data.reason
     }
-    dispatch(bookAppointment(requestBody));    
+    // dispatch(bookAppointment(requestBody));    
   }
   
   return (
