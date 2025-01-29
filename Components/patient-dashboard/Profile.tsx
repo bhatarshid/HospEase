@@ -313,7 +313,7 @@ export default function PatientProfile() {
           <Button
             type="button"
             variant="outline"
-            className="border rounded-[6px] border-dark2 w-"
+            className="border rounded-[6px] border-darkcolor-medium w-"
             onClick={handleFormReset}
           >
             Cancel

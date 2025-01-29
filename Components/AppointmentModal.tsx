@@ -131,7 +131,7 @@ export const AppointmentModal = ({
           <form onSubmit={form.handleSubmit(onSubmit)} className="p-4 space-y-4 text-[#8f8e8e] ">
             <div>
               <Label className="shad-input-label">Patient Name</Label>
-              <p className="mt-1 text-dark1 bg-[#ebe9e9] p-2 border rounded-[6px] font-normal">
+              <p className="mt-1 text-darkcolor-high bg-[#ebe9e9] p-2 border rounded-[6px] font-normal">
                 {user?.firstName} {user?.lastName}
               </p>
             </div>
@@ -191,7 +191,7 @@ export const AppointmentModal = ({
                 type="button"
                 variant="outline"
                 onClick={onClose}
-                className="flex-1 text-dark2 border-dark1"
+                className="flex-1 text-darkcolor-medium border-darkcolor-high"
               >
                 Cancel
               </Button>

@@ -47,13 +47,13 @@ export default function Navbar() {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-center">
                   <span className="text-white font-semibold">CP</span>
                 </div>
-                <span className="text-xl font-semibold text-gray-900">CarePulse</span>
+                <span className="text-xl font-semibold text-darkcolor-top">CarePulse</span>
               </Link>
             </div>
             <div className="hidden md:block ml-10">
               <div className="flex items-center space-x-4">
                 {navigation.map((item) => (
-                  <Button key={item.name} variant="ghost" className="text-gray-600 hover:text-gray-900" asChild>
+                  <Button key={item.name} variant="ghost" className="text-darkcolor-medium hover:text-darkcolor-top" asChild>
                     <Link href={item.href}>{item.name}</Link>
                   </Button>
                 ))}

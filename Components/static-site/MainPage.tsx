@@ -10,7 +10,7 @@ const MainPage = () => {
         <section className="mx-10 flex flex-row justify-between">
           <div className='items-center w-full my-auto'>
             <h1 className='text-[64px] font-semibold'>Welcome to Online Service Booking</h1>
-            <h2 className="text-[16px] font-thin text-dark2">Book a healthcare service with one click</h2>
+            <h2 className="text-[16px] font-thin text-darkcolor-medium">Book a healthcare service with one click</h2>
           </div>
           <Image 
             src="/assets/images/doctor-img.png"
@@ -73,22 +73,22 @@ const MainPage = () => {
           <h1 className="text-[32px] text-center py-5">How does this work</h1>
           <div className='flex flex-row space-x-10 px-16'>
             <div className='bg-gray-300 p-10 rounded-xl w-1/3'>
-              <h2 className='text-[16px] text-dark3 text-start py-3'> Step 1 </h2>
-              <h2 className='text-[20px] text-dark2 text-start pb-4'> Signup </h2>
+              <h2 className='text-[16px] text-darkcolor-low text-start py-3'> Step 1 </h2>
+              <h2 className='text-[20px] text-darkcolor-medium text-start pb-4'> Signup </h2>
               <p className='text-[14px] text-start pb-1'>Enter Phone number</p>
               <p className='text-[14px] text-start pb-1'>Enter password</p>
               <p className='text-[14px] text-start'>Verify using otp</p>
             </div>
             <div className='bg-gray-300 p-10 rounded-xl w-1/3'>
-              <h2 className='text-[16px] text-dark3 text-start py-3'> Step 2 </h2>
-              <h2 className='text-[20px] text-dark2 text-start pb-4'> Register Profile </h2>
+              <h2 className='text-[16px] text-darkcolor-low text-start py-3'> Step 2 </h2>
+              <h2 className='text-[20px] text-darkcolor-medium text-start pb-4'> Register Profile </h2>
               <p className='text-[14px] text-start pb-1'>Enter Personal details</p>
               <p className='text-[14px] text-start pb-1'>This will include the medical data</p>
               <p className='text-[14px] text-start'>Accept privacy and policy</p>
             </div>
             <div className='bg-gray-300 p-10 rounded-xl w-1/3'>
-              <h2 className='text-[16px] text-dark3 text-start py-3'> Step 3 </h2>
-              <h2 className='text-[20px] text-dark2 text-start pb-4'> Book Appointment </h2>
+              <h2 className='text-[16px] text-darkcolor-low text-start py-3'> Step 3 </h2>
+              <h2 className='text-[20px] text-darkcolor-medium text-start pb-4'> Book Appointment </h2>
               <p className='text-[14px] text-start pb-1'>Browse service</p>
               <p className='text-[14px] text-start pb-1'>Book an appoint</p>
               <p className='text-[14px] text-start'>Manage an appointment</p>

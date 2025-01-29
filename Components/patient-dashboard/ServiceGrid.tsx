@@ -45,7 +45,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service = { id: '', serviceNa
         </div>
       </CardHeader>
       <CardContent className="pt-4 space-y-4">
-        <p className="text-sm text-gray-600 line-clamp-2">
+        <p className="text-sm text-darkcolor-medium line-clamp-2">
           {description || 'No description available.'}
         </p>
 
@@ -89,18 +89,18 @@ export const ServiceGrid: React.FC<ServiceGridProps> = ({ service = 'full' }) =>
   }
 
   return (
-    <div className="shadow-sm shadow-dark3">
+    <div className="shadow-sm shadow-darkcolor-low">
       <div className="flex justify-between">
         <div className={`${service == 'full' ? "container" : ""}`}>
           <h2 className="text-2xl font-semibold">Our Services</h2>
-          <p className="text-sm text-dark3">
+          <p className="text-sm text-darkcolor-medium my-1">
             We offer a wide range of services to help you stay healthy and well-rounded.
           </p>
         </div>
         {service === 'dashboard' && (
           <Link
             href="/patient/services"
-            className="bg-dark3 text-white text-xs rounded-[6px] p-2 h-1/2"
+            className="bg-darkcolor-low text-white text-xs rounded-[6px] p-2 h-1/2"
             aria-label="View All Services"
           >
             View All
