@@ -9,7 +9,7 @@ import { toast } from "react-toastify"
 
 import { Button } from "@/Components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/Components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/Components/ui/dropdown-menu"
 import Searchbar from "./Searchbar"
 import LogoutButton from "../LogoutButton"
 import type { AppDispatch, RootState } from "@/redux/store"
@@ -40,7 +40,7 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between h-16">
+        <div className="h-16 w-[100%] px-16 flex items-center justify-between">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <Link href="/patient/dashboard" className="flex items-center gap-2">
@@ -50,24 +50,26 @@ export default function Navbar() {
                 <span className="text-xl font-semibold text-darkcolor-top">CarePulse</span>
               </Link>
             </div>
-            <div className="hidden md:block ml-10">
-              <div className="flex items-center space-x-4">
+            <div className="hidden md:block ml-4 lg:ml-10">
+              <div className="flex items-center space-x-1 lg:space-x-4">
                 {navigation.map((item) => (
-                  <Button key={item.name} variant="ghost" className="text-darkcolor-medium hover:text-darkcolor-top" asChild>
+                  <Button
+                    key={item.name}
+                    variant="ghost"
+                    size="sm"
+                    className="text-darkcolor-medium hover:text-darkcolor-top text-sm lg:text-base"
+                    asChild
+                  >
                     <Link href={item.href}>{item.name}</Link>
                   </Button>
                 ))}
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="hidden md:block">
+          <div className="flex items-center gap-2 lg:gap-4">
+            <div className="hidden md:block w-40 lg:w-64">
               <Searchbar />
             </div>
-            <Button variant="ghost" size="icon">
-              <Bell className="h-5 w-5" />
-              <span className="sr-only">Notifications</span>
-            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -93,8 +95,25 @@ export default function Navbar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuItem className="md:hidden">
+                  <Searchbar />
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="md:hidden" />
+                {navigation.map((item) => (
+                  <DropdownMenuItem key={item.name} asChild className="md:hidden">
+                    <Link href={item.href} className="w-full">
+                      {item.name}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuSeparator className="md:hidden" />
+                <DropdownMenuItem>
+                  Notifications
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/patient/profile">Profile</Link>
+                  <Link href="/patient/profile" className="w-full">
+                    Profile
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <LogoutButton />
