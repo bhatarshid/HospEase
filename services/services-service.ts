@@ -92,7 +92,6 @@ export const bookAppointmentService = async (userId: string, data: BookAppointme
       data: {
         patientId: patient.id,
         serviceDoctorId: data.serviceDoctorId,
-        appointmentDate: data.appointmentDate,
         reason: data.reason,
         createdAt: new Date()
       }

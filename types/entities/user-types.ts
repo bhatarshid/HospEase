@@ -57,3 +57,9 @@ export type ProfileType = {
         idNumber: string;
     } | null;
 }
+
+export enum UserType {
+  ADMIN = "ADMIN",
+  DOCTOR = "DOCTOR",
+  PATIENT = "PATIENT"
+}

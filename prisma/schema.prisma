@@ -16,8 +16,13 @@ enum AppointmentStatus {
 
 enum SlotStatus {
   OPEN
-  PENDING
   BOOKED
+}
+
+enum UserType {
+  ADMIN
+  DOCTOR
+  PATIENT
 }
 
 model User {
@@ -28,6 +33,7 @@ model User {
   password       String
   profilePicture Bytes?
   refreshToken   String?
+  userType       UserType
   createdAt      DateTime
   updatedAt      DateTime @updatedAt
   isRegistered   Boolean  @default(false)
@@ -68,11 +74,7 @@ model Patient {
 
 model Doctor {
   id             String          @id @default(uuid())
-  firstName      String
-  lastName       String
-  phoneNumber    String          @unique
   emailId        String?
-  picture        Bytes?
   specialization String
   department     String
   experience     Int
@@ -80,13 +82,10 @@ model Doctor {
   updatedAt      DateTime        @updatedAt
   serviceDoctors ServiceDoctor[]
   Patient        Patient[]
-  slots          Slot[]
 }
 
 model Appointment {
   id              String            @id @default(uuid())
-  appointment     Slot              @relation(fields: [appointmentId], references: [id])
-  appointmentId   String            @unique
   reason          String
   status          AppointmentStatus @default(PENDING)
   createdAt       DateTime
@@ -141,15 +140,13 @@ model ServiceDoctor {
 model Slot {
   id          String         @id @default(uuid())
   startTime   DateTime
+  totalSlots  Int            @default(0)
+  bookedSlots Int            @default(0)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
   status      SlotStatus     @default(OPEN)
-  doctor      Doctor         @relation(fields: [doctorId], references: [id])
-  doctorId    String
   serDoc      ServiceDoctor? @relation(fields: [serDocId], references: [id])
   serDocId    String?
-  appointment Appointment?
-
-  @@unique([doctorId, startTime])
-  @@index([doctorId, startTime])
 }
 
 model MedicalHistory {

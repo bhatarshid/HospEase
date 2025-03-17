@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createUser, registerPatientService } from "@/services/user-service";
 import AppError, { handleErrorNextResponse } from "@/lib/App-Error";
 import { registerPatientRequest, signupRequest } from "@/lib/validations/user.schema";
-import { RegisterPatientRequest, SignupResponse } from "@/types/entities";
+import { RegisterPatientRequest, SignupResponse, UserType } from "@/types/entities";
 import { getToken } from "next-auth/jwt";
 import { AuthToken } from "../auth/[...nextauth]/route";
 
@@ -17,6 +17,7 @@ export async function signup(request: NextRequest) {
       lastName: body.lastName,
       phoneNumber: body.phoneNumber,
       password: body.password,
+      user: UserType.PATIENT
     });
 
     return NextResponse.json({ 

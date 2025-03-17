@@ -10,16 +10,11 @@ export async function bookAppointment(request: NextRequest) {
     const body = await request.json();
     bookAppointmentRequest.parse(body);
 
-    const token = (await getToken({ req: request })) as AuthToken | null;
-    const userId = token?.id;
-    
+    const userId: string | null = JSON.parse(request.headers.get("user_id")!);
     if (!userId) {
       throw new AppError("Please authenticate", 401)
     }
 
-    if (userId === null) {
-      throw new AppError('You are not authenticated', 403);
-    }
     const response: string = await bookAppointmentService(userId, body);
 
     return NextResponse.json({
