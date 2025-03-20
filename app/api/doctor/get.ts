@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function getAllDoctors() {
   try {
-    const doctors: DoctorType[] = await fetchAllDoctors();
+    const doctors = await fetchAllDoctors();
 
     return NextResponse.json({ doctors }, { status: 200 });
   }

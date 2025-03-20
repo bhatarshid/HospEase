@@ -1,7 +1,18 @@
 import AppError from "@/lib/App-Error";
 import prisma from "@/lib/db";
-import { CreateUserInput, ProfileType, ProfileUpdateInput, RegisterPatientRequest, SignupResponse, UserData, UserDataType } from "@/types/entities";
-import { Patient } from "@prisma/client";
+import { 
+  CreateUserInput, 
+  ProfileType, 
+  ProfileUpdateInput, 
+  RegisterPatientRequest, 
+  SignupResponse, 
+  UserDataType,
+  UserType 
+} from "@/types/entities";
+import { 
+  Patient, 
+  User 
+} from "@prisma/client";
 import bcrypt from "bcrypt";
 
 export async function fetchAllUsers(): Promise<UserDataType[]> {
@@ -9,14 +20,15 @@ export async function fetchAllUsers(): Promise<UserDataType[]> {
     const users: UserDataType[] = await prisma.user.findMany({
       select: {
         id: true,
-        phoneNumber: true,
         firstName: true,
         lastName: true,
+        phoneNumber: true,
         profilePicture: true,
         refreshToken: true,
+        isRegistered: true,
+        userType: true,
         createdAt: true,
-        updatedAt: true,
-        isRegistered: true
+        updatedAt: true
       }
     });
 
@@ -29,7 +41,7 @@ export async function fetchAllUsers(): Promise<UserDataType[]> {
 
 export async function createUser(data: CreateUserInput): Promise<SignupResponse> {
   try {
-    const user: UserData | null = await prisma.user.findUnique({
+    const user: User | null = await prisma.user.findUnique({
       where: {
         phoneNumber: data.phoneNumber,
       }
@@ -47,6 +59,7 @@ export async function createUser(data: CreateUserInput): Promise<SignupResponse>
         password: hashPassword,
         firstName: data.firstName,
         lastName: data.lastName,
+        userType: UserType.PATIENT,
         createdAt: new Date()
       },
       select: {
@@ -57,6 +70,7 @@ export async function createUser(data: CreateUserInput): Promise<SignupResponse>
         createdAt: true,
         updatedAt: true,
         isRegistered: true,
+        userType: true
       }
     });
 
@@ -78,14 +92,15 @@ export async function getUser(id: string): Promise<UserDataType> {
       },
       select: {
         id: true,
-        phoneNumber: true,
         firstName: true,
         lastName: true,
-        createdAt: true,
+        phoneNumber: true,
         profilePicture: true,
-        updatedAt: true,
-        patient: true,
-        isRegistered: true
+        refreshToken: true,
+        isRegistered: true,
+        userType: true,
+        createdAt: true,
+        updatedAt: true
       }
     });
 
@@ -137,7 +152,7 @@ export async function registerPatientService(userId: string, data: RegisterPatie
         disclosureConsent: data.disclosureConsent,
         privacyPolicy: data.privacyPolicy,
         createdAt: new Date(),
-        idDoc: data.idDoc || undefined,
+        idDoc: data.idDoc ? new Uint8Array(data.idDoc) : undefined,
         primaryPhysician: data.primaryPhysician || undefined,
         insuranceProvider: data.insuranceProvider || undefined,
         insurancePolicyNumber: data.insurancePolicyNumber || undefined,
@@ -147,7 +162,7 @@ export async function registerPatientService(userId: string, data: RegisterPatie
 
     await prisma.user.update({
       where: { id: userId },
-      data: { isRegistered: true, profilePicture: data.picture }
+      data: { isRegistered: true, profilePicture: data.picture ? new Uint8Array(data.picture) : undefined }
     });
     
     return "Registration complete";
@@ -219,9 +234,9 @@ export const updateProfileService = async (userId: string, data: ProfileUpdateIn
   }
 }
 
-export const getMeService = async (userId: string): Promise<ProfileType> => {
+export const getMeService = async (userId: string) => {
   try {
-    const profile: ProfileType | null = await prisma.user.findUnique({
+    const profile = await prisma.user.findUnique({
       where: {
         id: userId
       },
@@ -245,8 +260,7 @@ export const getMeService = async (userId: string): Promise<ProfileType> => {
             doctor: {
               select: {
                 id: true,
-                firstName: true,
-                lastName: true,
+                userId: true
               },
             },
             insuranceProvider: true,

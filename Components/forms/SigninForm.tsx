@@ -8,7 +8,7 @@ import SubmitButton from "../SubmitButton";
 import { useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { toast } from "react-toastify";
-import { LoginInput } from "@/types/entities";
+import { LoginInput, UserType } from "@/types/entities";
 import { useSelector, useDispatch } from 'react-redux'
 import { signin, reset } from "@/redux/features/auth-slice";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -34,7 +34,12 @@ const SigninForm = () => {
     if (isSuccess) {
       toast.success(message)
       if (user?.isRegistered) {
-        router.push('/patient/dashboard');
+        if (user?.userType === UserType.DOCTOR) {
+          router.push('/doctor/dashboard');
+        }
+        else if (user?.userType === UserType.PATIENT) {
+          router.push('/patient/dashboard');
+        }
       }
       else {
         router.push('/patient/register');

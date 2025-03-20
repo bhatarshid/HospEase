@@ -16,8 +16,7 @@ export async function signup(request: NextRequest) {
       firstName: body.firstName,
       lastName: body.lastName,
       phoneNumber: body.phoneNumber,
-      password: body.password,
-      user: UserType.PATIENT
+      password: body.password
     });
 
     return NextResponse.json({ 

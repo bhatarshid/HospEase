@@ -2,10 +2,35 @@ import AppError from "@/lib/App-Error";
 import prisma from "@/lib/db";
 import { CreateDoctorBody, DoctorType, UpdateDoctorBody } from "@/types/entities";
 
-export const fetchAllDoctors = async (): Promise<DoctorType[]> => {
+export const fetchAllDoctors = async () => {
   try {
-    const doctors: DoctorType[] = await prisma.doctor.findMany();
-    return doctors;
+    const doctors: DoctorType[] = await prisma.doctor.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            phoneNumber: true,
+            profilePicture: true,
+            userType: true,
+            isRegistered: true
+          },
+        },
+      },
+    });
+
+    const doctorResponse = doctors.map(doctor => ({
+     ...doctor,
+     firstName: doctor.user.firstName,
+     lastName: doctor.user.lastName,
+     phoneNumber: doctor.user.phoneNumber,
+     profilePicture: doctor.user.profilePicture? Buffer.from(doctor.user.profilePicture).toString('base64') : null,
+     userType: doctor.user.userType,
+     isRegistered: doctor.user.isRegistered, 
+    }))
+
+    return doctorResponse;
   }
   catch (error) {
     throw error;

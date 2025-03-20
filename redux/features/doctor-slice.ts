@@ -1,9 +1,8 @@
 import { fetchDoctorsAPI } from "@/lib/actions/doctor.actions";
-import { DoctorType } from "@/types/entities/doctor-types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface DoctorState {
-  doctors: DoctorType[] | null;
+  doctors: any[] | null;
   isError: boolean;
   isSuccess: boolean;
   isLoading: boolean;
