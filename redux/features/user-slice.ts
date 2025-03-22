@@ -3,7 +3,7 @@ import { getMyDetailsApi, registerPatientApi, updateProfileApi } from '@/lib/act
 import { ProfileType } from '@/types/entities';
 
 interface ProfileState {
-  profile: ProfileType | null;
+  profile: any | null;
   isError: boolean;
   isSuccess: boolean;
   isLoading: boolean;
@@ -21,7 +21,7 @@ const initialState: ProfileState = {
 export const getMyDetails = createAsyncThunk('user/details', 
   async (_, thunkApi) => {
     try {
-      const response: ProfileType = await getMyDetailsApi();
+      const response = await getMyDetailsApi();
       return response;
     }
     catch (error: any) {

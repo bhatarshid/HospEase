@@ -23,3 +23,18 @@ export const fetchServiceDetailsAPI = async (serviceId: string): Promise<Service
     throw error;
   }
 }
+
+export const bookAppointmentAPI = async (bookAppointmentData: any): Promise<string> => {
+  try {
+    const response: string = await axios.post(`${SERVICE_API}?action=appointment`, bookAppointmentData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    console.log(response)
+    return response;
+  }
+  catch (error: any) {
+    throw error;
+  }
+}

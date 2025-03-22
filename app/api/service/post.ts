@@ -7,15 +7,20 @@ import { AuthToken } from "../auth/[...nextauth]/route";
 
 export async function bookAppointment(request: NextRequest) {
   try {
-    const body = await request.json();
-    bookAppointmentRequest.parse(body);
+    const body = await request.formData();
+    // bookAppointmentRequest.parse(body);
 
-    const userId: string | null = JSON.parse(request.headers.get("user_id")!);
-    if (!userId) {
-      throw new AppError("Please authenticate", 401)
-    }
+    const token = (await getToken({ req: request })) as AuthToken | null
+    const userId = token?.id;
 
-    const response: string = await bookAppointmentService(userId, body);
+    const appointmentData = {
+      serviceDoctorId: body.get("serviceDoctorId") as string,
+      doctorId: body.get("doctorId") as string,
+      appointmentDate: body.get("appointmentDate") as string,
+      reason: body.get("reason") as string,
+    };
+
+    const response: string = await bookAppointmentService(userId!, appointmentData);
 
     return NextResponse.json({
       message: response

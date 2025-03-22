@@ -74,13 +74,13 @@ export function DoctorCard({ doctor, onBookNow }: DoctorCardProps) {
                 {expandedDate === dateStr && (
                   <div className="border-t border-blue-200 bg-blue-50 p-2">
                     <div className="grid grid-cols-1 gap-2">
-                      {doctor.slots[dateStr].map((slot: string, index: number) => (
+                      {doctor.slots[dateStr].map((slot: any, index: number) => (
                         <button
                           key={index}
                           className="flex items-center justify-center p-2 bg-white border border-blue-200 rounded-md text-blue-600 hover:bg-blue-100 transition-colors"
                         >
                           <Clock className="h-4 w-4 mr-2" />
-                          <span className="text-sm">{formatTimeSlot(slot)}</span>
+                          <span className="text-sm">{formatTimeSlot(slot.startTime)}</span>
                         </button>
                       ))}
                     </div>

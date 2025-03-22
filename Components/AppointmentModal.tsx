@@ -25,6 +25,7 @@ import { ServiceDoctorDetails } from "@/types/entities/service-types";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { toast } from "react-toastify";
+import { bookAppointment } from "@/redux/features/appointment-slice";
 // import { bookAppointment, reset } from "@/redux/features/service-slice";
 
 export const AppointmentModal = ({
@@ -37,10 +38,10 @@ export const AppointmentModal = ({
   doctorData: ServiceDoctorDetails,
 }) => { 
   const [availableDates, setAvailableDates] = useState<string[]>([]);
-  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<any>([]);
   const [formInitialized, setFormInitialized] = useState(false);
-  const { isError, isSuccess, isLoading, message} = useSelector((state: RootState) => state.service);
-  const {user} = useSelector((state: RootState) => state.auth);
+  const { isError, isSuccess, isLoading } = useSelector((state: RootState) => state.service);
+  const { isError: appointmentError, isSuccess: appointmentSuccess, isLoading: appointmentLoading } = useSelector((state: RootState) => state.appointment);
   const dispatch = useDispatch<AppDispatch>();
 
   const form = useForm();
@@ -51,6 +52,7 @@ export const AppointmentModal = ({
         serviceDoctorId: doctorData?.id,
         selectedDate: '',
         selectedTime: '',
+        appointmentDate: '',
         reason: ''
       });
       setFormInitialized(true);
@@ -65,30 +67,32 @@ export const AppointmentModal = ({
   }, [doctorData])
 
   useEffect(() => {
-    if(isError) {
+    if(appointmentError) {
       toast.error("Failed to book an appointment")
       // dispatch(reset())
     }
 
-    if(isSuccess && doctorData) {
+    if(appointmentSuccess) {
       toast.success("Appointment booked successfully")
       // dispatch(reset())
       onClose()
     }
 
     // dispatch(reset());
-  }, [isError, isSuccess, dispatch]);
+  }, [appointmentError, appointmentLoading, appointmentSuccess, dispatch]);
 
   const handleDateChange = (date: string) => {
     form.setValue('selectedDate', date);
     form.setValue('selectedTime', '');
+    form.setValue('appointmentDate', '');
 
-    const timeSlots = doctorData.slots[date];
+    const timeSlots = doctorData.slots[date].map((slot: any) => ({ startTime: slot.startTime, id: slot.id }));
     setAvailableTimeSlots(timeSlots);
   }
 
   const onSubmit = async (data: any) => {
-    if (data.selectedDate === '' || data.selectedTime === '') {
+    console.log({data})
+    if (data.appointmentDate === '') {
       toast.error("Please select a date and time");
       return;
     }
@@ -98,22 +102,21 @@ export const AppointmentModal = ({
       return;
     }
 
-    const appointmentDate = new Date(data.selectedDate +' '+ data.selectedTime).toISOString();
     const requestBody: {
       serviceDoctorId: string;
       appointmentDate: string;
       reason: string;
     } = {
       serviceDoctorId: data.serviceDoctorId,
-      appointmentDate,
+      appointmentDate: data.appointmentDate,
       reason: data.reason
     }
-    // dispatch(bookAppointment(requestBody));    
+    dispatch(bookAppointment(requestBody));    
   }
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-backgroundColor">
+      <DialogContent className="sm:max-w-md bg-white">
         <DialogHeader className="mt-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -129,12 +132,6 @@ export const AppointmentModal = ({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="p-4 space-y-4 text-[#8f8e8e] ">
-            <div>
-              <Label className="shad-input-label">Patient Name</Label>
-              <p className="mt-1 text-darkcolor-high bg-[#ebe9e9] p-2 border rounded-[6px] font-normal">
-                {user?.firstName} {user?.lastName}
-              </p>
-            </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="shad-input-label">Date</Label>
@@ -158,17 +155,17 @@ export const AppointmentModal = ({
               <div>
                 <Label className="shad-input-label">Time</Label>
                 <Select
-                  onValueChange={(time) => form.setValue('selectedTime', time)}
-                  value={form.watch('selectedTime')}
+                  onValueChange={(id) => form.setValue('appointmentDate', id)}
+                  value={form.watch('appointmentDate')}
                   disabled={!form.watch('selectedDate')}
                 >
                   <SelectTrigger className="w-full bg-[#ebe9e9] rounded-[6px]">
                     <SelectValue placeholder="Select time" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
-                    {availableTimeSlots.map((time, index) => (
-                      <SelectItem key={index} value={formatTimeSlot(time)}>
-                        {formatTimeSlot(time)} - {formatEndTimeSlot(time)}
+                    {availableTimeSlots.map((time: any, index: any) => (
+                      <SelectItem key={index} value={time.id}>
+                        {formatTimeSlot(time.startTime)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -183,19 +180,23 @@ export const AppointmentModal = ({
               placeholder="I have cold and fever."
             />
 
-            <div className="flex gap-4 pt-4 w-1/2">
-              <SubmitButton isLoading={isLoading}>
-                Book Appointment
-              </SubmitButton>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onClose}
-                className="flex-1 text-darkcolor-medium border-darkcolor-high"
-              >
-                Cancel
-              </Button>
-            </div>
+            <div className="flex gap-4 pt-2">
+                <Button
+                  type="submit"
+                  disabled={appointmentLoading}
+                  className="flex-1 bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-medium py-2"
+                >
+                  {appointmentLoading ? "Booking..." : "Book Appointment"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={onClose}
+                  className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </Button>
+              </div>
           </form>
         </Form>
       </DialogContent>

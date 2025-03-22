@@ -44,7 +44,7 @@ export async function getMe (request: NextRequest) {
       throw new AppError("Please authenticate", 401)
     }
 
-    const profile: ProfileType = await getMeService(userId);
+    const profile = await getMeService(userId);
 
     return NextResponse.json({ profile });
   }

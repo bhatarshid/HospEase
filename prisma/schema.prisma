@@ -97,6 +97,8 @@ model Appointment {
   patientId       String
   serviceDoctor   ServiceDoctor     @relation(fields: [serviceDoctorId], references: [id])
   serviceDoctorId String
+  slot            Slot              @relation(fields: [slotId], references: [id])
+  slotId          String
 }
 
 model Service {
@@ -150,6 +152,7 @@ model Slot {
   status      SlotStatus     @default(OPEN)
   serDoc      ServiceDoctor? @relation(fields: [serDocId], references: [id])
   serDocId    String?
+  Appointment Appointment[]
 }
 
 model MedicalHistory {

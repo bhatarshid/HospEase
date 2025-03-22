@@ -24,6 +24,7 @@ export async function POST (request: NextRequest) {
 
   switch (action) {
     case "appointment":
+      console.log("appoitnment")
       return bookAppointment(request);
     default:
       return NextResponse.json({ message: "Route not found" }, { status: 404 });

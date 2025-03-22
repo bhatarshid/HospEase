@@ -1,5 +1,5 @@
 import { fetchServiceDetailsAPI, fetchServicesAPI } from "@/lib/actions/service.actions";
-import { AppointmentDetails, ServiceDetailsResponse } from "@/types/entities/service-types";
+import { ServiceDetailsResponse } from "@/types/entities/service-types";
 import { Service } from "@prisma/client";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 

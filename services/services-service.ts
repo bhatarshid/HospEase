@@ -2,6 +2,7 @@ import AppError from "@/lib/App-Error";
 import prisma from "@/lib/db";
 import { groupSlotsByDate } from "@/lib/utils";
 import { Service, ServiceDetailsResponse, ServiceDoctorDetails, BookAppointment, AppointmentWithDetails, AppointmentDetails, CreateServiceBody, ServiceDoctorBody, ServiceDoctor } from "@/types/entities/service-types";
+import { SlotStatus } from "@prisma/client";
 
 export const fetchAllServices = async (): Promise<Service[]> => {
   try {
@@ -20,7 +21,11 @@ export const fetchServiceDetails = async (id: string): Promise<ServiceDetailsRes
       include: {
         serviceDoctors: {
           include: {
-            doctor: true,
+            doctor: {
+              include: {
+                user: true
+              }
+            },
             slots: true
           }
         }
@@ -33,10 +38,10 @@ export const fetchServiceDetails = async (id: string): Promise<ServiceDetailsRes
 
     const serviceDoctors: ServiceDoctorDetails[] = []
     service.serviceDoctors.forEach((serviceDoctor: ServiceDoctor) => {
-      let slots: Date[] = []
+      let slots: any = []
       serviceDoctor.slots.forEach((slot) => {
-        if(slot.startTime > new Date()) {
-          slots.push(slot.startTime);
+        if(slot.startTime > new Date() && slot.status === 'OPEN') {
+          slots.push({ startTime: slot.startTime, id: slot.id });
         }
       });
       
@@ -45,11 +50,11 @@ export const fetchServiceDetails = async (id: string): Promise<ServiceDetailsRes
         cost: serviceDoctor.cost,
         slots: groupSlotsByDate(slots),
         doctorId: serviceDoctor.doctor.id,
-        firstName: serviceDoctor.doctor.firstName,
-        lastName: serviceDoctor.doctor.lastName,
-        phoneNumber: serviceDoctor.doctor.phoneNumber,
+        firstName: serviceDoctor.doctor.user.firstName,
+        lastName: serviceDoctor.doctor.user.lastName,
+        phoneNumber: serviceDoctor.doctor.user.phoneNumber,
         emailId: serviceDoctor.doctor.emailId,
-        doctorPicture: serviceDoctor.doctor.picture,
+        doctorPicture: serviceDoctor.doctor.user.picture,
         specialization: serviceDoctor.doctor.specialization,
         department: serviceDoctor.doctor.department,
         experience: serviceDoctor.doctor.experience
@@ -87,19 +92,45 @@ export const bookAppointmentService = async (userId: string, data: BookAppointme
     if (!patient) {
       throw new AppError('User is not registered as patient', 400);
     }
+    
+    const appointment = await prisma.appointment.findFirst({
+      where: { patientId: patient.id, slotId: data.appointmentDate }
+    });
+    if (appointment) {
+      throw new AppError('Appointment already exists for this date and time', 400);
+    }
 
+    const slot = await prisma.slot.findFirst({
+      where: { id: data.appointmentDate }
+    });
+    if (!slot) {
+      throw new AppError('Slot not found', 404);
+    }
+    if (slot.status === SlotStatus.BOOKED) {
+      throw new AppError('Slot is already booked', 400);
+    }
+    
     await prisma.appointment.create({
       data: {
         patientId: patient.id,
         serviceDoctorId: data.serviceDoctorId,
+        slotId: data.appointmentDate,
         reason: data.reason,
         createdAt: new Date()
+      }
+    });
+    await prisma.slot.update({
+      where: { id: slot.id },
+      data: {
+        bookedSlots: slot.bookedSlots + 1,
+        status: slot.bookedSlots + 1 === slot.totalSlots ? SlotStatus.BOOKED : SlotStatus.OPEN
       }
     });
 
     return 'Appointment Booked Successfully'
   }
   catch (error) {
+    console.log({error})
     throw error;
   }
 }
@@ -173,7 +204,7 @@ export const createServiceFunction = async (data: CreateServiceBody): Promise<st
         serviceName: data.serviceName,
         description: data.description,
         features: data.features,
-        picture: data.picture,
+        picture: data.picture ? new Uint8Array(data.picture) : undefined,
         createdAt: new Date(),
         updatedAt: new Date()
       }

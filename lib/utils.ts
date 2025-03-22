@@ -18,8 +18,8 @@ export const getImageSrc = (picture: any) => {
     return '';
   }
 
-  if (picture.type === 'Buffer' && picture.data) {
-    const buffer = Buffer.from(picture.data);
+  if (picture) {
+    const buffer = Buffer.from(Object.values(picture).join(''));
     return `data:image/jpg;base64,${buffer.toString('base64')}`;
   }
   
@@ -27,14 +27,14 @@ export const getImageSrc = (picture: any) => {
 };
 
 // Group timeslots by date
-export const groupSlotsByDate = (slots: Date[]) => {
-  const groups: Record<string, string[]> = {};
-  slots.forEach((slot: Date) => {
-    const dateStr = slot.toISOString().split('T')[0];
+export const groupSlotsByDate = (slots: any[]) => {
+  const groups: any = {};
+  slots.forEach((slot: any) => {
+    const dateStr = slot.startTime.toISOString().split('T')[0];
     if (!groups[dateStr]) {
       groups[dateStr] = [];
     }
-    groups[dateStr].push(slot.toISOString());
+    groups[dateStr].push({ id: slot.id, startTime: slot.startTime.toISOString() });
   });
   return groups;
 };
