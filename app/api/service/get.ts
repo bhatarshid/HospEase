@@ -3,6 +3,8 @@ import { fetchAllServices, fetchServiceDetails, fetchAllAppointments } from "@/s
 import { NextRequest, NextResponse } from "next/server";
 import { Service } from "@prisma/client";
 import { AppointmentDetails, ServiceDetailsResponse } from "@/types/entities/service-types";
+import { getToken } from "next-auth/jwt";
+import { AuthToken } from "../auth/[...nextauth]/route";
 
 export async function getAllServices() {
   try {
@@ -35,13 +37,14 @@ export async function getServiceDetails(request: NextRequest) {
 
 export async function getAllAppointments(request: NextRequest) {
   try {
-    const userId: string | null = JSON.parse(request.headers.get("user_id")!);
+    const token = (await getToken({ req: request })) as AuthToken | null
+    const userId = token?.id;
 
     if (userId === null) {
       throw new AppError("You are not authenticated", 403);
     }
 
-    const appointments: AppointmentDetails[] = await fetchAllAppointments(userId);
+    const appointments: AppointmentDetails[] = await fetchAllAppointments(userId!);
 
     return NextResponse.json({ appointments }, { status: 200 });
   }

@@ -31,7 +31,28 @@ export const bookAppointmentAPI = async (bookAppointmentData: any): Promise<stri
         'Content-Type': 'multipart/form-data'
       }
     });
-    console.log(response)
+    return response;
+  }
+  catch (error: any) {
+    throw error;
+  }
+}
+
+export const fetchAllAppointmentsAPI = async () => {
+  try {
+    const response = await axios.get(`${SERVICE_API}?action=appointment`);
+    return response;
+  }
+  catch (error: any) {
+    throw error;
+  }
+}
+
+export const cancelAppointmentAPI = async (appointmentId: string) => {
+  try {
+    const response = await axios.put(`${SERVICE_API}?action=appointment&id=${appointmentId}`, {
+      status: 'CANCELLED'
+    });
     return response;
   }
   catch (error: any) {

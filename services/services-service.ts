@@ -2,7 +2,7 @@ import AppError from "@/lib/App-Error";
 import prisma from "@/lib/db";
 import { groupSlotsByDate } from "@/lib/utils";
 import { Service, ServiceDetailsResponse, ServiceDoctorDetails, BookAppointment, AppointmentWithDetails, AppointmentDetails, CreateServiceBody, ServiceDoctorBody, ServiceDoctor } from "@/types/entities/service-types";
-import { SlotStatus } from "@prisma/client";
+import { AppointmentStatus, SlotStatus } from "@prisma/client";
 
 export const fetchAllServices = async (): Promise<Service[]> => {
   try {
@@ -54,7 +54,7 @@ export const fetchServiceDetails = async (id: string): Promise<ServiceDetailsRes
         lastName: serviceDoctor.doctor.user.lastName,
         phoneNumber: serviceDoctor.doctor.user.phoneNumber,
         emailId: serviceDoctor.doctor.emailId,
-        doctorPicture: serviceDoctor.doctor.user.picture,
+        doctorPicture: serviceDoctor.doctor.user.profilePicture,
         specialization: serviceDoctor.doctor.specialization,
         department: serviceDoctor.doctor.department,
         experience: serviceDoctor.doctor.experience
@@ -137,9 +137,9 @@ export const bookAppointmentService = async (userId: string, data: BookAppointme
 
 export const fetchAllAppointments = async (userId: string) : Promise<any> => {
   try {
-    const user: { id: string } | null = await prisma.user.findUnique({
+    const user: { id: string; firstName: string; lastName: string; } | null = await prisma.user.findUnique({
       where : { id: userId },
-      select: { id: true }
+      select: { id: true, firstName: true, lastName: true }
     });
     if (!user) {
       throw new AppError('User not found', 404);
@@ -158,128 +158,187 @@ export const fetchAllAppointments = async (userId: string) : Promise<any> => {
       include: {
         serviceDoctor: {
           include: {
-            doctor: true,
+            doctor: {
+              include: {
+                user: true
+              }
+            },
             service: true
           }
-        }
-      },
-      orderBy: {
-        appointmentDate: 'desc'
+        },
+        slot: true
       }
     });
 
-    const appointments: AppointmentDetails = appointmentsWithDetails.map((appointment) => {
+    const appointments = appointmentsWithDetails.map((appointment) => {
       return {
         id: appointment.id,
-        appointmentDate: appointment.appointmentDate,
+        appointmentDate: appointment.slot.startTime,
         reason: appointment.reason,
         status: appointment.status,
         serviceName: appointment.serviceDoctor.service.serviceName,
         cost: appointment.serviceDoctor.cost,
         doctorId: appointment.serviceDoctor.doctor.id,
-        doctorFirstName: appointment.serviceDoctor.doctor.firstName,
-        doctorLastName: appointment.serviceDoctor.doctor.lastName,
+        doctorFirstName: appointment.serviceDoctor.doctor.user.firstName,
+        doctorLastName: appointment.serviceDoctor.doctor.user.lastName,
         doctorSpecialization: appointment.serviceDoctor.doctor.specialization,     
-        doctorPicture: appointment.serviceDoctor.doctor.picture
+        doctorPicture: appointment.serviceDoctor.doctor.user.profilePicture
       }
-    })
+    });
 
     return appointments;
   }
   catch (error) {
+    console.error('Error fetching appointments:', error);
     throw error;
   }
 }
 
-export const createServiceFunction = async (data: CreateServiceBody): Promise<string> => {
+export const cancelAppointmentService = async (userId: string, appointmentId: string): Promise<string> => {
   try {
-    const service = await prisma.service.findUnique({ where: { serviceName: data.serviceName } });
-
-    if (service) {
-      throw new AppError('Service with the same name already exists', 400);
+    const user: { id: string } | null = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true }
+    });
+    if (!user) {
+      throw new AppError('User not found', 404);
     }
 
-    await prisma.service.create({
+    const patient: { id: string } | null = await prisma.patient.findUnique({
+      where: { userId: user.id },
+      select: { id: true }
+    });
+    if (!patient) {
+      throw new AppError('User is not registered as patient', 400);
+    }
+
+    const appointment = await prisma.appointment.findFirst({
+      where: { 
+        id: appointmentId,
+        patientId: patient.id,
+        status: AppointmentStatus.PENDING
+      },
+      include: {
+        slot: true
+      }
+    });
+
+    if (!appointment) {
+      throw new AppError('Appointment not found or cannot be cancelled', 404);
+    }
+
+    // Update appointment status to cancelled
+    await prisma.appointment.update({
+      where: { id: appointmentId },
+      data: { status: AppointmentStatus.CANCELLED }
+    });
+
+    // Update slot status back to OPEN and decrease booked slots
+    await prisma.slot.update({
+      where: { id: appointment.slotId },
       data: {
-        serviceName: data.serviceName,
-        description: data.description,
-        features: data.features,
-        picture: data.picture ? new Uint8Array(data.picture) : undefined,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        bookedSlots: appointment.slot.bookedSlots - 1,
+        status: SlotStatus.OPEN
       }
     });
 
-    return 'Service created'
+    return 'Appointment Cancelled Successfully';
   }
   catch (error) {
+    console.error('Error cancelling appointment:', error);
     throw error;
   }
 }
 
-export const addServiceDoctorFunction = async (data: ServiceDoctorBody): Promise<string> => {
-  try {
-    await prisma.$transaction(async (prisma) => {
-      const serviceDoctor = await prisma.serviceDoctor.create({
-        data: {
-          serviceId: data.serviceId,
-          doctorId: data.doctorId,
-          cost: data.cost,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        }
-      });
+// export const createServiceFunction = async (data: CreateServiceBody): Promise<string> => {
+//   try {
+//     const service = await prisma.service.findUnique({ where: { serviceName: data.serviceName } });
 
-      const slots = await prisma.slot.updateMany({
-        where: {
-          id: { in: data.slotId },
-          status: 'OPEN',
-          doctorId: data.doctorId
-        },
-        data: {
-          serDocId: serviceDoctor.id,
-          status: 'PENDING'
-        }
-      });
+//     if (service) {
+//       throw new AppError('Service with the same name already exists', 400);
+//     }
+
+//     await prisma.service.create({
+//       data: {
+//         serviceName: data.serviceName,
+//         description: data.description,
+//         features: data.features,
+//         picture: data.picture ? new Uint8Array(data.picture) : undefined,
+//         createdAt: new Date(),
+//         updatedAt: new Date()
+//       }
+//     });
+
+//     return 'Service created'
+//   }
+//   catch (error) {
+//     throw error;
+//   }
+// }
+
+// export const addServiceDoctorFunction = async (data: ServiceDoctorBody): Promise<string> => {
+//   try {
+//     await prisma.$transaction(async (prisma) => {
+//       const serviceDoctor = await prisma.serviceDoctor.create({
+//         data: {
+//           serviceId: data.serviceId,
+//           doctorId: data.doctorId,
+//           cost: data.cost,
+//           createdAt: new Date(),
+//           updatedAt: new Date()
+//         }
+//       });
+
+//       const slots = await prisma.slot.updateMany({
+//         where: {
+//           id: { in: data.slotId },
+//           status: 'OPEN',
+//           doctorId: data.doctorId
+//         },
+//         data: {
+//           serDocId: serviceDoctor.id,
+//           status: 'PENDING'
+//         }
+//       });
       
-      if (slots.count < data.slotId.length) {
-        throw new AppError('Some slots are not available', 404);
-      }
-    });
+//       if (slots.count < data.slotId.length) {
+//         throw new AppError('Some slots are not available', 404);
+//       }
+//     });
 
-    return 'Details of service added';
-  }
-  catch (error) {
-    throw error;
-  }
-}
+//     return 'Details of service added';
+//   }
+//   catch (error) {
+//     throw error;
+//   }
+// }
 
-export const updateServiceFunction = async (data: any) => {
-  try {
-    // modify this
-    await prisma.$transaction(async (prisma) => {
-      // const serviceDoctor = await prisma.serviceDoctor.update();
+// export const updateServiceFunction = async (data: any) => {
+//   try {
+//     // modify this
+//     await prisma.$transaction(async (prisma) => {
+//       // const serviceDoctor = await prisma.serviceDoctor.update();
 
-      const slots = await prisma.slot.updateMany({
-        where: {
-          id: { in: data.slotId },
-          status: 'OPEN',
-          doctorId: data.doctorId
-        },
-        data: {
-          // serDocId: serviceDoctor.id,
-          status: 'PENDING'
-        }
-      });
+//       const slots = await prisma.slot.updateMany({
+//         where: {
+//           id: { in: data.slotId },
+//           status: 'OPEN',
+//           doctorId: data.doctorId
+//         },
+//         data: {
+//           // serDocId: serviceDoctor.id,
+//           status: 'PENDING'
+//         }
+//       });
       
-      if (slots.count < data.slotId.length) {
-        throw new AppError('Some slots are not available', 404);
-      }
-    });
+//       if (slots.count < data.slotId.length) {
+//         throw new AppError('Some slots are not available', 404);
+//       }
+//     });
 
-    return 'Details of service added';
-  }
-  catch (error) {
-    throw error;
-  }
-}
+//     return 'Details of service added';
+//   }
+//   catch (error) {
+//     throw error;
+//   }
+// }

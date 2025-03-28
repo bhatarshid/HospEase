@@ -17,16 +17,25 @@ export type AppointmentWithDetails = Prisma.AppointmentGetPayload<{
   include: {
     serviceDoctor: {
       include: {
-        doctor: true
+        doctor: {
+          include: {
+            user: true
+          }
+        }
         service: true
       }
-    }
+    },
+    slot: true
   }
 }>
 
 export type ServiceDoctor = Prisma.ServiceDoctorGetPayload<{
   include: {
-    doctor: true
+    doctor: {
+      include: {
+        user: true
+      }
+    },
     slots: true
   }
 }>;
@@ -40,7 +49,7 @@ export type ServiceDoctorDetails = {
   lastName: string;
   phoneNumber: string;
   emailId: string | null;
-  doctorPicture: Buffer | null;
+  doctorPicture: any | null;
   specialization: string;
   department: string;
   experience: number;
@@ -76,7 +85,7 @@ export type AppointmentDetails = {
   doctorLastName: string;
   doctorPicture: Buffer | null;
   doctorSpecialization: string;
-}[]
+}
 
 export type CreateServiceBody = z.infer<typeof createServiceBody>;
 export type ServiceDoctorBody = z.infer<typeof serviceDoctorBody>;
